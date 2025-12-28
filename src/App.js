@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+/** 
+ *  ? ThemeProvider, Layout-file (innerhalb von BrowserRouter) verwenden für alle "children" = verwendete components
+*/
 
-function App() {
+import './App.css'
+import { useState } from 'react'
+
+/** newer routing-logic
+ *  using react-router-dom // parent->children navigation
+ */
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider
+} from 'react-router-dom'  // 
+
+// import of local components
+import Home from './pages/Home'
+import About from './pages/About'
+import UsrPwdInputForm from './pages/UsrPwdInputForm'
+import CryptString from './pages/CryptString'
+import VierGewinnt from './pages/VierGewinnt'
+import NotFound404 from './pages/404'
+
+//
+export default function App() {
+
+  //  const [visible, setVisible] = useState(true)
+  const [skeletonOn, setSkeletonOn] = useState(true)  // for Skeleton-components
+
+  // instantiating a router-object; routes: RouteObject[], opts?: DOMRouterOpts
+  const loRoutes = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+        <Route exact path="/" element={<Home skeletonOn={skeletonOn} setSkeletonOn={setSkeletonOn} />} />
+        <Route path="/about" element={<About />} />
+        {/* <Route path="/showlistitem" element={<ShowListItem />} /> */}
+        <Route path="/UsrPwdInputForm" element={<UsrPwdInputForm />} />
+        <Route path="/CryptString" element={<CryptString />} />
+        <Route path="/VierGewinnt" element={<VierGewinnt />} />
+        <Route path="*" element={<NotFound404 />} />
+      </Route>
+    ),  // createRoutesFromElements()
+    {  }
+  )  // createBrowserRouter()
+
+  //
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+    <>
+      <RouterProvider router={loRoutes} />
+    </>
+  )
+}  // App()

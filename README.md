@@ -61,10 +61,43 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/m
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+# Deployment
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+## deployment from the IDE / workbench
+1) (workbench cli) npm run build
+2) (workbench) firebase config object used in Main-Component (Home.js)?
+3) (firebase console) create firebase project (Projektübersicht -> Hosting, firebase hosting einrichten)
+4) (firebase console) create app link (type WEB) to the development project, add an app to this project
+    -- creating an app-alias
+    -- "Firebase zu meiner Web-App hinzufügen"
+    -- check link https://cra.link/deployment
+5) (workbench cli) firebase use --add
+    --? project alias 
+    -- firebase deploy --only hosting:prj-minnav-269ed-d0109
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# to-dos
+- Verwendung von JSX-components mit Dateityp .jsx unklar
+- framer-motion@12.23.24 verwenden? component Carousel
+
+- fuer bootstrap-css-verwendung (view About.js) 
+<a href="#" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2" style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)">
+  Green focus ring
+</a>
+
+# Hauptprogramm:
+- index.js, "hydriert" das <div>-tag im /public/index.html (-> Client Side Rendering)
+
+## Routing
+- uses "react-router-dom" 
+-- Parent ( createBrowserRouter(), routes are used in: createRoutesFromElements() ) 
+    |--> Child-component ( useNavigate(); fnNavigate = useNavigate(); fnNavigate(<Route>) ) 
+      |--> Parent
+-- 
+
+## Theming
+- currently none
+
+## i18n
+-- currently none

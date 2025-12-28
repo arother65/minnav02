@@ -1,0 +1,9 @@
+/*
+*  https://tailwindcss.com/docs/installation/using-vite
+*/
+
+@import "tailwindcss";
+
+.Test {
+    background-color: antiquewhite;
+}

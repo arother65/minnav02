@@ -3,8 +3,18 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 50px;
   pointer-events: none;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(180deg);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -14,8 +24,8 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: rgba(40, 45, 60, 0.95);
+  min-height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,15 +34,53 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-main {
+  background-color: rgba(140, 145, 160, 0.95);
+  min-height: 500px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: darkslategrey;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App-main-red {
+  background-color: rgba(100, 10, 10, 0.9);
+  min-height: 500px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(200, 200, 200);
 }
+
+.App-footer {
+  background-color: rgba(40, 45, 60, 0.85);
+  min-height: fit-content;
+  
+  display: flow-root;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  /* font-size: calc(10px + 2vmin); */
+  font-size: 25px;
+  color: white;
+}
+
+/* .App-bar {
+  background-color: rgba(40, 45, 60, 0.95);
+  position: 'fixed'; 
+  'relative': AppBar moves with the rest of the page
+} */
+
+.App-link {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* .Usrinput-main {
+  background-color: rgba(140, 145, 160, 0.95);
+  min-height: 500px;
+} */
