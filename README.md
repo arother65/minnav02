@@ -42,24 +42,25 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+# Resources used in this repository
+## ReactJS
+- https://reactnative.dev/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Controls: MUI
+- https://mui.com/material-ui/
 
-### Analyzing the Bundle Size
+## Bootstrap 
+- (CSS used in Component "About.js")
+- https://getbootstrap.com/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## General Overview
+- https://www.w3schools.com/
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## other stuff for relaxing
+- https://www.cifraclub.com.br/
+- https://www.tamiya.com/english/index.html
 
 # Deployment
 
@@ -101,3 +102,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 ## i18n
 -- currently none
+
+## about the Author
+Xing : https://www.xing.com/profile/Andreas_Rother21?sc_o=mxb_p
+LinkedIn: https://www.linkedin.com/in/andreas-rother-623a0930
+
+## special thanks to
+JS guru: https://netninja.dev/
+
