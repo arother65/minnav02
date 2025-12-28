@@ -31,11 +31,11 @@ export default function AppBarTop() {
    const handleClick = (event) => { setAnchorEl(event.currentTarget) }
    const handleClose = () => { setAnchorEl(null) }
 
-   // hooks for Component Dialog
+   // hooks for Component DIALOG
    const [openDialog, setOpenDialog] = useState(false)
    const handleOpenDialog = () => { setOpenDialog(true) }
    const handleCloseDialog = () => { setOpenDialog(false) }
-   // fn for component Dialog, called by a MenuItem
+   // fn for component DIALOG, called by a MenuItem
    const lvTransition = forwardRef(function Transition(props, ref) {
       return <Slide direction="up" ref={ref} {...props} />
    })
