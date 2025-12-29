@@ -7,6 +7,7 @@ import '../App.css'
 
 import logo from '../logo.svg'
 import joker from '../icons8-joker-64.png'
+import kreuzAs from '../icons8-kreuzass-64.png'
 
 import { useEffect, useState } from 'react'
 
@@ -297,11 +298,11 @@ export default function VierGewinnt() {
               alt="React logo" />
 
             <img id="img2"
-              src={logo}
+              src={kreuzAs}
               // className="App-logo"
               draggable={true}
               onDragStart={dragStart}
-              width="300"
+              width="50"
               height="50"
               alt="React logo" />
 
