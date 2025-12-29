@@ -108,5 +108,8 @@ Xing : https://www.xing.com/profile/Andreas_Rother21?sc_o=mxb_p
 LinkedIn: https://www.linkedin.com/in/andreas-rother-623a0930
 
 ## special thanks to
-JS guru: https://netninja.dev/
+- JS guru: https://netninja.dev/
+
+- icons8.de
+<a target="_blank" href="https://icons8.com/icon/95u9Z6qJ2Ipg/joker">Joker</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a>
 

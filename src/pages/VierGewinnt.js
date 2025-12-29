@@ -6,6 +6,7 @@
 import '../App.css'
 
 import logo from '../logo.svg'
+import joker from '../icons8-joker-64.png'
 
 import { useEffect, useState } from 'react'
 
@@ -240,25 +241,7 @@ export default function VierGewinnt() {
           </div>
         </div>
 
-        {/*         <Slide in={true} direction="up" duration= {1000} unmountOnExit 
-          sx={{ transition: "transform 3000ms ease" }}
-          > 
-          <div className="panel">Hello Slide 👋</div>
-        </Slide> */}
-
-        {/*         <Stack direction="row">
-          <Box sx={{
-            display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-            bgcolor: 'tertiary.light', flexDirection: 'row',
-            width: '200rem', margin: 1
-          }}>
-            <Slide container='' in={true} direction="up">
-              <div className="panel">Hello Slide 👋</div>
-            </Slide>
-          </Box>
-        </Stack> */}
-
-        <div className="row bg-secondary rounded shadow">
+        <div className="row bg-primary border border-1 border-black shadow rounded">
           <div className="col rounded-1">
             <p>col01</p>
             <Box sx={{
@@ -279,32 +262,57 @@ export default function VierGewinnt() {
                   e.dataTransfer.effectAllowed = "move";
                 }}
               >
-                <p id='idDragP' draggable={true}>Drag me!</p>
+                <p id='idDragP'draggable={true}>Drag me!</p>
               </Box>
             </div>
           </div>
 
-          {/* dragtarget, use <DndContext></DndContext>? */}
-          <div className="col rounded-1">
-            <div id="idDndTarget"
+          {/* droptarget, use <DndContext></DndContext>? */}
+          <div className="col border border-1 border-black shadow rounded-2">
+            <div
+              className="col mt-2 bg-warning-subtle border border-1 border-black shadow rounded-1"
+              id="idDndTarget"
               onDrop={drop}
               onDragOver={allowDrop}>
-              div droptarget
-              <p>p droptarget</p>
+              Droptarget div
+            </div>
+            <div id="idDndTarget"
+              className="col mt-2 bg-warning-subtle border border-1 border-black shadow rounded-1"
+              onDrop={drop}
+              onDragOver={allowDrop}>
+              <p className="bg-primary-subtle">Droptarget p</p>
             </div>
           </div>
 
-          <div className="col rounded-1">
-            <p>col03</p>
+          <div className="col rounded-1 border-info">
+            <p>Choose a Logo to drag</p>
 
             <img id="img1"
-              src="img_logo.gif"
+              src={joker}
+              // className="App-logo"
               draggable={true}
               onDragStart={dragStart}
-              width="336"
-              height="69"
-              alt='img broken'>
-            </img>
+              width="50"
+              height="50"
+              alt="React logo" />
+
+            <img id="img2"
+              src={logo}
+              // className="App-logo"
+              draggable={true}
+              onDragStart={dragStart}
+              width="300"
+              height="50"
+              alt="React logo" />
+
+            <img id="img3"
+              src={logo}
+              // className="App-logo"
+              draggable={true}
+              onDragStart={dragStart}
+              width="300"
+              height="50"
+              alt="React logo" />
 
             <div id="div1"
               onDrop={drop}
@@ -312,7 +320,6 @@ export default function VierGewinnt() {
               div dnd target
             </div>
           </div>
-
         </div>
       </main >
 
