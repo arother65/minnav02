@@ -7,7 +7,9 @@
 */
 
 import { useState } from 'react'
-import '../../src/App.css'
+// import '../../src/App.css'
+import '../App.css'
+
 import { ToastContainer, toast } from 'react-toastify'
 
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material"
@@ -83,7 +85,12 @@ export default function Home({ skeletonOn, setSkeletonOn }) {
 
          <main id="idMainHome" className="App-main">
             {/* main column with a few rows */}
-            <Container>
+
+            {/*             <Grid sx={{ mt: 10, border: '3px solid yellow' }}>
+               <p>outer grid</p>
+            </Grid> */}
+
+            <Container disableGutters={true} sx={{ mt: 10 }}>
                <Stack spacing={1} sx={{ width: '100%', border: '3px dashed red', flexDirection: 'col', justifyContent: 'center' }}>
                   <Stack direction="row" spacing={2} sx={{ width: '100%', border: '3px dashed grey', flexDirection: 'row', justifyContent: 'center' }}
                   >
@@ -218,6 +225,37 @@ export default function Home({ skeletonOn, setSkeletonOn }) {
                      </Box>
                   </Stack>
                }
+
+               <Container sx={{ mt: 1, border: 1, borderColor: 'error.main', borderRadius: 2 }}>
+                  <p>text on inner container</p>
+                  <Stack spacing={1}
+                     sx={{ width: '100%', flexDirection: 'row', justifyContent: 'center', border: 1, borderColor: 'error.light', borderRadius: 2 }}>
+                     <p>text in Stack ROW</p>
+                     <Stack spacing={1}
+                        sx={{ width: '100%', flexDirection: 'col', justifyContent: 'center', border: 1, borderColor: 'primary.dark', borderRadius: 2 }}>
+                        <p>text in Stack COL</p>
+                     </Stack>
+                     <Stack spacing={1}
+                        sx={{ width: '100%', flexDirection: 'col', justifyContent: 'center', border: 1, borderColor: 'primary.dark', borderRadius: 2 }}>
+                        <p>text in Stack COL</p>
+                     </Stack>
+                  </Stack>
+
+                  <Stack spacing={1}
+                     sx={{ width: '100%', flexDirection: 'col', justifyContent: 'center', border: 1, borderColor: 'primary.main', borderRadius: 2 }}>
+                     <p>text in Stack COL</p>
+                  </Stack>
+               </Container>
+
+               <div className="row border shadow">
+                  <p>text in bs-row</p>
+                  <div className="col border shadow">
+                     <p>p in bs-col</p>
+                  </div>
+                  <div className="col border shadow">
+                     <p>p in bs-col</p>
+                  </div>
+               </div>
             </Container>
          </main>
 

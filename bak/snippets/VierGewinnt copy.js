@@ -18,7 +18,7 @@ import { red, purple } from '@mui/material/colors'
 import HomeIcon from '@mui/icons-material/Home'
 
 // 
-import Footer from '../components/Footer'
+import Footer from '../../src/components/Footer'
 
 //
 export default function VierGewinnt() {

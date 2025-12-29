@@ -174,15 +174,15 @@ export default function AppBarTop() {
                         // handleNavigate4gewinnt('/VierGewinnt')
                         // setLoading(true)
                         fnNavigate('/VierGewinnt', {})
-                     }, 2000)
+                     }, 1000)
                      setLoading(true)
                   }}>
                   Vier gewinnt
                </MenuItem>
 
-               <Backdrop open={loading} sx={{ zIndex: 1300 }} onClick={() => { setLoading(false) }}>
+               <Backdrop open={loading} sx={{ zIndex: 500 }} onClick={() => { setLoading(false) }}>
                   <Box sx={{ display: 'flex' }}>
-                     <CircularProgress color="success" sx={{ position: 'fixed' }} />
+                     <CircularProgress color="midnightblue" sx={{ position: 'fixed' }} />
                   </Box>
                </Backdrop>
 
