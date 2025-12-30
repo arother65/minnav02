@@ -12,11 +12,11 @@ import kreuzAs from '../icons8-kreuzass-64.png'
 import { useEffect, useState } from 'react'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Avatar, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Toolbar, Tooltip } from '@mui/material'
+import { AppBar, Avatar, Box, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Toolbar, Tooltip } from '@mui/material'
 // import Slide from '@mui/material/Slide'
 
 // colors, icons 
-import { red, purple } from '@mui/material/colors'
+import { blue, red, purple } from '@mui/material/colors'
 import HomeIcon from '@mui/icons-material/Home'
 
 // 
@@ -89,19 +89,26 @@ export default function VierGewinnt() {
    // const theme = useTheme()
 
    // drag&drop handling
-   function drop(event) {
+   function fnDrop(event) {
       event.preventDefault();
 
       let data = event.dataTransfer.getData("text/plain");
       console.log(data); //
       event.target.appendChild(document.getElementById(data));
-   }
 
-   function dragStart(event) {
+      // idCntrDrops : Zähler hochsetzen
+      let cntDrops = document.getElementById('idCntrDrops')
+      let actCount = Number(cntDrops.innerText)
+      actCount++
+      cntDrops.innerText = actCount
+
+   }  // fnDrop(event) 
+
+   function fnDragStart(event) {
       event.dataTransfer.setData("text/plain", event.target.id);  // text/html || text/plain
-   }
+   }  // fnDragStart()
 
-   function allowDrop(event) {
+   function fnAllowDrop(event) {
       event.preventDefault();
    }
 
@@ -243,56 +250,72 @@ export default function VierGewinnt() {
             </div>
 
             <div className="row bg-primary border border-1 border-black shadow rounded">
-               <div className="col rounded-1">
+               <div className="col bg-secondary rounded-1">
                   <p>col01</p>
-                  <Box sx={{
-                     display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-                     bgcolor: 'primary.light',
-                  }}>
+                  <Box className="m-1"
+                     sx={{
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        bgcolor: 'primary.light',
+                     }}>
                      <p>box in col01</p>
                   </Box>
-
-                  <div>
-                     <Box id="idDndSource"
-                        component="div"
-                        draggable={true}
-                        // ondrag="dragging(event)"
-                        // onDragStart={dragStart}
-                        onDragStart={(e) => {
-                           e.dataTransfer.setData("text/plain", 'idDragP');
-                           e.dataTransfer.effectAllowed = "move";
-                        }}
-                     >
-                        <p id='idDragP' draggable={true}>Drag me!</p>
-                     </Box>
-                  </div>
+                  <Box id="idDndSource"
+                     className="m-1"
+                     draggable={true}
+                     // ondrag="dragging(event)"
+                     // onDragStart={fnDragStart}
+                     onDragStart={(e) => {
+                        e.dataTransfer.setData("text/plain", 'idDndSource');
+                        e.dataTransfer.effectAllowed = "move";
+                     }}
+                     sx={{
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        bgcolor: 'primary.light',
+                     }}
+                  > draggable BOX with p-tag
+                     <p id='idDragP' draggable={true}> p-tag</p>
+                  </Box>
                </div>
 
                {/* droptarget, use <DndContext></DndContext>? */}
                <div className="col border border-1 border-black shadow rounded-2">
-                  <div
-                     className="col mt-2 bg-warning-subtle border border-1 border-black shadow rounded-1"
-                     id="idDndTarget"
-                     onDrop={drop}
-                     onDragOver={allowDrop}>
-                     Droptarget div
-                  </div>
-                  <div id="idDndTarget"
-                     className="col mt-2 bg-warning-subtle border border-1 border-black shadow rounded-1"
-                     onDrop={drop}
-                     onDragOver={allowDrop}>
-                     <p className="bg-primary-subtle">Droptarget p</p>
+                  <div className="row">
+                     <div
+                        className="col mt-2 border border-1 border-black shadow rounded-1"
+                        id="idDndTarget"
+                        onDrop={fnDrop}
+                        onDragOver={fnAllowDrop}>
+                        Droptarget div
+                     </div>
+                     <div className="col mt-2 bg-secondary border shadow rounded-1">
+                        <p>Drop Counter</p>
+                        {/* <Avatar id='idCntrDrops'>0</Avatar> */}
+                        <Chip avatar={
+                           <Avatar
+                              id='idCntrDrops'
+                              sx={{ bgcolor: purple[200] }}>
+                              0
+                           </Avatar>
+                        }
+                           sx={{ m: 1}}
+                           label="Drop count" color="error" />
+                     </div>
+                     <div id="idDndTarget"
+                        className="col mt-2 border border-1 border-black shadow rounded-1"
+                        onDrop={fnDrop}
+                        onDragOver={fnAllowDrop}>
+                        <p className="bg-primary">Droptarget p</p>
+                     </div>
                   </div>
                </div>
 
                <div className="col rounded-1 border-info">
                   <p>Choose a Logo to drag</p>
-
                   <img id="img1"
                      src={joker}
                      // className="App-logo"
                      draggable={true}
-                     onDragStart={dragStart}
+                     onDragStart={fnDragStart}
                      width="50"
                      height="50"
                      alt="React logo" />
@@ -301,7 +324,7 @@ export default function VierGewinnt() {
                      src={kreuzAs}
                      // className="App-logo"
                      draggable={true}
-                     onDragStart={dragStart}
+                     onDragStart={fnDragStart}
                      width="50"
                      height="50"
                      alt="React logo" />
@@ -310,14 +333,14 @@ export default function VierGewinnt() {
                      src={logo}
                      // className="App-logo"
                      draggable={true}
-                     onDragStart={dragStart}
+                     onDragStart={fnDragStart}
                      width="300"
                      height="50"
                      alt="React logo" />
 
                   <div id="div1"
-                     onDrop={drop}
-                     onDragOver={allowDrop}>
+                     onDrop={fnDrop}
+                     onDragOver={fnAllowDrop}>
                      div dnd target
                   </div>
                </div>

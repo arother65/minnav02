@@ -54,9 +54,12 @@ $tertiary: #ba000d;  //  */
 [data-bs-theme=custom] {
     --bs-body-color: var(--bs-white);
     // --bs-body-color-rgb: #{to-rgb($white)};
- 
-    --bs-body-bg: var(--bs-orange);
-    // --bs-body-bg-rgb: #{to-rgb($blue)};
 
-    --bs-tertiary-bg: #{$orange-500};
+    // --bs-body-bg: var(--bs-red);
+    // --bs-body-bg-rgb: #{to-rgb($orange)};  // or use #{mix($blue-500, $blue-600)}
+
+    // #{darken(mix($gray-600, $blue-400, .5), 5%)};
+    --bs-body-bg: #{mix($blue-900, $red-500, 75%)};
+
+    // --bs-tertiary-bg: #{$orange-500};
 }

@@ -11886,8 +11886,7 @@ textarea.form-control-lg {
 
 [data-bs-theme=custom] {
   --bs-body-color: var(--bs-white);
-  --bs-body-bg: var(--bs-orange);
-  --bs-tertiary-bg: #fd7e14;
+  --bs-body-bg: rgb(56.95, 29.75, 55.2);
 }
 
 /*# sourceMappingURL=BootstrapCarousel.css.map */
