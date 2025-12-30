@@ -183,12 +183,16 @@ export default function VierGewinnt() {
 
             {/* https://mui.com/system/getting-started/the-sx-prop/ */}
 
+            {/* row with cols for players */}
             <div className="row mt-5">
+               {/* Player 1 */}
                <div className="col">
-                  <Box sx={{
-                     display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-                     bgcolor: 'primary.light', m: 1
-                  }}>
+                  <Box
+                     className="Player1-animate"
+                     sx={{
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        bgcolor: 'primary.light', m: 1
+                     }}>
                      <h6>Player 1</h6>
                      <>
                         {Array.from({ ...noCoins }).map((_, i) => (
@@ -231,11 +235,14 @@ export default function VierGewinnt() {
                   </Box>
                </div>
 
+               {/* Player 2 */}
                <div className="col">
-                  <Box sx={{
-                     display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-                     bgcolor: 'secondary.light', m: 1
-                  }}>
+                  <Box
+                     className="Player2-animate"
+                     sx={{
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        bgcolor: 'secondary.light', m: 1
+                     }}>
                      <h6>Player 2</h6>
                      <>
                         {Array.from({ ...noCoins }).map((_, i) => (
@@ -252,6 +259,7 @@ export default function VierGewinnt() {
             </div>
 
             <div className="row bg-primary border border-1 border-black shadow rounded">
+               {/* drop-source */}
                <div className="col bg-secondary rounded-1">
                   <p>col01</p>
                   <Box className="m-1"

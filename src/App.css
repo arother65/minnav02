@@ -24,28 +24,74 @@
   }
 }
 
-/*
-* Animation for MUI-Component on view "VierGewinnt"
-*/
+/* Animation for MUI-Component "Avatar" on view "VierGewinnt */
 .Avatar-animate {
   pointer-events: none;
 }
 
 @keyframes Avatar-spin {
   from {
-    background-color: darkslategray;
-    transform: rotate(0deg);
+    background-color: darkred;
+    /* transform: rotate(0deg); */
+    transform: translateX(-25px);
   }
 
   to {
-    background-color: white;
-    transform: rotate(360deg);
+    background-color: lightsalmon;
+    /* transform: rotate(360deg); */
+    transform: translateX(0px);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .Avatar-animate {
     animation: Avatar-spin alternate 3s linear;
+  }
+}
+
+/* Animation for MUI-Component "Box" (Player1-animate) on view "VierGewinnt */
+.Player1-animate {
+  pointer-events: none;
+}
+@keyframes Player1-translate {
+  from {
+    background-color: darkred;
+    /* transform: rotate(0deg); */
+    transform: translateX(-100px);
+  }
+
+  to {
+    background-color: lightsalmon;
+    /* transform: rotate(360deg); */
+    transform: translateX(0px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .Player1-animate {
+    animation: Player1-translate alternate 1s linear;
+  }
+}
+
+/* Animation for MUI-Component "Box" (Player2-animate) on view "VierGewinnt */
+.Player2-animate {
+  pointer-events: none;
+}
+@keyframes Player2-translate {
+  from {
+    background-color: darkred;
+    /* transform: rotate(0deg); */
+    transform: translateX(100px);
+  }
+
+  to {
+    background-color: lightsalmon;
+    /* transform: rotate(360deg); */
+    transform: translateX(0px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .Player2-animate {
+    animation: Player2-translate alternate 1s linear;
   }
 }
 
