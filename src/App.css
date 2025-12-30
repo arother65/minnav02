@@ -2,6 +2,7 @@
   text-align: center;
 }
 
+/* Animation for App-logo*/
 .App-logo {
   height: 50px;
   pointer-events: none;
@@ -23,6 +24,32 @@
   }
 }
 
+/*
+* Animation for MUI-Component on view "VierGewinnt"
+*/
+.Avatar-animate {
+  pointer-events: none;
+}
+
+@keyframes Avatar-spin {
+  from {
+    background-color: darkslategray;
+    transform: rotate(0deg);
+  }
+
+  to {
+    background-color: white;
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Avatar-animate {
+    animation: Avatar-spin alternate 3s linear;
+  }
+}
+
+/*  */
 .App-header {
   background-color: rgba(40, 45, 60, 0.95);
   min-height: fit-content;
@@ -36,8 +63,8 @@
 
 .App-main {
   /* background-color: rgba(140, 145, 160, 0.95); */
-  background-color: #3f50b5; 
-  
+  background-color: #3f50b5;
+
   min-height: 500px;
   display: flex;
   flex-direction: row;
@@ -61,7 +88,7 @@
 .App-footer {
   background-color: rgba(40, 45, 60, 0.85);
   min-height: fit-content;
-  
+
   display: flow-root;
   flex-direction: row;
   align-items: center;
@@ -85,8 +112,8 @@
 .AppContainer {
   /* background-color: rgba(200, 0, 100, 0.5); */
 
-  /* https://mui.com/material-ui/customization/color/; value taken from MUI-color scheme */ 
-  background-color: #3f50b5;  
+  /* https://mui.com/material-ui/customization/color/; value taken from MUI-color scheme */
+  background-color: #3f50b5;
   /* background-color: color-mix(white, blue);  // errs */
 
   padding: 20px;

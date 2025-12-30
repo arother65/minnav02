@@ -139,6 +139,8 @@ export default function VierGewinnt() {
                      <nav>
                         <a href="https://reactnative.dev/" rel='noreferrer' target='_blank'>
                            <img src={logo} className="App-logo" alt="logo" />
+
+                           {/* <img src={logo} className="App.logo.animation" alt="logo" /> errs*/}
                         </a>
                      </nav>
                   </Tooltip>
@@ -293,11 +295,12 @@ export default function VierGewinnt() {
                         <Chip avatar={
                            <Avatar
                               id='idCntrDrops'
+                              className='Avatar-animate'
                               sx={{ bgcolor: purple[200] }}>
                               0
                            </Avatar>
                         }
-                           sx={{ m: 1}}
+                           sx={{ m: 1 }}
                            label="Drop count" color="error" />
                      </div>
                      <div id="idDndTarget"
