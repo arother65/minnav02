@@ -86,10 +86,6 @@ export default function Home({ skeletonOn, setSkeletonOn }) {
          <main id="idMainHome" className="App-main">
             {/* main column with a few rows */}
 
-            {/*             <Grid sx={{ mt: 10, border: '3px solid yellow' }}>
-               <p>outer grid</p>
-            </Grid> */}
-
             <Container disableGutters={true} sx={{ mt: 10 }}>
                <Stack spacing={1} sx={{ width: '100%', border: '3px dashed red', flexDirection: 'col', justifyContent: 'center' }}>
                   <Stack direction="row" spacing={2} sx={{ width: '100%', border: '3px dashed grey', flexDirection: 'row', justifyContent: 'center' }}

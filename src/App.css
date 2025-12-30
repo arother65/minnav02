@@ -35,14 +35,16 @@
 }
 
 .App-main {
-  background-color: rgba(140, 145, 160, 0.95);
+  /* background-color: rgba(140, 145, 160, 0.95); */
+  background-color: #3f50b5; 
+  
   min-height: 500px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: darkslategrey;
+  color: darkgrey;
 }
 
 .App-main-red {
@@ -81,8 +83,10 @@
 }
 
 .AppContainer {
-  background-color: rgba(200, 0, 100, 0.5);
+  /* background-color: rgba(200, 0, 100, 0.5); */
 
+  /* https://mui.com/material-ui/customization/color/; value taken from MUI-color scheme */ 
+  background-color: #3f50b5;  
   /* background-color: color-mix(white, blue);  // errs */
 
   padding: 20px;

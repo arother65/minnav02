@@ -1,5 +1,7 @@
 
+// created with util SASS from SCSS-source code
 import './BootstrapCarousel.css'
+
 import logo192 from '../carouselPics/logo192.png'
 import flagDE334px200px from '../carouselPics/flagDE334px200px.png'
 import Tooltip from '@mui/material/Tooltip'
@@ -18,6 +20,7 @@ export default function BootstrapCarousel() {
             direction="row"
             spacing={1}
             sx={{ width: '100%', border: '3px dashed grey', flexDirection: 'row', justifyContent: 'center' }}>
+            
             <Tooltip title='Carousel01 made with Bootstrap'>
                <div id="idCarousel01" className="carousel slide border border-success-subtle">
                   <div className="carousel-indicators">
@@ -60,6 +63,9 @@ export default function BootstrapCarousel() {
                </div>
             </Tooltip>
          </Stack>
+
+         {/* using a overridden color "$primary" from SCSS-file: no effect */}
+         <div className="row border bg-primary shadow-lg"><p>bg-primary</p></div>
 
          <Stack
             direction="row"

@@ -1,4 +1,7 @@
 @charset "UTF-8";
+/* $primary: #f44336;  // 
+$secondary: #ff7961;  // 
+$tertiary: #ba000d;  //  */
 /*!
  * Bootstrap  v5.3.8 (https://getbootstrap.com/)
  * Copyright 2011-2025 The Bootstrap Authors
@@ -11858,6 +11861,33 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+[data-bs-theme=blue] {
+  --bs-body-color: var(--bs-white);
+  --bs-body-color-rgb: 255, 255, 255;
+  --bs-body-bg: var(--bs-blue);
+  --bs-body-bg-rgb: 13, 110, 253;
+  --bs-tertiary-bg: rgb(10.4, 88, 202.4);
+  /*   .dropdown-menu {
+    --bs-dropdown-bg: rgb(11.7, 99, 227.7);
+    --bs-dropdown-link-active-bg: rgb(7.8, 66, 151.8);
+  } */
+  /*   .btn-secondary {
+    --bs-btn-bg: rgb(61.633, 138.89, 252.758);
+    --bs-btn-border-color: rgba(255, 255, 255, 0.25);
+    --bs-btn-hover-bg: rgb(36.425271828, 123.7536565802, 252.465728172);
+    --bs-btn-hover-border-color: rgba(255, 255, 255, 0.25);
+    --bs-btn-active-bg: rgb(11.217543656, 108.6173131604, 252.173456344);
+    --bs-btn-active-border-color: rgba(255, 255, 255, 0.5);
+    --bs-btn-focus-border-color: rgba(255, 255, 255, 0.5);
+    --bs-btn-focus-box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .2);
+  } */
+}
+
+[data-bs-theme=custom] {
+  --bs-body-color: var(--bs-white);
+  --bs-body-bg: var(--bs-orange);
+  --bs-tertiary-bg: #fd7e14;
 }
 
 /*# sourceMappingURL=BootstrapCarousel.css.map */
