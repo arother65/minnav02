@@ -57,7 +57,7 @@
   from {
     background-color: darkred;
     /* transform: rotate(0deg); */
-    transform: translateX(-100px);
+    transform: translateX(-200px);
   }
 
   to {
@@ -80,7 +80,7 @@
   from {
     background-color: darkred;
     /* transform: rotate(0deg); */
-    transform: translateX(100px);
+    transform: translateX(200px);
   }
 
   to {
@@ -134,7 +134,6 @@
 .App-footer {
   background-color: rgba(40, 45, 60, 0.85);
   min-height: fit-content;
-
   display: flow-root;
   flex-direction: row;
   align-items: center;

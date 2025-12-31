@@ -6,7 +6,7 @@
 import '../App.css'
 
 import logo from '../logo.svg'
-import joker from '../icons8-joker-64.png'
+import Joker from '../icons8-joker-64.png'
 import kreuzAs from '../icons8-kreuzass-64.png'
 
 import { useEffect, useState } from 'react'
@@ -79,7 +79,7 @@ export default function VierGewinnt() {
       setCoinValue(getRandomCoinValue())
       console.log('coinValue after: ', coinValue)
 
-      // noObjects
+      //
       setNoObjects(e.target.value)
 
       noCoins.length = e.target.value
@@ -135,7 +135,7 @@ export default function VierGewinnt() {
                         <HomeIcon sx={{ color: 'green' }} />
                      </IconButton>
                   </Tooltip>
-                  <Tooltip title='ReactJS home' arrow >
+                  <Tooltip title='ReactcolIndexS home' arrow >
                      <nav>
                         <a href="https://reactnative.dev/" rel='noreferrer' target='_blank'>
                            <img src={logo} className="App-logo" alt="logo" />
@@ -190,43 +190,15 @@ export default function VierGewinnt() {
                   <Box
                      className="Player1-animate"
                      sx={{
-                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light', m: 1
                      }}>
                      <h6>Player 1</h6>
                      <>
                         {Array.from({ ...noCoins }).map((_, i) => (
-                           /*               <Box
-                                           key={i}
-                                           sx={{
-                                             width: 50,
-                                             height: 50,
-                                             bgcolor: 'primary.main',
-                                             color: 'white',
-                                             display: 'flex',
-                                             alignItems: 'center',
-                                             justifyContent: 'center',
-                                             borderRadius: 10,
-                                           }}
-                                         >
-                                           {i + 1}
-                                         </Box> */
-
                            <div key={i} >
                               <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
                                  {coinValue}
-                                 {/* {() => {
-                    let actCoinValue = 1
-                    for (let i = 0; i < noCoins; i++) {
-                      actCoinValue = Math.random() * 10
-                      actCoinValue = Math.floor(actCoinValue)
-
-                      if (actCoinValue > 0) {
-                        setCoinValue(actCoinValue)  // overrides initial value
-                      }
-                    }
-                  }}   // not valid as a react child 
-                  */}
                               </Avatar>
                            </div>
                         ))  // map()
@@ -240,7 +212,7 @@ export default function VierGewinnt() {
                   <Box
                      className="Player2-animate"
                      sx={{
-                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'secondary.light', m: 1
                      }}>
                      <h6>Player 2</h6>
@@ -258,13 +230,39 @@ export default function VierGewinnt() {
                </div>
             </div>
 
+            {/* Spielfeld */}
+            <>
+               {Array.from({ length: 4 }).map((_, rowIndex) => (
+                  <div key={rowIndex} className="row mt-1 border border-1 border-info">
+                     {/* <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
+                           {coinValue}
+                        </Avatar> */}
+                     <p>row {rowIndex}</p>
+
+                     {Array.from({ length: 4 }).map((_, colIndex) => (
+                        <div key={colIndex} className="col mt-1 border border-1 border-warning">
+                           {/*                         <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
+                           {coinValue}
+                        </Avatar> */}
+                           {/* <p>row {}</p> */}
+                           <p>col {colIndex}</p>
+                        </div>
+                     ))  // map()
+                     }  {/* Array.from() erzeugt Spalten*/}
+                  </div>
+               ))  // map()
+
+               }  {/* Array.from() erzeugt Zeilen*/}
+            </>
+
+            {/* test bs row/col */}
             <div className="row bg-primary border border-1 border-black shadow rounded">
                {/* drop-source */}
                <div className="col bg-secondary rounded-1">
                   <p>col01</p>
                   <Box className="m-1"
                      sx={{
-                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light',
                      }}>
                      <p>box in col01</p>
@@ -279,7 +277,7 @@ export default function VierGewinnt() {
                         e.dataTransfer.effectAllowed = "move";
                      }}
                      sx={{
-                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light',
                      }}
                   > draggable BOX with p-tag
@@ -323,7 +321,7 @@ export default function VierGewinnt() {
                <div className="col rounded-1 border-info">
                   <p>Choose a Logo to drag</p>
                   <img id="img1"
-                     src={joker}
+                     src={Joker}
                      // className="App-logo"
                      draggable={true}
                      onDragStart={fnDragStart}
