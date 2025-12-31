@@ -4,16 +4,16 @@
 
 // imports
 import '../App.css'
-
 import logo from '../logo.svg'
 import Joker from '../icons8-joker-64.png'
 import kreuzAs from '../icons8-kreuzass-64.png'
 
+//
 import { useEffect, useState } from 'react'
-
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Avatar, Box, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Toolbar, Tooltip } from '@mui/material'
 // import Slide from '@mui/material/Slide'
+import { useDraggable, DndContext } from "@dnd-kit/core"
 
 // colors, icons 
 import { blue, red, purple } from '@mui/material/colors'
@@ -112,6 +112,9 @@ export default function VierGewinnt() {
       event.preventDefault();
    }
 
+   // attempt to make Box draggable: 
+   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable(1);  // id?
+
    // 
    return (
       <>
@@ -193,17 +196,44 @@ export default function VierGewinnt() {
                         display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light', m: 1
                      }}>
-                     <h6>Player 1</h6>
-                     <>
-                        {Array.from({ ...noCoins }).map((_, i) => (
-                           <div key={i} >
-                              <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
+                     <h6 draggable={false}>Player 1</h6>
+                     {/* <div draggable={false}> */}
+                     {Array.from({ ...noCoins }).map((_, i) => (
+                        <div key={i} draggable={true}>
+                           <DndContext
+                              onDragStart={(e) => {
+                                 e.dataTransfer.setData("text/plain", i);
+                                 e.dataTransfer.effectAllowed = "move";
+                              }}
+                              onDragEnd={(event) => {
+                                 const { over, active } = event;
+                                 if (over) {
+                                    console.log(`Avatar ${active.id} dropped on ${over.id}`);
+                                 }
+                              }}>
+                              <Box
+                                 id={i}
+                                 key={i}
+                                 // component={'div'}  //?
+                                 // ref={'div'}  // typeof React.ref 
+                                 ref={setNodeRef(Box)}
+                                 draggable={true}
+                                 sx={{ width: 20, height: 20, bgcolor: red[900], margin: 1 }}
+                                 aria-label="coin"
+                                 /*                                  onDragStart={(e) => {
+                                                                     e.dataTransfer.setData("text/plain", i);
+                                                                     e.dataTransfer.effectAllowed = "move";
+                                                                  }} */
+                                 {...listeners}
+                                 {...attributes}
+                              >
                                  {coinValue}
-                              </Avatar>
-                           </div>
-                        ))  // map()
-                        }  {/* Array.from() */}
-                     </>
+                              </Box>
+                           </DndContext>
+                        </div>
+                     ))  // map()
+                     }  {/* Array.from() */}
+                     {/* </div> */}
                   </Box>
                </div>
 
@@ -234,25 +264,17 @@ export default function VierGewinnt() {
             <>
                {Array.from({ length: 4 }).map((_, rowIndex) => (
                   <div key={rowIndex} className="row mt-1 border border-1 border-info">
-                     {/* <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
-                           {coinValue}
-                        </Avatar> */}
                      <p>row {rowIndex}</p>
 
                      {Array.from({ length: 4 }).map((_, colIndex) => (
                         <div key={colIndex} className="col mt-1 border border-1 border-warning">
-                           {/*                         <Avatar sx={{ bgcolor: red[900], margin: 1 }} aria-label="coin">
-                           {coinValue}
-                        </Avatar> */}
-                           {/* <p>row {}</p> */}
                            <p>col {colIndex}</p>
                         </div>
                      ))  // map()
-                     }  {/* Array.from() erzeugt Spalten*/}
+                     }  {/* erzeugt Spalten*/}
                   </div>
                ))  // map()
-
-               }  {/* Array.from() erzeugt Zeilen*/}
+               }  {/* erzeugt Zeilen*/}
             </>
 
             {/* test bs row/col */}
