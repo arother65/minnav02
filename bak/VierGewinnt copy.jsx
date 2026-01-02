@@ -9,25 +9,9 @@ import Joker from '../icons8-joker-64.png'
 import kreuzAs from '../icons8-kreuzass-64.png'
 
 //
-import { Children, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Avatar, Box, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Toolbar, Tooltip } from '@mui/material'
-// import Slide from '@mui/material/Slide'
-
-import {
-   useDraggable,
-   useDroppable,
-   DndContext,
-   DragOverlay,
-   PointerSensor,
-   useSensor,
-   useSensors,
-   useDndMonitor,
-   MouseSensor,
-}
-   from "@dnd-kit/core"
-
-import { CSS } from "@dnd-kit/utilities";
 
 // colors, icons 
 import { blue, red, purple } from '@mui/material/colors'
@@ -103,13 +87,6 @@ export default function VierGewinnt() {
    // const theme = useTheme()
 
    //* drag&drop handling
-   const mouseSensor = useSensor(MouseSensor,
-      { // Require the mouse to move by 10 pixels before activating
-         activationConstraint: {
-            distance: 5
-         }
-      })
-   const actSensors = useSensors(mouseSensor)
 
    function fnDrop(event) {
       event.preventDefault();
@@ -152,78 +129,9 @@ export default function VierGewinnt() {
       event.preventDefault();
    }
 
-   // attempt to make Box draggable: 
-   // const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable('0');  // id?
-
-   function Coin({ id }) {
-      const { attributes, listeners, setNodeRef, transform } = useDraggable({ id })
-
-      console.log('function Coin: ', { ...listeners }, id)
-      // let { onPointerDown } = {...listeners}
-
-      return (
-         <div
-            id={id}
-            ref={setNodeRef}
-            {...listeners}
-            {...attributes}
-            className='border border-danger'
-            style={{
-               width: 50,
-               height: 50,
-               margin: 5,
-               background: "darkgreen",
-               borderRadius: "50%",
-               transform: CSS.Translate.toString(transform),
-               cursor: "grab",
-            }}
-         />
-      ) // return()
-   }  // Coin()
-
    const [activeId, setActiveId] = useState(null)
 
    // custom defined local Dnd-monitor-component
-   function DndMonitor() {
-      // Monitor drag and drop events that happen on the parent `DndContext` provider
-      useDndMonitor({
-         onDragStart(event) { console.log('DndMonitor():', event) },
-         onDragMove(event) { console.log('DndMonitor():', event) },
-         onDragOver(event) { console.log('DndMonitor():', event) },
-         onDragEnd(event) { console.log('DndMonitor():', event) },
-         onDragCancel(event) { console.log('DndMonitor():', event) },
-      })
-   }  // DndMonitor()
-
-   function Droppable(props) {
-      const { isOver, setNodeRef } = useDroppable({
-         id: 'droppable',
-      });
-      const style = {
-         color: isOver ? 'green' : undefined,
-      };
-
-      return (
-         <div ref={setNodeRef} style={style}>
-            {props.children}
-         </div>
-      );
-   } // Droppable()
-
-   function Draggable(props) {
-      const { attributes, listeners, setNodeRef, transform } = useDraggable({
-         id: 'draggable',
-      });
-      const style = transform ? {
-         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      } : undefined;
-
-      return (
-         <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {props.children}
-         </button>
-      );
-   }  // Draggable()
 
    // 
    return (
@@ -300,55 +208,52 @@ export default function VierGewinnt() {
             <div className="row mt-5">
                {/* Player 1 */}
                <div className="col">
-                  <Box
+                  <h6>Player 1</h6>
+                  {/*                   <Box
                      className="Player1-animate"
                      sx={{
                         display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light', m: 1
                      }}>
-
                      <h6>Player 1</h6>
+                  </Box> */}
 
-                     <DndContext
-                        id='idDndContext'
-                        sensors={actSensors}
-                        onDragStart={(e) => {
-                           console.log('idDndContext: onDragStart()')
+                  <>
+                     <Avatar id="idCompPlayer1"
+                        draggable={true}
+                        onDragStart={fnDragStart}
+                        /*                         onDragStart={(e) => {
+                                                   e.dataTransfer.setData("text/plain", 'idCompPlayer1');
+                                                   e.dataTransfer.effectAllowed = "move";
+                                                }} */
+                        // className="Player1-animate"  // errs, no drag possible
 
-                           // setActiveId('Id-Coin-Init');  //?
-                           setActiveId(e.active.id);  //?
-
-                           let actEvent = e.activatorEvent  // typeof PointerEvent
-                           console.log(actEvent)
-                           e.active.data.current = 'Id-Coin-Init'
-
-                        }}
-                        onDragEnd={() => {
-                           setActiveId(null);
-                        }}
-                        onDragCancel={() => {
-                           setActiveId(null);
-                        }}
-                     >
-                        <Draggable props={'Id-Coin-Init'}/>
-                        <Droppable />
-                     </DndContext>
-                  </Box>
+                        sx={{
+                           display: 'flex', justifyContent: 'center', border: '1px dashed green', borderRadius: 5,
+                           bgcolor: 'primary.main', m: 1
+                        }}>
+                        {coinValue}
+                     </Avatar>
+                  </>
                </div>
 
                {/* Player 2 */}
                <div className="col">
                   <Box
-                     className="Player2-animate"
+                     // className="Player2-animate"
                      sx={{
-                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'secondary.light', m: 1
                      }}>
                      <h6>Player 2</h6>
                      <>
                         {Array.from({ ...noCoins }).map((_, i) => (
                            <div key={i} >
-                              <Avatar sx={{ bgcolor: purple[900], margin: 1 }} aria-label="coin">
+                              <Avatar 
+                                 id={i}
+                                 sx={{ bgcolor: purple[900], margin: 1 }} aria-label="coin"
+                                 draggable={true}
+                                 onDragStart={fnDragStart}>
                                  {coinValue}
                               </Avatar>
                            </div>
@@ -404,12 +309,12 @@ export default function VierGewinnt() {
                         display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light',
                      }}
-                  > draggable BOX with p-tag
-                     <p id='idDragP' draggable={true}> p-tag</p>
+                  > draggable BOX
+                     {/* <p id='idDragP' draggable={true}> p-tag</p> */}
                   </Box>
                </div>
 
-               {/* droptarget, use <DndContext></DndContext>? */}
+               {/* droptarget */}
                <div className="col border border-1 border-black shadow rounded-2">
                   <div className="row">
                      <div
