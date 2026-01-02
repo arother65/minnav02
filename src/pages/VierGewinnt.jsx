@@ -25,9 +25,8 @@ import Footer from '../components/Footer'
 export default function VierGewinnt() {
 
   // "hook"-functions
-  const [noObjects, setNoObjects] = useState(1)
   const [noCoins, setNoCoins] = useState({ length: 4 })  // used in Array.map() for #coins
-  const [coinValue, setCoinValue] = useState(1)
+  const [coinValue, setCoinValue] = useState(0)
 
   // 
   const getRandomCoinValue = () => {
@@ -43,8 +42,12 @@ export default function VierGewinnt() {
 
   // sets coinValue when view is first created
   useEffect(() => {
-    setCoinValue(getRandomCoinValue())  // overrides initial value
-  }, [coinValue])
+    const newCoinValue = getRandomCoinValue()
+    setCoinValue(newCoinValue)  // overrides initial value
+  },
+    // [coinValue]
+    []
+  )
 
   // creates a fn of type NavigateFunction
   const fnNavigate = useNavigate()
@@ -57,11 +60,15 @@ export default function VierGewinnt() {
     setCoinValue(getRandomCoinValue())
     console.log('coinValue after: ', coinValue)
 
-    //
-    setNoObjects(e.target.value)
-
     noCoins.length = e.target.value
-    setNoCoins(noCoins)
+    
+/*     //?  
+    useEffect(() => {
+      setNoCoins(noCoins)
+    },
+      [noCoins]
+    )
+ */    
   }  // handleNoObjects()
 
   //* drag&drop handling
@@ -76,37 +83,39 @@ export default function VierGewinnt() {
     let id = ''
     id = event.currentTarget.id
     let splittedID = id.split('-')
-    let row = splittedID[0]
-    let col = splittedID[1]
+    let rowId = splittedID[0]
+    let colId = splittedID[1]
 
-    // check this row-col in playGround
-    const cell = playGround[`row${row}`][`col${col}`]
+    // check if this row-col in playGround is already in use
+    const cell = playGround[`row${rowId}`][`col${colId}`]
     console.log(cell)
+
+    // check if row is already full
+    const row = playGround[`row${rowId}`]
+    console.log(row)
+
     if (cell.used === false) {
       cell.used = true
+
+      // add new node
+      let data = event.dataTransfer.getData("text/plain")
+      console.log(data);
+      event.target.appendChild(document.getElementById(data))
+
+      if (row.col0.used === true &&
+        row.col1.used === true &&
+        row.col2.used === true &&
+        row.col3.used === true
+      ) {
+        console.log('row full! ID: ', rowId)
+        event.stopPropagation()
+        return
+      }
+
     } else {
       event.stopPropagation()
       return
     }
-
-    let data = event.dataTransfer.getData("text/plain")
-    console.log(data);
-    // wenn data null || undefined => cancelDrop()
-
-    event.target.appendChild(document.getElementById(data))
-
-    // idCntrDrops : Zähler hochsetzen
-    let cntDrops = document.getElementById('idCntrDrops')
-    let actCount = Number(cntDrops.innerText)
-    actCount++
-    cntDrops.innerText = actCount
-
-    // färben des drop target
-    let dndTarget01 = document.getElementById('idDndTarget01')
-    let classList = dndTarget01.getAttribute('class')
-    classList = classList.concat(classList, ' ', 'bg-success')  //
-    dndTarget01.setAttribute('class', classList)
-
   }  // fnOnDrop(event) 
 
   function fnDragStart(event) {
@@ -125,6 +134,8 @@ export default function VierGewinnt() {
   const handleClose = (event) => {
     setAnchorEl(null)
     handleNoObjects(event)  // current MenuItem in: event.target.value
+    
+    // setNoCoins(event.target.value)
   }
 
   // common sx-object for all MenuItems used
@@ -136,9 +147,51 @@ export default function VierGewinnt() {
     }
   }  // 
 
-  // Aufbau des Spielfeldes, Verwaltung der bereits besetzten Positionen
+  // Aufbau des Spielfeldes, Verwaltung der bereits besetzten Positionen in "fnOnDrop()"
   let playGround = {
     row0: {
+      col0: {
+        used: false
+      },
+      col1: {
+        used: false
+      },
+      col2: {
+        used: false
+      },
+      col3: {
+        used: false
+      }
+    },
+    row1: {
+      col0: {
+        used: false
+      },
+      col1: {
+        used: false
+      },
+      col2: {
+        used: false
+      },
+      col3: {
+        used: false
+      }
+    },
+    row2: {
+      col0: {
+        used: false
+      },
+      col1: {
+        used: false
+      },
+      col2: {
+        used: false
+      },
+      col3: {
+        used: false
+      }
+    },
+    row3: {
       col0: {
         used: false
       },
@@ -210,12 +263,11 @@ export default function VierGewinnt() {
       </header>
 
       <main className="AppContainer">
-
         {/* https://mui.com/system/getting-started/the-sx-prop/ */}
 
-        {/* row with cols for players */}
+        {/* row with one col per player */}
         <div className="row mt-5">
-          {/* Player 1 */}
+          {/* col for Player 1 */}
           <div className="col">
             <Box
               sx={{
@@ -241,7 +293,7 @@ export default function VierGewinnt() {
             </Box>
           </div>
 
-          {/* Player 2 */}
+          {/* col for Player 2 */}
           <div className="col">
             <Box
               // className="Player2-animate"
@@ -268,7 +320,7 @@ export default function VierGewinnt() {
           </div>
         </div>
 
-        {/* Spielfeld */}
+        {/* Spielfeld, playGround */}
         <>
           {Array.from({ length: 4 }).map((_, rowIndex) => (
             <div key={rowIndex} className="row mt-1 border border-1 border-info" draggable={false}>
@@ -289,105 +341,6 @@ export default function VierGewinnt() {
           ))  // map()
           }  {/* erzeugt Zeilen*/}
         </>
-
-        {/* test bs row/col */}
-        <div className="row bg-primary border border-1 border-black shadow rounded">
-          {/* drop-source */}
-          <div className="col bg-secondary rounded-1">
-            <p>col01</p>
-            <Box className="m-1"
-              sx={{
-                display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-                bgcolor: 'primary.light',
-              }}>
-              <p>box in col01</p>
-            </Box>
-            <Box id="idDndSource"
-              className="m-1"
-              draggable={true}
-              // onDragStart={fnDragStart}
-              onDragStart={(e) => {
-                e.dataTransfer.setData("text/plain", 'idDndSource');
-                e.dataTransfer.effectAllowed = "move";
-              }}
-              sx={{
-                display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
-                bgcolor: 'primary.light',
-              }}
-            > draggable BOX
-              {/* <p id='idDragP' draggable={true}> p-tag</p> */}
-            </Box>
-          </div>
-
-          {/* droptarget */}
-          <div className="col border border-1 border-black shadow rounded-2">
-            <div className="row">
-              <div
-                className="col mt-2 border border-1 border-black shadow rounded-1"
-                id="idDndTarget01"
-                onDrop={fnOnDrop}
-                onDragOver={fnAllowDrop}>
-                Droptarget div
-              </div>
-              <div className="col mt-2 bg-secondary border shadow rounded-1">
-                <p>Drop Counter</p>
-                {/* <Avatar id='idCntrDrops'>0</Avatar> */}
-                <Chip avatar={
-                  <Avatar
-                    id='idCntrDrops'
-                    className='Avatar-animate'
-                    sx={{ bgcolor: purple[200] }}>
-                    0
-                  </Avatar>
-                }
-                  sx={{ m: 1 }}
-                  label="Drop count" color="error" />
-              </div>
-              <div id="idDndTarget02"
-                className="col mt-2 border border-1 border-black shadow rounded-1"
-                onDrop={fnOnDrop}
-                onDragOver={fnAllowDrop}>
-                <p className="bg-primary">Droptarget p</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="col rounded-1 border-info">
-            <p>Choose a Logo to drag</p>
-            <img id="img1"
-              src={Joker}
-              // className="App-logo"
-              draggable={true}
-              onDragStart={fnDragStart}
-              width="50"
-              height="50"
-              alt="React logo" />
-
-            <img id="img2"
-              src={kreuzAs}
-              // className="App-logo"
-              draggable={true}
-              onDragStart={fnDragStart}
-              width="50"
-              height="50"
-              alt="React logo" />
-
-            <img id="img3"
-              src={logo}
-              // className="App-logo"
-              draggable={true}
-              onDragStart={fnDragStart}
-              width="300"
-              height="50"
-              alt="React logo" />
-
-            <div id="div1"
-              onDrop={fnOnDrop}
-              onDragOver={fnAllowDrop}>
-              div dnd target
-            </div>
-          </div>
-        </div>
       </main >
 
       <footer className="App-footer" >
