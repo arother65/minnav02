@@ -114,12 +114,4 @@ LinkedIn: https://www.linkedin.com/in/andreas-rother-623a0930
 <a target="_blank" href="https://icons8.com/icon/95u9Z6qJ2Ipg/joker">Joker</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a>
 
 ## drag&drop
-<DndContext
-  onDragStart={handleDragStart}
-  onDragMove={handleDragMove}
-  onDragOver={handleDragOver}
-  onDragEnd={handleDragEnd}
-  onDragCancel={handleDragCancel}
->
-  {children}
-</DndContext>
+-- ?

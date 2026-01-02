@@ -1,5 +1,5 @@
 /*
-* 
+*  https://docs.dndkit.com/introduction/getting-started
 */
 
 // imports
@@ -12,8 +12,6 @@ import kreuzAs from '../icons8-kreuzass-64.png'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Avatar, Box, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Toolbar, Tooltip } from '@mui/material'
-// import Slide from '@mui/material/Slide'
-import { useDraggable, DndContext } from "@dnd-kit/core"
 
 // colors, icons 
 import { blue, red, purple } from '@mui/material/colors'
@@ -88,12 +86,16 @@ export default function VierGewinnt() {
 
    // const theme = useTheme()
 
-   // drag&drop handling
+   //* drag&drop handling
+
    function fnDrop(event) {
       event.preventDefault();
 
       let data = event.dataTransfer.getData("text/plain");
+
+      if (data === '') { data = 'Id-Coin-Init' }
       console.log(data); //
+
       event.target.appendChild(document.getElementById(data));
 
       // idCntrDrops : Zähler hochsetzen
@@ -102,8 +104,23 @@ export default function VierGewinnt() {
       actCount++
       cntDrops.innerText = actCount
 
+      // färben des drop target
+      let dndTarget01 = document.getElementById('idDndTarget01')
+      console.log(dndTarget01)
+
+      let classList = dndTarget01.getAttribute('class')
+      classList = classList.concat(classList, ' ', 'bg-success')  //
+      dndTarget01.setAttribute('class', classList)
+
    }  // fnDrop(event) 
 
+   /**
+    * Handles the drag start event for draggable elements.
+    * Sets the ID of the dragged element in the data transfer object.
+    * 
+    * @param {DragEvent} event - The drag event object
+    * @returns {void}
+    */
    function fnDragStart(event) {
       event.dataTransfer.setData("text/plain", event.target.id);  // text/html || text/plain
    }  // fnDragStart()
@@ -112,8 +129,9 @@ export default function VierGewinnt() {
       event.preventDefault();
    }
 
-   // attempt to make Box draggable: 
-   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable(1);  // id?
+   const [activeId, setActiveId] = useState(null)
+
+   // custom defined local Dnd-monitor-component
 
    // 
    return (
@@ -190,66 +208,52 @@ export default function VierGewinnt() {
             <div className="row mt-5">
                {/* Player 1 */}
                <div className="col">
-                  <Box
+                  <h6>Player 1</h6>
+                  {/*                   <Box
                      className="Player1-animate"
                      sx={{
                         display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light', m: 1
                      }}>
-                     <h6 draggable={false}>Player 1</h6>
-                     {/* <div draggable={false}> */}
-                     {Array.from({ ...noCoins }).map((_, i) => (
-                        <div key={i} draggable={true}>
-                           <DndContext
-                              onDragStart={(e) => {
-                                 e.dataTransfer.setData("text/plain", i);
-                                 e.dataTransfer.effectAllowed = "move";
-                              }}
-                              onDragEnd={(event) => {
-                                 const { over, active } = event;
-                                 if (over) {
-                                    console.log(`Avatar ${active.id} dropped on ${over.id}`);
-                                 }
-                              }}>
-                              <Box
-                                 id={i}
-                                 key={i}
-                                 // component={'div'}  //?
-                                 // ref={'div'}  // typeof React.ref 
-                                 ref={setNodeRef(Box)}
-                                 draggable={true}
-                                 sx={{ width: 20, height: 20, bgcolor: red[900], margin: 1 }}
-                                 aria-label="coin"
-                                 /*                                  onDragStart={(e) => {
-                                                                     e.dataTransfer.setData("text/plain", i);
-                                                                     e.dataTransfer.effectAllowed = "move";
-                                                                  }} */
-                                 {...listeners}
-                                 {...attributes}
-                              >
-                                 {coinValue}
-                              </Box>
-                           </DndContext>
-                        </div>
-                     ))  // map()
-                     }  {/* Array.from() */}
-                     {/* </div> */}
-                  </Box>
+                     <h6>Player 1</h6>
+                  </Box> */}
+
+                  <>
+                     <Avatar id="idCompPlayer1"
+                        draggable={true}
+                        onDragStart={fnDragStart}
+                        /*                         onDragStart={(e) => {
+                                                   e.dataTransfer.setData("text/plain", 'idCompPlayer1');
+                                                   e.dataTransfer.effectAllowed = "move";
+                                                }} */
+                        // className="Player1-animate"  // errs, no drag possible
+
+                        sx={{
+                           display: 'flex', justifyContent: 'center', border: '1px dashed green', borderRadius: 5,
+                           bgcolor: 'primary.main', m: 1
+                        }}>
+                        {coinValue}
+                     </Avatar>
+                  </>
                </div>
 
                {/* Player 2 */}
                <div className="col">
                   <Box
-                     className="Player2-animate"
+                     // className="Player2-animate"
                      sx={{
-                        display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
+                        display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'secondary.light', m: 1
                      }}>
                      <h6>Player 2</h6>
                      <>
                         {Array.from({ ...noCoins }).map((_, i) => (
                            <div key={i} >
-                              <Avatar sx={{ bgcolor: purple[900], margin: 1 }} aria-label="coin">
+                              <Avatar 
+                                 id={i}
+                                 sx={{ bgcolor: purple[900], margin: 1 }} aria-label="coin"
+                                 draggable={true}
+                                 onDragStart={fnDragStart}>
                                  {coinValue}
                               </Avatar>
                            </div>
@@ -267,7 +271,11 @@ export default function VierGewinnt() {
                      <p>row {rowIndex}</p>
 
                      {Array.from({ length: 4 }).map((_, colIndex) => (
-                        <div key={colIndex} className="col mt-1 border border-1 border-warning">
+                        <div key={colIndex}
+                           id={colIndex}
+                           className="col mt-1 border border-1 border-warning"
+                           onDrop={fnDrop}
+                           onDragOver={fnAllowDrop}>
                            <p>col {colIndex}</p>
                         </div>
                      ))  // map()
@@ -292,7 +300,6 @@ export default function VierGewinnt() {
                   <Box id="idDndSource"
                      className="m-1"
                      draggable={true}
-                     // ondrag="dragging(event)"
                      // onDragStart={fnDragStart}
                      onDragStart={(e) => {
                         e.dataTransfer.setData("text/plain", 'idDndSource');
@@ -302,17 +309,17 @@ export default function VierGewinnt() {
                         display: 'flex', colIndexustifyContent: 'center', border: '1px dashed red', borderRadius: 3,
                         bgcolor: 'primary.light',
                      }}
-                  > draggable BOX with p-tag
-                     <p id='idDragP' draggable={true}> p-tag</p>
+                  > draggable BOX
+                     {/* <p id='idDragP' draggable={true}> p-tag</p> */}
                   </Box>
                </div>
 
-               {/* droptarget, use <DndContext></DndContext>? */}
+               {/* droptarget */}
                <div className="col border border-1 border-black shadow rounded-2">
                   <div className="row">
                      <div
                         className="col mt-2 border border-1 border-black shadow rounded-1"
-                        id="idDndTarget"
+                        id="idDndTarget01"
                         onDrop={fnDrop}
                         onDragOver={fnAllowDrop}>
                         Droptarget div
@@ -331,7 +338,7 @@ export default function VierGewinnt() {
                            sx={{ m: 1 }}
                            label="Drop count" color="error" />
                      </div>
-                     <div id="idDndTarget"
+                     <div id="idDndTarget02"
                         className="col mt-2 border border-1 border-black shadow rounded-1"
                         onDrop={fnDrop}
                         onDragOver={fnAllowDrop}>
