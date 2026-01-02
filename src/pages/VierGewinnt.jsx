@@ -26,7 +26,7 @@ export default function VierGewinnt() {
 
   // "hook"-functions
   const [noObjects, setNoObjects] = useState(1)
-  const [noCoins, setNoCoins] = useState({ length: 1 })  // used in Array.map() for #coins
+  const [noCoins, setNoCoins] = useState({ length: 4 })  // used in Array.map() for #coins
   const [coinValue, setCoinValue] = useState(1)
 
   // 
@@ -50,9 +50,7 @@ export default function VierGewinnt() {
   const fnNavigate = useNavigate()
 
   // gets value from select and creates random values for the coins
-  const handleNoObjects = (e, child) => {
-
-    console.log(child)
+  const handleNoObjects = (e) => {
 
     // setting new value for coinValue
     console.log('coinValue before: ', coinValue)
@@ -67,15 +65,35 @@ export default function VierGewinnt() {
   }  // handleNoObjects()
 
   //* drag&drop handling
-  function fnDrop(event) {
-    event.preventDefault();
+  function fnOnDrop(event) {
+    event.preventDefault()
 
-    let data = event.dataTransfer.getData("text/plain");
+    // check, ob ein Feld im playGround frei ist: 
+    console.log(playGround)
 
-    if (data === '') { data = 'Id-Coin-Init' }
-    console.log(data); //
+    // mark row/col-combination in playGround 
+    console.log('got ID: ', event.currentTarget.id)
+    let id = ''
+    id = event.currentTarget.id
+    let splittedID = id.split('-')
+    let row = splittedID[0]
+    let col = splittedID[1]
 
-    event.target.appendChild(document.getElementById(data));
+    // check this row-col in playGround
+    const cell = playGround[`row${row}`][`col${col}`]
+    console.log(cell)
+    if (cell.used === false) {
+      cell.used = true
+    } else {
+      event.stopPropagation()
+      return
+    }
+
+    let data = event.dataTransfer.getData("text/plain")
+    console.log(data);
+    // wenn data null || undefined => cancelDrop()
+
+    event.target.appendChild(document.getElementById(data))
 
     // idCntrDrops : Zähler hochsetzen
     let cntDrops = document.getElementById('idCntrDrops')
@@ -85,13 +103,11 @@ export default function VierGewinnt() {
 
     // färben des drop target
     let dndTarget01 = document.getElementById('idDndTarget01')
-    console.log(dndTarget01)
-
     let classList = dndTarget01.getAttribute('class')
     classList = classList.concat(classList, ' ', 'bg-success')  //
     dndTarget01.setAttribute('class', classList)
 
-  }  // fnDrop(event) 
+  }  // fnOnDrop(event) 
 
   function fnDragStart(event) {
     event.dataTransfer.setData("text/plain", event.target.id);  // text/html || text/plain
@@ -105,9 +121,13 @@ export default function VierGewinnt() {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
-  const handleClose = (event) => { setAnchorEl(null); handleNoObjects(event) }
 
-  // commpn sx-object for all MenuItems used
+  const handleClose = (event) => {
+    setAnchorEl(null)
+    handleNoObjects(event)  // current MenuItem in: event.target.value
+  }
+
+  // common sx-object for all MenuItems used
   const menuItemSx = {
     '&:hover': {
       color: 'white',
@@ -115,6 +135,24 @@ export default function VierGewinnt() {
       backgroundColor: 'primary.light',
     }
   }  // 
+
+  // Aufbau des Spielfeldes, Verwaltung der bereits besetzten Positionen
+  let playGround = {
+    row0: {
+      col0: {
+        used: false
+      },
+      col1: {
+        used: false
+      },
+      col2: {
+        used: false
+      },
+      col3: {
+        used: false
+      }
+    }
+  }  // playGround
 
   // creating the view:
   return (
@@ -162,10 +200,10 @@ export default function VierGewinnt() {
             <Menu anchorEl={anchorEl}
               open={open}
               onClose={handleClose}>
-              <MenuItem onClick={handleClose} value={1} sx={menuItemSx}>1</MenuItem>
-              <MenuItem onClick={handleClose} value={2} sx={menuItemSx}>2</MenuItem>
-              <MenuItem onClick={handleClose} value={10} sx={menuItemSx}>10</MenuItem>
-              <MenuItem onClick={handleClose} value={15} sx={menuItemSx}>15</MenuItem>
+              <MenuItem onClick={handleClose} value={4} sx={menuItemSx}>4</MenuItem>
+              <MenuItem onClick={handleClose} value={8} sx={menuItemSx}>8</MenuItem>
+              <MenuItem onClick={handleClose} value={12} sx={menuItemSx}>12</MenuItem>
+              <MenuItem onClick={handleClose} value={16} sx={menuItemSx}>16</MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
@@ -233,16 +271,17 @@ export default function VierGewinnt() {
         {/* Spielfeld */}
         <>
           {Array.from({ length: 4 }).map((_, rowIndex) => (
-            <div key={rowIndex} className="row mt-1 border border-1 border-info">
+            <div key={rowIndex} className="row mt-1 border border-1 border-info" draggable={false}>
               <p>row {rowIndex}</p>
 
               {Array.from({ length: 4 }).map((_, colIndex) => (
                 <div key={colIndex}
-                  id={colIndex}
+                  id={`${rowIndex}-${colIndex}`}
                   className="col mt-1 border border-1 border-warning"
-                  onDrop={fnDrop}
-                  onDragOver={fnAllowDrop}>
-                  <p>col {colIndex}</p>
+                  onDrop={fnOnDrop}
+                  onDragOver={fnAllowDrop}
+                  draggable={false}>
+                  <p>col {`${rowIndex}-${colIndex}`}</p>
                 </div>
               ))  // map()
               }  {/* erzeugt Spalten*/}
@@ -286,7 +325,7 @@ export default function VierGewinnt() {
               <div
                 className="col mt-2 border border-1 border-black shadow rounded-1"
                 id="idDndTarget01"
-                onDrop={fnDrop}
+                onDrop={fnOnDrop}
                 onDragOver={fnAllowDrop}>
                 Droptarget div
               </div>
@@ -306,7 +345,7 @@ export default function VierGewinnt() {
               </div>
               <div id="idDndTarget02"
                 className="col mt-2 border border-1 border-black shadow rounded-1"
-                onDrop={fnDrop}
+                onDrop={fnOnDrop}
                 onDragOver={fnAllowDrop}>
                 <p className="bg-primary">Droptarget p</p>
               </div>
@@ -343,7 +382,7 @@ export default function VierGewinnt() {
               alt="React logo" />
 
             <div id="div1"
-              onDrop={fnDrop}
+              onDrop={fnOnDrop}
               onDragOver={fnAllowDrop}>
               div dnd target
             </div>

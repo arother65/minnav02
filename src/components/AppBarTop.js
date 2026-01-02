@@ -51,6 +51,15 @@ export default function AppBarTop() {
          fnNavigate(navTarget, {})
       }  // handleNavigate4gewinnt() */
 
+   // common sx-object for all MenuItems used
+   const menuItemSx = {
+      '&:hover': {
+         color: 'white',
+         // backgroundColor: 'olivedrab', 
+         backgroundColor: 'primary.light',
+      }
+   }  // 
+
    // 
    return (
       <AppBar sx={{ backgroundColor: 'rgba(40, 45, 60, 0.85)', position: 'fixed' }} >
@@ -124,12 +133,7 @@ export default function AppBarTop() {
 					</Dialog> */}
 
                <MenuItem
-                  sx={{
-                     '&:hover': {
-                        color: 'white',
-                        backgroundColor: 'olivedrab',
-                     }
-                  }}
+                  sx={menuItemSx}
                   onClick={() => {
                      fnNavigate('/about')
                   }}>
@@ -137,12 +141,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={{
-                     '&:hover': {
-                        color: 'white',
-                        backgroundColor: 'olivedrab',
-                     }
-                  }}
+                  sx={ menuItemSx }
                   onClick={() => {
                      fnNavigate('/UsrPwdInputForm')
                   }}>
@@ -150,12 +149,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={{
-                     '&:hover': {
-                        color: 'white',
-                        backgroundColor: 'olivedrab',
-                     }
-                  }}
+                  sx={ menuItemSx }
                   onClick={() => {
                      fnNavigate('/CryptString')
                   }}>
@@ -163,12 +157,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={{
-                     '&:hover': {
-                        color: 'darkred',
-                        backgroundColor: 'olivedrab',
-                     }
-                  }}
+                  sx={ menuItemSx }
                   onClick={() => {
                      setTimeout(() => {
                         // handleNavigate4gewinnt('/VierGewinnt')
@@ -185,8 +174,6 @@ export default function AppBarTop() {
                      <CircularProgress color="midnightblue" sx={{ position: 'fixed' }} />
                   </Box>
                </Backdrop>
-
-               {/* <CircularProgress color="inherit" /> */}
             </Menu>
 
             {/* <img src={logo} className="App-logo" alt="logo" /> */}
