@@ -61,7 +61,7 @@ export default function VierGewinnt() {
     console.log('coinValue after: ', coinValue)
 
     noCoins.length = e.target.value
-    
+
 /*     //?  
     useEffect(() => {
       setNoCoins(noCoins)
@@ -101,6 +101,10 @@ export default function VierGewinnt() {
       let data = event.dataTransfer.getData("text/plain")
       console.log(data);
       event.target.appendChild(document.getElementById(data))
+
+      // color the cell in use
+      let className = event.currentTarget.className
+      event.currentTarget.className = className + ' bg-success'
 
       if (row.col0.used === true &&
         row.col1.used === true &&
