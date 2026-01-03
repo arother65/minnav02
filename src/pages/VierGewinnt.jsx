@@ -11,7 +11,7 @@ import kreuzAs from '../icons8-kreuzass-64.png'
 //
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Avatar, Box, Button, Chip, IconButton, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material'
+import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip } from '@mui/material'
 
 // colors, icons 
 import { blue, red, purple } from '@mui/material/colors'
@@ -25,13 +25,19 @@ import Footer from '../components/Footer'
 export default function VierGewinnt() {
 
   // "hook"-functions
-  const [noCoins, setNoCoins] = useState({ length: 4 })  // used in Array.map() for #coins
-  const [coinValue, setCoinValue] = useState(0)
+  const [noCoins, setNoCoins] = useState(4)  // used in Array.map() for #coins
+  const [coinValue, setCoinValue] = useState(1)
+  const [dragSourceId, setDragSourceId] = useState(null)
 
   // 
   const getRandomCoinValue = () => {
     let actCoinValue = 1
     actCoinValue = Math.random() * 5
+
+    if ( actCoinValue === 0 ){
+    actCoinValue = Math.random() * 4
+    }  // 0 would lead to return UNDEFINED 
+
     actCoinValue = Math.floor(actCoinValue)
 
     // checking actCoinValue to fit in the usual EUR-coin-values (1, 2, 5)
@@ -44,41 +50,38 @@ export default function VierGewinnt() {
   useEffect(() => {
     const newCoinValue = getRandomCoinValue()
     setCoinValue(newCoinValue)  // overrides initial value
-  },
-    // [coinValue]
-    []
-  )
+    console.log('useEffect on coinValue')
+  }, [coinValue])
 
   // creates a fn of type NavigateFunction
   const fnNavigate = useNavigate()
 
   // gets value from select and creates random values for the coins
-  const handleNoObjects = (e) => {
+  const handleNoObjects = async (e) => {
 
     // setting new value for coinValue
     console.log('coinValue before: ', coinValue)
     setCoinValue(getRandomCoinValue())
     console.log('coinValue after: ', coinValue)
 
-    noCoins.length = e.target.value
-
-/*     //?  
-    useEffect(() => {
-      setNoCoins(noCoins)
-    },
-      [noCoins]
-    )
- */    
+    // err: new no. of coins : invalid state usage 
+    console.log('No. before', noCoins)
+    setNoCoins(e.target.value)
+    console.log('No. after', e.target.value)
   }  // handleNoObjects()
+
+  useEffect(() => {
+    console.log('useEffect on noCoins')
+  }, [noCoins])
 
   //* drag&drop handling
   function fnOnDrop(event) {
     event.preventDefault()
 
-    // check, ob ein Feld im playGround frei ist: 
-    console.log(playGround)
+    // console.log(playGround)
+    console.log('dragSourceId', dragSourceId)
 
-    // mark row/col-combination in playGround 
+    // mark actual row/col-combination in playGround as USED 
     console.log('got ID: ', event.currentTarget.id)
     let id = ''
     id = event.currentTarget.id
@@ -106,6 +109,9 @@ export default function VierGewinnt() {
       let className = event.currentTarget.className
       event.currentTarget.className = className + ' bg-success'
 
+      // mark as used
+      setPlayground(playGround)
+
       if (row.col0.used === true &&
         row.col1.used === true &&
         row.col2.used === true &&
@@ -117,18 +123,27 @@ export default function VierGewinnt() {
       }
 
     } else {
+      // cell was already used 
       event.stopPropagation()
       return
     }
   }  // fnOnDrop(event) 
 
   function fnDragStart(event) {
+    console.log('fnDragStart', event.target.id)
+    //? write actualCoin to global memory
+    setDragSourceId(event.target.id)
+
     event.dataTransfer.setData("text/plain", event.target.id);  // text/html || text/plain
   }  // fnDragStart()
 
   function fnAllowDrop(event) {
-    event.preventDefault();
-  }  // fnAllowDrop()
+    event.preventDefault()
+
+    // console.log('fnAllowDrop', event)
+    event.dataTransfer.effectAllowed = 'none'
+    event.dataTransfer.dropEffect = 'copy'  // move
+  }  // fnAllowDrop() / event onDragOver
 
   // custom state and fn's to handle <Menu>
   const [anchorEl, setAnchorEl] = useState(null)
@@ -138,7 +153,7 @@ export default function VierGewinnt() {
   const handleClose = (event) => {
     setAnchorEl(null)
     handleNoObjects(event)  // current MenuItem in: event.target.value
-    
+
     // setNoCoins(event.target.value)
   }
 
@@ -152,7 +167,7 @@ export default function VierGewinnt() {
   }  // 
 
   // Aufbau des Spielfeldes, Verwaltung der bereits besetzten Positionen in "fnOnDrop()"
-  let playGround = {
+  let playGroundInit = {
     row0: {
       col0: {
         used: false
@@ -210,6 +225,8 @@ export default function VierGewinnt() {
       }
     }
   }  // playGround
+
+  const [playGround, setPlayground] = useState(playGroundInit)
 
   // creating the view:
   return (
@@ -279,15 +296,11 @@ export default function VierGewinnt() {
                 bgcolor: 'primary.light', m: 1
               }}>
               <h6>Player 1</h6>
+              <p className='border border-success rounded shadow'>dragSourceId: {dragSourceId ? dragSourceId : 'void'}</p>
+
               <Avatar id="idCompPlayer1"
                 draggable={true}
                 onDragStart={fnDragStart}
-                /*                         onDragStart={(e) => {
-                                           e.dataTransfer.setData("text/plain", 'idCompPlayer1');
-                                           e.dataTransfer.effectAllowed = "move";
-                                        }} */
-                // className="Player1-animate"  // errs, no drag possible
-
                 sx={{
                   display: 'flex', justifyContent: 'center', border: '1px dashed green', borderRadius: 5,
                   bgcolor: 'primary.main', m: 1
@@ -307,11 +320,12 @@ export default function VierGewinnt() {
               }}>
               <h6>Player 2</h6>
               <>
-                {Array.from({ ...noCoins }).map((_, i) => (
-                  <div key={i} >
+                {Array.from({ length: noCoins }).map((_, i) => (
+                  <div key={`div-${i}`} draggable={false}>
                     <Avatar
-                      id={i}
-                      sx={{ bgcolor: purple[900], margin: 1 }} aria-label="coin"
+                      id={`coin-${i}`}
+                      sx={{ bgcolor: purple[900], margin: 1 }}
+                      aria-label="coin"
                       draggable={true}
                       onDragStart={fnDragStart}>
                       {coinValue}
