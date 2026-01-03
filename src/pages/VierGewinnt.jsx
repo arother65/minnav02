@@ -5,8 +5,6 @@
 // imports
 import '../App.css'
 import logo from '../logo.svg'
-import Joker from '../icons8-joker-64.png'
-import kreuzAs from '../icons8-kreuzass-64.png'
 
 //
 import { useEffect, useState, useRef } from 'react'
@@ -28,6 +26,9 @@ export default function VierGewinnt() {
   const [noCoins, setNoCoins] = useState(4)  // used in Array.map() for #coins
   const [coinValue, setCoinValue] = useState(1)
   const [dragSourceId, setDragSourceId] = useState(null)
+
+  // creates a fn of type NavigateFunction
+  const fnNavigate = useNavigate()
 
   // 
   const getRandomCoinValue = () => {
@@ -54,9 +55,6 @@ export default function VierGewinnt() {
     setCoinValue(newCoinValue)  // overrides initial value
     console.log('useEffect on coinValue')
   }, [coinValue])
-
-  // creates a fn of type NavigateFunction
-  const fnNavigate = useNavigate()
 
   // gets value from select and creates random values for the coins
   const handleNoObjects = async (e) => {
@@ -249,7 +247,7 @@ export default function VierGewinnt() {
   }  // playGround
   const [playGround, setPlayground] = useState(playGroundInit)
 
-  // useRef for the Coins created with <Avatar />
+  // useRef for the Coins created with <Avatar />-Component 
   const avatarRef = useRef(null)
 
   useEffect(() => {
@@ -260,7 +258,8 @@ export default function VierGewinnt() {
     console.log("width:", el.offsetWidth);       // number
     console.log("height:", el.offsetHeight);     // number
     // console.log("", el.data-coin-value)  // errs 
-  }, [])
+
+  }, [])  // useeffect() for avatarRef
 
   // creating the view:
   return (
@@ -322,8 +321,9 @@ export default function VierGewinnt() {
 
         {/* row with one col per player */}
         <div className="row mt-5">
+
           {/* col for Player 1 */}
-          <div className="col">
+          <div className="col Player1-animate " >
             <Box
               sx={{
                 display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3,
@@ -333,6 +333,9 @@ export default function VierGewinnt() {
               <Avatar id="idCompPlayer1"
                 draggable={true}
                 onDragStart={fnDragStart}
+                onDragEnd={(e) => {
+                  e.currentTarget.style.opacity = "1"
+                }}
                 sx={{
                   display: 'flex', justifyContent: 'center', border: '1px dashed green', borderRadius: 5,
                   bgcolor: 'primary.main', m: 1
@@ -352,7 +355,7 @@ export default function VierGewinnt() {
           </div>
 
           {/* col for Player 2 */}
-          <div className="col">
+          <div className="col Player2-animate">
             <Box
               // className="Player2-animate"
               sx={{

@@ -51,7 +51,7 @@
 
 /* Animation for MUI-Component "Box" (Player1-animate) on view "VierGewinnt */
 .Player1-animate {
-  pointer-events: none;
+  pointer-events: all;
 }
 @keyframes Player1-translate {
   from {
@@ -74,7 +74,7 @@
 
 /* Animation for MUI-Component "Box" (Player2-animate) on view "VierGewinnt */
 .Player2-animate {
-  pointer-events: none;
+  pointer-events: all;
 }
 @keyframes Player2-translate {
   from {
