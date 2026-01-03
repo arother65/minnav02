@@ -331,6 +331,7 @@ export default function VierGewinnt() {
               }}>
               <h6>Player 1</h6>
               <Avatar id="idCompPlayer1"
+                className='Coin-animate'
                 draggable={true}
                 onDragStart={fnDragStart}
                 onDragEnd={(e) => {
@@ -370,6 +371,7 @@ export default function VierGewinnt() {
                       id={`coin-${i}`}
                       ref={avatarRef}
                       component={'div'}
+                      className='Coin-animate'
                       sx={{ bgcolor: purple[700], border: '1px solid red', margin: 1 }}
                       // slots={{ fallback: 'div' }}
                       // slotProps={{}}

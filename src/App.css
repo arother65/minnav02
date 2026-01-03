@@ -95,6 +95,31 @@
   }
 }
 
+/* Animation for MUI-Component "Avatar" used to depict a coin on view "VierGewinnt */
+.Coin-animate {
+  pointer-events: all;
+}
+
+@keyframes Coin-spin {
+  from {
+    /* background-color: darkred; */
+    
+    transform: rotate(0deg);
+    /* transform: translateX(-50px); */
+  }
+
+  to {
+    transform: rotate(360deg);
+    /* transform: translateX(0px); */
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Coin-animate {
+    animation: Coin-spin alternate 1s backwards;
+  }
+}
+
 /*  */
 .App-header {
   background-color: rgba(40, 45, 60, 0.95);
