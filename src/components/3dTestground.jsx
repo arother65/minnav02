@@ -4,7 +4,8 @@
 
 // imports 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { Button } from '@mui/material'
+import { useEffect, useState, useRef } from 'react'
 
 //
 export default function ThreeDTest() {
@@ -16,11 +17,31 @@ export default function ThreeDTest() {
       { position: [0, 2, 0], color: 'orange' },
    ]
 
-  const cubes02 = [
-    { position: [0, 0, 0], color: 'red', speed: 0.5 },
-    { position: [2, 0, 0], color: 'green', speed: 1 },
-    { position: [-2, 0, 0], color: 'blue', speed: 1.5 },
-  ]
+   const cubes02 = [
+      { position: [0, 0, 0], color: 'red', speed: 0.5 },
+      { position: [2, 0, 0], color: 'green', speed: 1 },
+      { position: [-2, 0, 0], color: 'blue', speed: 1.5 },
+      { position: [-4, 0, 0], color: 'yellow', speed: 2.0 },
+      { position: [-5, 0, 0], color: 'darkred', speed: 2.5 },
+      { position: [-6, 0, 0], color: 'darkgreen', speed: 3.0 },
+   ]
+
+   /*    const cubes03 = [
+         { position: [0, 0, 0], color: 'red', speed: 1 },
+         { position: [0.5, 0, 0], color: 'green', speed: 1 },
+         { position: [-1, 0, 0], color: 'blue', speed: 1 },
+         { position: [-1.5, 0, 0], color: 'yellow', speed: 1 },
+         { position: [-2, 0, 0], color: 'darkred', speed: 1 },
+         { position: [-2.5, 0, 0], color: 'darkgreen', speed: 1 },
+      ]
+    */
+   const cubes03Init = [
+      { position: [0, 0, 0], color: 'red', speed: 1 },
+      { position: [0.5, 0, 0], color: 'green', speed: 1 },
+   ]
+
+   // push new object data to cubes03
+   // cubes03.push({ position: [-2.5, 0, 0], color: 'darkgreen', speed: 1 })
 
    function Cube({ position, color }) {
       return (
@@ -47,10 +68,15 @@ export default function ThreeDTest() {
       )
    }  // Cube02
 
+   const [cubes03, setNoCubes] = useState(cubes03Init)
+   useEffect(()=>{
+      console.log('new data for cubes03', cubes03)
+   }, [cubes03])  // useEffect()
+
    // 
    return (
       <>
-         <Canvas>
+         {/*          <Canvas>
             <ambientLight />
             <mesh
                position={[0, 2, 0]}
@@ -58,32 +84,74 @@ export default function ThreeDTest() {
                <boxGeometry args={[1, 1, 1]} />
                <meshStandardMaterial color="lightgrey" />
             </mesh>
-
-            {/*             <mesh position={[10, 20, 0]} rotation={[Math.PI / 4, 0, 0]}>
-               <cylinderGeometry args={[10, 10, 10]} />
-               <meshStandardMaterial color="red" />
-            </mesh> */}
-
             <mesh position={[5, 1, 0]}>
                <sphereGeometry args={[2, 2, 2]} />
                <meshStandardMaterial color="green" />
             </mesh>
-         </Canvas>
-
-         <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} />
-            {cubes02.map((cube, index) => (
-               <Cube02 key={index} {...cube} />
-            ))}
-         </Canvas>
-
-         {/*          <Canvas >
-            <mesh position={[15, 15, 0]}>
-               <sphereGeometry args={[5, 5, 5]} />
-               <meshStandardMaterial color="red" />
-            </mesh>
          </Canvas> */}
+
+         <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
+            <p className='text-dark'>Canvas in bs-row</p>
+            <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+               <ambientLight intensity={0.5} />
+               <directionalLight position={[5, 5, 5]} />
+
+               {cubes02.map((cube, index) => (
+                  // <div className='col border border-1'>
+                  <Cube02 key={index} {...cube} />
+                  // </div>
+               ))}
+
+               {/*             <mesh visible userData={{ hello: 'world' }} position={[1, 0, 0]}>
+               <sphereGeometry args={[2, 2, 2]} />
+               <meshStandardMaterial color="green" />
+            </mesh> */}
+            </Canvas>
+         </div>
+
+         <div className='row m-2 bg-light border border-2 border-success rounded'>
+
+            <div className='col'>
+               <p className='text-dark'>Canvas in bs-row</p>
+               <Button variant="outlined" size="medium"
+                  onClick={(e) => {
+                     let actParams = cubes03[0]
+                     let actPosition = actParams.position
+                     let newPosition = []
+
+                     newPosition = actPosition
+                     newPosition[0] = newPosition[0] + 1
+
+                     // cubes03.push({ position: [-3.5, 0, 0], color: 'olivedrab', speed: 1 })
+                     let newCubeArray = cubes03
+                     newCubeArray.push({ newPosition, color: 'olivedrab', speed: 1 })
+                     setNoCubes(newCubeArray)
+                  }}>
+                  add cube
+               </Button>
+            </div>
+
+            <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+               <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[5, 5, 5]} />
+
+                  {cubes03.map((cube, index) => (
+                     <Cube02 key={index} {...cube} />
+                  ))}
+               </Canvas>
+            </div>
+
+{/*             <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+               <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[5, 5, 5]} />
+
+                  { cubes03.map((cube, index) => ( <Cube02 key={index} {...cube} /> )) }
+               </Canvas>
+            </div> */}
+
+         </div>
       </>
    )
 }  // ThreeDTest()

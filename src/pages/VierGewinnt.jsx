@@ -155,7 +155,6 @@ export default function VierGewinnt() {
   const handleClose = (event) => {
     setAnchorEl(null)
     handleNoObjects(event)  // current MenuItem in: event.target.value
-
     // setNoCoins(event.target.value)
   }
 
@@ -427,13 +426,13 @@ export default function VierGewinnt() {
         {/* Spielfeld, playGround */}
         <>
           {Array.from({ length: 4 }).map((_, rowIndex) => (
-            <div key={rowIndex} className="row mt-1 border border-1 border-info" draggable={false}>
+            <div key={rowIndex} className="row mt-1 border border-1 border-info rounded" draggable={false}>
               <p>row {rowIndex}</p>
 
               {Array.from({ length: 4 }).map((_, colIndex) => (
                 <div key={colIndex}
                   id={`${rowIndex}-${colIndex}`}
-                  className="col mt-1 border border-1 border-warning"
+                  className="col mt-1 border border-1 border-warning rounded"
                   onDrop={fnOnDrop}
                   onDragOver={fnAllowDrop}
                   draggable={false}>

@@ -23,7 +23,7 @@ export default function Dice() {
                size="medium"
                edge="start"
                aria-label="nav to home"
-               sx={{ mr: 2 }}
+               sx={{ m: 2 }}
                onClick={() => {
                   fnNavigate('/')
                }}
@@ -33,9 +33,9 @@ export default function Dice() {
          </header>
 
          <main>
-            <div>
+{/*             <div className='row border border-1 rounded'>
                <DiceAvatar size={64} />
-            </div>
+            </div> */}
 
             <ThreeDTest>
                <p>three d test</p>
