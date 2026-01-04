@@ -8,6 +8,13 @@ import { Alert, Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
+
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
 import { useEffect, useState, useRef } from 'react'
 
 //
@@ -85,23 +92,21 @@ export default function ThreeDTest() {
    // using Switch-component
    const [enabled, setEnabled] = useState(true);
 
+   // handling  a TABS component
+   const [valueTab, setValueTab] = useState('one');
+   const handleChangeTab = (event, newValue) => {
+      setValueTab(newValue)
+   }  // 
+
+   const [value, setValue] = useState('1');
+   const handleChangeTabList = (event, newValue) => {
+      setValue(newValue)
+   }  // 
+
+
    // 
    return (
       <>
-         {/*          <Canvas>
-            <ambientLight />
-            <mesh
-               position={[0, 2, 0]}
-               rotation={[Math.PI / 4, 0, 0]}>
-               <boxGeometry args={[1, 1, 1]} />
-               <meshStandardMaterial color="lightgrey" />
-            </mesh>
-            <mesh position={[5, 1, 0]}>
-               <sphereGeometry args={[2, 2, 2]} />
-               <meshStandardMaterial color="green" />
-            </mesh>
-         </Canvas> */}
-
          <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
             <p className='text-dark'>Canvas in bs-row</p>
             <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
@@ -146,11 +151,13 @@ export default function ThreeDTest() {
                   add cube
                </Button>
                <FormControlLabel 
-                  className='m-1 bg-dark rounded shadow'
+                  className='m-1 bg-warning rounded shadow'
                   control={
                      <Switch
                         className='m-1'
                         checked={enabled}
+                        // color="secondary"
+                        color="warning"
                         onChange={() => {
                            if (enabled) {
                               setEnabled(false)
@@ -160,6 +167,7 @@ export default function ThreeDTest() {
                               setVisible(true)
                            }
                         }}
+                        sx={ {}}
                      />
                   }
                   label={enabled ? "disable column" : "enable column"}
@@ -179,21 +187,27 @@ export default function ThreeDTest() {
                </div>
             }
             {!visible &&
-               <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-                  Column switched invisible. Refresh to renew UI.
-               </Alert>
+               <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+                  <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                     Column switched invisible. Refresh to renew UI.
+                  </Alert>
+               </div>
             }
 
-            {/*             <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
-               <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[5, 5, 5]} />
+            <TabContext value={value}>
+               <TabList onChange={handleChangeTabList} aria-label="lab API tabs example">
+                  <Tab label="Item One" value="1" />
+                  <Tab label="Item Two" value="2" />
+                  <Tab label="Item Three" value="3" />
+               </TabList>
 
-                  { cubes03.map((cube, index) => ( <Cube02 key={index} {...cube} /> )) }
-               </Canvas>
-            </div> */}
+               <TabPanel className='bg-secondary-subtle text-black' value="1">Item One</TabPanel>
 
-         </div>
+               <TabPanel className='bg-secondary' value="2">Item Two</TabPanel>
+
+               <TabPanel className='bg-dark' value="3">Item Three</TabPanel>
+            </TabContext>
+         </div >  {/* row */}
       </>
-   )
+   )  // return()
 }  // ThreeDTest()
