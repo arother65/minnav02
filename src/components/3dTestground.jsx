@@ -150,24 +150,35 @@ export default function ThreeDTest() {
                   }}>
                   add cube
                </Button>
-               <FormControlLabel 
+               <FormControlLabel
+                  id='idFormControl'
                   className='m-1 bg-warning rounded shadow'
                   control={
                      <Switch
                         className='m-1'
                         checked={enabled}
                         // color="secondary"
-                        color="warning"
+                        color="error"
                         onChange={() => {
+                           let formControl = document.getElementById('idFormControl')
+                           let formControlClass = formControl.getAttribute('class')
+
                            if (enabled) {
                               setEnabled(false)
                               setVisible(false)
+
+                              // set new background
+                              formControlClass = formControlClass.replace('bg-warning', 'bg-dark')
+                              formControl.setAttribute('class', formControlClass)
                            } else {
                               setEnabled(true)
                               setVisible(true)
+                              // set new background
+                              formControlClass = formControlClass.replace('bg-dark', 'bg-warning')
+                              formControl.setAttribute('class', formControlClass)
                            }
                         }}
-                        sx={ {}}
+                        sx={{}}
                      />
                   }
                   label={enabled ? "disable column" : "enable column"}
