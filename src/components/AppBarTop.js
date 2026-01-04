@@ -132,13 +132,7 @@ export default function AppBarTop() {
 						</DialogActions>
 					</Dialog> */}
 
-               <MenuItem
-                  sx={menuItemSx}
-                  onClick={() => {
-                     fnNavigate('/about')
-                  }}>
-                  about page
-               </MenuItem>
+
 
                <MenuItem
                   sx={ menuItemSx }
@@ -162,11 +156,32 @@ export default function AppBarTop() {
                      setTimeout(() => {
                         // handleNavigate4gewinnt('/VierGewinnt')
                         // setLoading(true)
+                        fnNavigate('/Dice', {})
+                     }, 1000)
+                     setLoading(true)
+                  }}>
+                  Würfeln...
+               </MenuItem>
+
+               <MenuItem
+                  sx={ menuItemSx }
+                  onClick={() => {
+                     setTimeout(() => {
+                        // handleNavigate4gewinnt('/VierGewinnt')
+                        // setLoading(true)
                         fnNavigate('/VierGewinnt', {})
                      }, 1000)
                      setLoading(true)
                   }}>
                   Vier gewinnt
+               </MenuItem>
+
+                              <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/about')
+                  }}>
+                  about page
                </MenuItem>
 
                <Backdrop open={loading} sx={{ zIndex: 500 }} onClick={() => { setLoading(false) }}>

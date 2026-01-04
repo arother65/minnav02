@@ -21,6 +21,8 @@ import About from './pages/About'
 import UsrPwdInputForm from './pages/UsrPwdInputForm'
 import CryptString from './pages/CryptString'
 import VierGewinnt from './pages/VierGewinnt'
+import Dice from './pages/Dice'
+
 import NotFound404 from './pages/404'
 
 //
@@ -34,15 +36,18 @@ export default function App() {
     createRoutesFromElements(
       <Route>
         <Route exact path="/" element={<Home skeletonOn={skeletonOn} setSkeletonOn={setSkeletonOn} />} />
-        <Route path="/about" element={<About />} />
+
         {/* <Route path="/showlistitem" element={<ShowListItem />} /> */}
         <Route path="/UsrPwdInputForm" element={<UsrPwdInputForm />} />
         <Route path="/CryptString" element={<CryptString />} />
         <Route path="/VierGewinnt" element={<VierGewinnt />} />
+        <Route path="/Dice" element={<Dice />} />
+        <Route path="/about" element={<About />} />
+
         <Route path="*" element={<NotFound404 />} />
       </Route>
     ),  // createRoutesFromElements()
-    {  }
+    {}
   )  // createBrowserRouter()
 
   //
