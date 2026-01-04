@@ -4,7 +4,10 @@
 
 // imports 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Button } from '@mui/material'
+import { Alert, Button } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import Switch from "@mui/material/Switch"
+import FormControlLabel from "@mui/material/FormControlLabel"
 import { useEffect, useState, useRef } from 'react'
 
 //
@@ -73,6 +76,15 @@ export default function ThreeDTest() {
       console.log('new data for cubes03', cubes03)
    }, [cubes03])  // useEffect()
 
+   // Steuerung der Oberfläche
+   const [visible, setVisible] = useState(true)
+   useEffect(() => {
+      console.log('new data for visible', visible)
+   }, [visible])  // useEffect()
+
+   // using Switch-component
+   const [enabled, setEnabled] = useState(true);
+
    // 
    return (
       <>
@@ -133,18 +145,44 @@ export default function ThreeDTest() {
                   }}>
                   add cube
                </Button>
+               <FormControlLabel 
+                  className='m-1 bg-dark rounded shadow'
+                  control={
+                     <Switch
+                        className='m-1'
+                        checked={enabled}
+                        onChange={() => {
+                           if (enabled) {
+                              setEnabled(false)
+                              setVisible(false)
+                           } else {
+                              setEnabled(true)
+                              setVisible(true)
+                           }
+                        }}
+                     />
+                  }
+                  label={enabled ? "disable column" : "enable column"}
+                  labelPlacement="end"
+               />
             </div>
 
-            <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
-               <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[5, 5, 5]} />
-
-                  {cubes03.map((cube, index) => (
-                     <Cube02 key={index} {...cube} />
-                  ))}
-               </Canvas>
-            </div>
+            {visible &&
+               <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+                  <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+                     <ambientLight intensity={0.5} />
+                     <directionalLight position={[5, 5, 5]} />
+                     {cubes03.map((cube, index) => (
+                        <Cube02 key={index} {...cube} />
+                     ))}
+                  </Canvas>
+               </div>
+            }
+            {!visible &&
+               <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                  Column switched invisible. Refresh to renew UI.
+               </Alert>
+            }
 
             {/*             <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
                <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
