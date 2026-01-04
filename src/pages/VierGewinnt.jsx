@@ -33,12 +33,12 @@ export default function VierGewinnt() {
   // 
   const getRandomCoinValue = () => {
     let actCoinValue = 1
+
     actCoinValue = Math.random() * 5
 
-    if (actCoinValue === 0 || actCoinValue === undefined) {
-      actCoinValue = 5
-      actCoinValue = Math.random() * 12
-    }  // 0 would lead to return UNDEFINED 
+    while (actCoinValue === 0 || actCoinValue === undefined || actCoinValue < 1.0) {
+      actCoinValue = Math.random() * 5
+    }  //
 
     actCoinValue = Math.floor(actCoinValue)
     console.log('actCoinValue: ', actCoinValue)
@@ -78,21 +78,35 @@ export default function VierGewinnt() {
   async function fnOnDrop(event) {
     event.preventDefault()
 
-    // mark actual row/col-combination in playGround as USED 
-    console.log('got ID: ', event.currentTarget.id)
-    let id = ''
-    id = event.currentTarget.id
-    let splittedID = id.split('-')
+    // mark actual row/col-combination in playGround as USED, event.currentTarget.id = actual dropTarget  
+    console.log('got ID as dropTarget: ', event.currentTarget.id)
+    let splittedID = event.currentTarget.id.split('-')
     let rowId = splittedID[0]
     let colId = splittedID[1]
 
+    // check if the actual coin () is already in playGround 
+    let parentDiv, checkedCell, actCol
+    for (let i = 0; i < 4; i++) {
+      actCol = `col${i}`
+      checkedCell = playGround[`row${rowId}`][actCol]
+
+      // coin aus der aktuell untersuchten cell 'checkedCell' entfernen:
+      if (checkedCell.used === true) {
+        checkedCell.used = false
+        checkedCell.coinId = null
+
+        // get that div with css-class col
+        parentDiv = document.getElementById(`${rowId}-${i}`)
+        console.log(parentDiv.className)
+        parentDiv.className = parentDiv.className.replace('bg-success', '')
+      }
+    }  // checking if cell is already in use 
+
     // check if this row-col in playGround is already in use
-    const cell = playGround[`row${rowId}`][`col${colId}`]
-    console.log(cell)
+    let cell = playGround[`row${rowId}`][`col${colId}`]
 
     // check if row is already full
     const row = playGround[`row${rowId}`]
-    console.log(row)
 
     if (cell.used === false) {
       // mark this cell
@@ -104,8 +118,8 @@ export default function VierGewinnt() {
 
       // add new node
       let data = event.dataTransfer.getData("text/plain")
-      console.log(data);
       event.target.appendChild(document.getElementById(data))
+      //? removeChild() aus dem PLayer-Bereich, der dragSource
 
       // color the cell in use
       let className = event.currentTarget.className
