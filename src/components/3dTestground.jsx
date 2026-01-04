@@ -69,7 +69,7 @@ export default function ThreeDTest() {
    }  // Cube02
 
    const [cubes03, setNoCubes] = useState(cubes03Init)
-   useEffect(()=>{
+   useEffect(() => {
       console.log('new data for cubes03', cubes03)
    }, [cubes03])  // useEffect()
 
@@ -115,17 +115,21 @@ export default function ThreeDTest() {
                <p className='text-dark'>Canvas in bs-row</p>
                <Button variant="outlined" size="medium"
                   onClick={(e) => {
-                     let actParams = cubes03[0]
-                     let actPosition = actParams.position
-                     let newPosition = []
 
-                     newPosition = actPosition
-                     newPosition[0] = newPosition[0] + 1
+                     // const clone = [...original]
+                     let newCubeArray = [...cubes03]
 
-                     // cubes03.push({ position: [-3.5, 0, 0], color: 'olivedrab', speed: 1 })
-                     let newCubeArray = cubes03
-                     newCubeArray.push({ newPosition, color: 'olivedrab', speed: 1 })
-                     setNoCubes(newCubeArray)
+                     let position = []
+                     newCubeArray[0].position[0] = newCubeArray[0].position[0] + 1
+
+                     newCubeArray.push({ position, color: 'yellow', speed: 1 })
+                     setNoCubes(newCubeArray)  //? no re-render
+
+                     // setNoCubes(cubes03 => ({
+                     //     ...cubes03,
+                     //    position: position,
+                     //    color: 'red'
+                     // }))
                   }}>
                   add cube
                </Button>
@@ -142,7 +146,7 @@ export default function ThreeDTest() {
                </Canvas>
             </div>
 
-{/*             <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+            {/*             <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
                <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
                   <ambientLight intensity={0.5} />
                   <directionalLight position={[5, 5, 5]} />
