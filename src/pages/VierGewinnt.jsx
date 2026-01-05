@@ -9,7 +9,7 @@ import logo from '../logo.svg'
 //
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Avatar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material'
+import { AppBar, Avatar, Box, Button, Card, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material'
 
 // colors, icons 
 import { blue, green, purple, red } from '@mui/material/colors'
@@ -445,18 +445,22 @@ export default function VierGewinnt() {
             {/* Spielfeld, playGround */}
             <>
                {Array.from({ length: 4 }).map((_, rowIndex) => (
-                  <div key={rowIndex} className="row mt-1 border border-1 border-info rounded" draggable={false}>
-                     <p>row {rowIndex}</p>
+                  <div key={rowIndex} className="row m-1" draggable={false}>
 
                      {Array.from({ length: 4 }).map((_, colIndex) => (
-                        <div key={colIndex}
-                           id={`${rowIndex}-${colIndex}`}
-                           className="col mt-1 border border-1 border-warning rounded"
-                           onDrop={fnOnDrop}
-                           onDragOver={fnAllowDrop}
-                           draggable={false}>
-                           <p>col {`${rowIndex}-${colIndex}`}</p>
-                        </div>
+                        <>
+                           <div key={colIndex}
+                              id={`${rowIndex}-${colIndex}`}
+                              className="col m-1 text-bg-primary border border-2 border-primary rounded shadow"
+                              onDrop={fnOnDrop}
+                              onDragOver={fnAllowDrop}
+                              draggable={false}>
+                              <p>col {`${rowIndex}-${colIndex}`}</p>
+
+                              {/* <Card className='m-1 border border-1 border-danger rounded'>
+                              </Card> */}
+                           </div>
+                        </>
                      ))  // map()
                      }  {/* erzeugt Spalten*/}
                   </div>
