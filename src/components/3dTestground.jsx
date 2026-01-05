@@ -131,7 +131,7 @@ export default function ThreeDTest() {
                <Button variant="outlined" size="medium"
                   onClick={(e) => {
 
-                     // const clone = [...original]
+                     // clone array "cubes03"
                      let newCubeArray = cubes03.filter(()=>{
                         return true
                      })
@@ -139,11 +139,15 @@ export default function ThreeDTest() {
                      let newLength = newCubeArray.push(newCubeArray[0])
                      newLength--
 
-                     newCubeArray[newLength].position[0] = newCubeArray[newLength].position[0] + 1
+                     let newX = newCubeArray[newLength].position[0] 
+                     newX++ 
+                     newCubeArray[newLength].position[0] = newX
                      newCubeArray[newLength].color = 'darkred'
                      newCubeArray[newLength].speed = 1
 
-                     setNoCubes(newCubeArray)  //? no re-render
+                     // trotz Änderung des aktuellen DS newCubeArray[newLength] werden ALLE properties im Array geändert
+
+                     setNoCubes(newCubeArray)
 
                      // setNoCubes(cubes03 => ({
                      //     ...cubes03,
