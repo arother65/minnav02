@@ -8,8 +8,6 @@ import { Alert, Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
-
-import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -47,7 +45,7 @@ export default function ThreeDTest() {
     */
    const cubes03Init = [
       { position: [0, 0, 0], color: 'red', speed: 1 },
-      { position: [0.5, 0, 0], color: 'green', speed: 1 },
+      // { position: [0.5, 0, 0], color: 'green', speed: 1 },
    ]
 
    // push new object data to cubes03
@@ -93,10 +91,10 @@ export default function ThreeDTest() {
    const [enabled, setEnabled] = useState(true);
 
    // handling  a TABS component
-   const [valueTab, setValueTab] = useState('one');
-   const handleChangeTab = (event, newValue) => {
-      setValueTab(newValue)
-   }  // 
+   // const [valueTab, setValueTab] = useState('one');
+   // const handleChangeTab = (event, newValue) => {
+   //    setValueTab(newValue)
+   // }  // 
 
    const [value, setValue] = useState('1');
    const handleChangeTabList = (event, newValue) => {
@@ -134,12 +132,17 @@ export default function ThreeDTest() {
                   onClick={(e) => {
 
                      // const clone = [...original]
-                     let newCubeArray = [...cubes03]
+                     let newCubeArray = cubes03.filter(()=>{
+                        return true
+                     })
 
-                     let position = []
-                     newCubeArray[0].position[0] = newCubeArray[0].position[0] + 1
+                     let newLength = newCubeArray.push(newCubeArray[0])
+                     newLength--
 
-                     newCubeArray.push({ position, color: 'yellow', speed: 1 })
+                     newCubeArray[newLength].position[0] = newCubeArray[newLength].position[0] + 1
+                     newCubeArray[newLength].color = 'darkred'
+                     newCubeArray[newLength].speed = 1
+
                      setNoCubes(newCubeArray)  //? no re-render
 
                      // setNoCubes(cubes03 => ({
@@ -188,9 +191,11 @@ export default function ThreeDTest() {
 
             {visible &&
                <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
-                  <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+                  {/* param fov changes object size  */}
+                  <Canvas camera={{ position: [5, 5, 5], fov: 15 }}> 
                      <ambientLight intensity={0.5} />
                      <directionalLight position={[5, 5, 5]} />
+
                      {cubes03.map((cube, index) => (
                         <Cube02 key={index} {...cube} />
                      ))}

@@ -411,11 +411,11 @@ export default function VierGewinnt() {
 
                {/* col for Player 2 */}
                <div className="col Player2-animate">
+                  <h6>Player 2</h6>
                   <Box id={'idPlayer2Box'}
                      ref={parentCoinRef}
                      sx={{ display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3, bgcolor: 'secondary.light', m: 1 }}
                   >
-                     <h6>Player 2</h6>
                      <>
                         {noCoins && Array.from({ length: noCoins }).map((_, i) => (
                            <Avatar
