@@ -1,4 +1,6 @@
 /** 
+ *  Stand: 08.01.2026
+ * 
  *  ? ThemeProvider, Layout-file (innerhalb von BrowserRouter) verwenden für alle "children" = verwendete components
 */
 
@@ -26,13 +28,19 @@ import Dice from './pages/Dice'
 import NotFound404 from './pages/404'
 
 //
-export default function App() {
+export default function AppRouter() {
 
   //  const [visible, setVisible] = useState(true)
   const [skeletonOn, setSkeletonOn] = useState(true)  // for Skeleton-components
 
+  const domRouterOptions = {
+
+  }  //
+
   // instantiating a router-object; routes: RouteObject[], opts?: DOMRouterOpts
+  // createBrowserRouter(routes: RouteObject[], opts?: DOMRouterOpts): Router
   const loRoutes = createBrowserRouter(
+
     createRoutesFromElements(
       <Route>
         <Route exact path="/" element={<Home skeletonOn={skeletonOn} setSkeletonOn={setSkeletonOn} />} />
@@ -47,7 +55,7 @@ export default function App() {
         <Route path="*" element={<NotFound404 />} />
       </Route>
     ),  // createRoutesFromElements()
-    {}
+    domRouterOptions
   )  // createBrowserRouter()
 
   //
@@ -56,4 +64,4 @@ export default function App() {
       <RouterProvider router={loRoutes} />
     </>
   )
-}  // App()
+}  // AppRouter()

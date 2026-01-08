@@ -46,9 +46,7 @@ export default function About() {
                         edge="start"
                         aria-label="nav to home"
                         sx={{ mr: 2 }}
-                        onClick={() => {
-                           fnNavigate('/')
-                        }}
+                        onClick={() => { fnNavigate('/') }}
                      >
                         <HomeIcon sx={{ color: 'green' }} />
                      </IconButton>
