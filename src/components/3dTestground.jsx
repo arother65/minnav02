@@ -19,7 +19,7 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 
-//
+// @react-three with 3D geometric objects
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from "@react-three/drei"
 import { RigidBody } from "@react-three/rapier"
@@ -28,7 +28,7 @@ import { RoundedBox } from "@react-three/drei"
 
 // customer components
 import Dice from "./Dice3D.jsx"
-import Circle from "./Circle.jsx"
+// import Circle from "./Circle.jsx"
 
 //
 export default function ThreeDTest() {
@@ -146,10 +146,14 @@ export default function ThreeDTest() {
       <>
          {/* row with a few 3D components */}
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
-            <Box orientation='col' className='m-2 bg-dark rounded shadow' sx={{ width: '22%' }}>
-               <p>In Box-Component: Physics, RigidBody, Dice, RoundedBox</p>
+            <Box orientation='col' 
+               className='m-1 bg-dark rounded shadow' 
+               sx={{ width: '23%', border: '1px solid red' }}>
+               <p>In Box-Component: Physics, RigidBody, RoundedBox</p>
             </Box>
-            <Box orientation='col' className='m-2 bg-dark-subtle rounded shadow' sx={{ width: '75%' }}>
+            <Box orientation='col' 
+               className='m-1 bg-dark-subtle rounded shadow' 
+               sx={{ width: '75%', border: '1px solid red' }}>
                <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
                   <ambientLight intensity={0.4} />
                   <directionalLight position={[5, 8, 5]} intensity={1} />
@@ -157,7 +161,7 @@ export default function ThreeDTest() {
                   {/* ✅ Physics MUST wrap Dice */}
                   <Physics gravity={[0, -9.81, 0]}>
                      {/* Dice */}
-                     <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} />
+                     {/* <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} /> */}
                   </Physics>
 
                   <Physics>
@@ -206,10 +210,14 @@ export default function ThreeDTest() {
 
          {/* </div row> */}
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
-            <Box orientation='col' className='m-2 bg-dark rounded shadow' sx={{ width: '22%' }}>
-               Text
+            <Box orientation='col' 
+               className='m-1 bg-dark rounded shadow' 
+               sx={{ width: '23%', border: '1px solid red' }}>
+               Some Geometric-Objects
             </Box>
-            <Box orientation='col' className='m-2 bg-dark-subtle rounded shadow' sx={{ width: '75%' }}>
+            <Box orientation='col' 
+               className='m-1 bg-dark-subtle rounded shadow' 
+               sx={{ width: '75%', border: '1px solid red' }}>
                <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
                   <ambientLight intensity={0.4} />
                   <directionalLight position={[5, 8, 5]} intensity={1} />
@@ -240,20 +248,6 @@ export default function ThreeDTest() {
                   </Physics>
 
                   <Physics>
-                     {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
-                     {/* RigidBody owns the position, not RoundedBox */}
-                     {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
-                        <RoundedBox args={[2, 2, 2]}>
-                           <meshStandardMaterial color="red" />
-                        </RoundedBox>
-                     </RigidBody> */}
-
-                     {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
-                        <RoundedBox args={[2, 2, 2]}>
-                           <meshStandardMaterial color="blue" />
-                        </RoundedBox>
-                     </RigidBody> */}
-
                      <RigidBody type="fixed" position={[-3.95, 2, 1]}
                         ref={body}
                         canSleep
@@ -312,6 +306,20 @@ export default function ThreeDTest() {
                            <meshStandardMaterial color="black" />
                         </mesh>
                      </RigidBody>
+
+                     {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
+                     {/* RigidBody owns the position, not RoundedBox */}
+                     {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
+                        <RoundedBox args={[2, 2, 2]}>
+                           <meshStandardMaterial color="red" />
+                        </RoundedBox>
+                     </RigidBody> */}
+
+                     {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
+                        <RoundedBox args={[2, 2, 2]}>
+                           <meshStandardMaterial color="blue" />
+                        </RoundedBox>
+                     </RigidBody> */}
 
                      {/* <RigidBody type="fixed" position={[0, 0, 0]}>
                         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} >
