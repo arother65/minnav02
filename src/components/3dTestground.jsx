@@ -110,23 +110,45 @@ export default function ThreeDTest() {
    // 
    return (
       <>
-         <Button className='ms-5' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
-            Roll
-         </Button>
-         <Canvas
-            shadows
-            camera={{ position: [3, 3, 3], fov: 50 }}
-            style={{ height: "400px" }}
-         >
-            <ambientLight intensity={0.4} />
-            <directionalLight
-               position={[5, 5, 5]}
-               intensity={1}
-               castShadow
-            />
-            <Dice rolling={rolling} />
-            <OrbitControls enablePan={false} />
-         </Canvas>
+         <div className='row m-1 bg-dark border border-1 border-success rounded shadow'>
+            <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
+               <Button className='m-2' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
+                  Roll
+               </Button>
+            </div>
+            <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
+               <Canvas
+                  shadows
+                  camera={{ position: [3, 3, 3], fov: 50 }}
+                  style={{ height: "250px" }}
+               >
+                  <ambientLight intensity={0.4} />
+                  <directionalLight
+                     position={[5, 5, 5]}
+                     intensity={1}
+                     castShadow
+                  />
+                  <Dice rolling={rolling} />
+                  <OrbitControls enablePan={false} />
+               </Canvas>
+            </div>
+            <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
+               <Canvas
+                  shadows
+                  camera={{ position: [3, 3, 3], fov: 50 }}
+                  style={{ height: "250px" }}
+               >
+                  <ambientLight intensity={0.4} />
+                  <directionalLight
+                     position={[5, 5, 5]}
+                     intensity={1}
+                     castShadow
+                  />
+                  <Dice rolling={rolling} />
+                  <OrbitControls enablePan={false} />
+               </Canvas>
+            </div>
+         </div>
 
          <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
             <p className='text-dark'>Canvas in bs-row</p>
