@@ -15,6 +15,9 @@ import TabPanel from '@mui/lab/TabPanel';
 
 import { useEffect, useState, useRef } from 'react'
 
+import { OrbitControls } from "@react-three/drei";
+import Dice from "./Dice3D.jsx";
+
 //
 export default function ThreeDTest() {
 
@@ -101,10 +104,30 @@ export default function ThreeDTest() {
       setValue(newValue)
    }  // 
 
+   // for 3D cubes 
+   const [rolling, setRolling] = useState(false);
 
    // 
    return (
       <>
+         <Button className='ms-5' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
+            Roll
+         </Button>
+         <Canvas
+            shadows
+            camera={{ position: [3, 3, 3], fov: 50 }}
+            style={{ height: "400px" }}
+         >
+            <ambientLight intensity={0.4} />
+            <directionalLight
+               position={[5, 5, 5]}
+               intensity={1}
+               castShadow
+            />
+            <Dice rolling={rolling} />
+            <OrbitControls enablePan={false} />
+         </Canvas>
+
          <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
             <p className='text-dark'>Canvas in bs-row</p>
             <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
@@ -132,15 +155,15 @@ export default function ThreeDTest() {
                   onClick={(e) => {
 
                      // clone array "cubes03"
-                     let newCubeArray = cubes03.filter(()=>{
+                     let newCubeArray = cubes03.filter(() => {
                         return true
                      })
 
                      let newLength = newCubeArray.push(newCubeArray[0])
                      newLength--
 
-                     let newX = newCubeArray[newLength].position[0] 
-                     newX++ 
+                     let newX = newCubeArray[newLength].position[0]
+                     newX++
                      newCubeArray[newLength].position[0] = newX
                      newCubeArray[newLength].color = 'darkred'
                      newCubeArray[newLength].speed = 1
@@ -196,7 +219,7 @@ export default function ThreeDTest() {
             {visible &&
                <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
                   {/* param fov changes object size  */}
-                  <Canvas camera={{ position: [5, 5, 5], fov: 15 }}> 
+                  <Canvas camera={{ position: [5, 5, 5], fov: 15 }}>
                      <ambientLight intensity={0.5} />
                      <directionalLight position={[5, 5, 5]} />
 

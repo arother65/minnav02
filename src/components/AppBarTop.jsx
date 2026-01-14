@@ -1,5 +1,5 @@
 /*
-*   Menu item open dialog commented out due to problems with blocking the home.js page
+*   Stand: 08.01.2026
 */
 
 // imports
@@ -7,20 +7,6 @@ import { useState, forwardRef } from 'react'
 import { AppBar, Box, Backdrop, CircularProgress, IconButton, Toolbar, Menu, MenuItem, } from "@mui/material"
 import MenuIcon from '@mui/icons-material/Menu'
 import { useNavigate } from 'react-router-dom'  // or imported from react-router
-
-// import HTML-Components for Component Dialog
-/* import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle' */
-import Slide from '@mui/material/Slide'
-
-// import CircularProgress from '@mui/joy/CircularProgress'  // errs
-// import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-
-// const image = { uri: 'https://legacy.reactjs.org/logo-og.png' }
-// import logo from '../logo.svg'
 
 //
 export default function AppBarTop() {
@@ -30,15 +16,6 @@ export default function AppBarTop() {
    const open = Boolean(anchorEl)
    const handleClick = (event) => { setAnchorEl(event.currentTarget) }
    const handleClose = () => { setAnchorEl(null) }
-
-   // hooks for Component DIALOG
-   const [openDialog, setOpenDialog] = useState(false)
-   const handleOpenDialog = () => { setOpenDialog(true) }
-   const handleCloseDialog = () => { setOpenDialog(false) }
-   // fn for component DIALOG, called by a MenuItem
-   const lvTransition = forwardRef(function Transition(props, ref) {
-      return <Slide direction="up" ref={ref} {...props} />
-   })
 
    // navigation for MenuItem
    const fnNavigate = useNavigate()
