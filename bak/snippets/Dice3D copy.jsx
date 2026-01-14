@@ -16,7 +16,7 @@ const pipPositions = {
    4: [[-0.25, -0.25], [0.25, -0.25], [-0.25, 0.25], [0.25, 0.25]],
    5: [[-0.25, -0.25], [0.25, -0.25], [0, 0], [-0.25, 0.25], [0.25, 0.25]],
    6: [[-0.25, -0.25], [0.25, -0.25], [-0.25, 0], [0.25, 0], [-0.25, 0.25], [0.25, 0.25]],
-}
+};
 
 function Face({ value, position, rotation }) {
    return (
@@ -28,7 +28,7 @@ function Face({ value, position, rotation }) {
             </mesh>
          ))}
       </group>
-   )
+   );
 }
 
 // const's for readDiceValue()
@@ -64,8 +64,7 @@ function readDiceValue(quaternion) {
 
 //
 export default function Dice({ position, onResult, rolling = false }) {
-
-   const ref = useRef()
+   const ref = useRef();
 
    useFrame(() => {
       if (rolling && ref.current) {
@@ -74,7 +73,6 @@ export default function Dice({ position, onResult, rolling = false }) {
       }
    })
 
-   // 
    return (
       <>
          {/* <mesh ref={ref} castShadow>
@@ -91,7 +89,7 @@ export default function Dice({ position, onResult, rolling = false }) {
          {/* </mesh> */}
 
          {/* Rounded cube, Faces & pips */}
-         <group ref={ref} castShadow>
+         {/*          <group ref={ref} castShadow>
             <RoundedBox
                args={[1, 1, 1]}    // size of the object
                radius={0.12}       // edge roundness
@@ -107,7 +105,28 @@ export default function Dice({ position, onResult, rolling = false }) {
             <Face value={5} rotation={[Math.PI / 2, 0, 0]} />
             <Face value={3} rotation={[0, Math.PI / 2, 0]} />
             <Face value={4} rotation={[0, -Math.PI / 2, 0]} />
-         </group>
+         </group> */}
+
+         <RigidBody
+            ref={ref}
+            colliders="cuboid"
+            position={position}
+            restitution={0.4}
+            friction={0.6}
+            angularDamping={0.3}
+            linearDamping={0.2}
+            onSleep={() => {
+               const q = new THREE.Quaternion();
+               ref.current.rotation().toQuaternion(q);
+
+               const value = readDiceValue(q);
+               onResult?.(value);
+            }}
+         >
+            <RoundedBox args={[1, 1, 1]} radius={0.12} smoothness={8}>
+               <meshStandardMaterial color="white" />
+            </RoundedBox>
+         </RigidBody>
 
       </>
    )  // return()
