@@ -3,24 +3,33 @@
  */
 
 // imports 
-import { Canvas, useFrame } from '@react-three/fiber'
+import { useEffect, useState, useRef } from 'react'
+
+//
 import { Alert, Button } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Tab from '@mui/material/Tab'
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material'
+import BubbleChartOutlinedIcon from '@mui/icons-material/BubbleChartOutlined'
+
+//
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 
-import { useEffect, useState, useRef } from 'react'
 
+//
+import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from "@react-three/drei"
-import Dice from "./Dice3D.jsx"
 import { RigidBody } from "@react-three/rapier"
 import { Physics } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
 
+// customer components
+import Dice from "./Dice3D.jsx"
+import Circle from "./Circle.jsx"
 
 //
 export default function ThreeDTest() {
@@ -108,249 +117,344 @@ export default function ThreeDTest() {
       setValue(newValue)
    }  // 
 
+   // for handling Accordion component
+   const [expanded, setExpanded] = useState(false);
+   //* Event handler for <Accordion />
+   const handleExpansion = (e) => {
+      // setExpanded( (prevExpanded) => !prevExpanded );  // ok
+
+      setExpanded((expanded) => !expanded);  // ok      
+   }  // handleExpansion()
+
    // for 3D cubes 
    const [rolling, setRolling] = useState(false);
    const [results, setResults] = useState([]);
-
+   const body = useRef();
 
    // 
    return (
       <>
-         <div className='row m-1 bg-dark border border-1 border-success rounded shadow'>
-            <div className='col m-1 bg-dark-subtle border border-1 border-success rounded shadow'>
-               {/*                <Canvas shadows camera={{ position: [3, 3, 3], fov: 50 }} style={{ height: "250px" }}>
+         {/* <Circle /> */}
+
+         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '500px' }}>
+
+            {/* <div className='col m-1 bg-dark-subtle border border-1 border-success rounded shadow'> */}
+            {/*                <Canvas shadows camera={{ position: [3, 3, 3], fov: 50 }} style={{ height: "250px" }}>
                   <ambientLight intensity={0.75} />
                   <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
 
                   {/* <Physics gravity={[0, -9.81, 0]}> */}
-               {/* <RidigBody></RidigBody> */}
+            {/* <RidigBody></RidigBody> */}
 
-               {/* <Dice position={[0, 6, 0]} rolling={rolling} onResult={(v) => setResults((r) => [...r, v])} /> */}
+            {/* <Dice position={[0, 6, 0]} rolling={rolling} onResult={(v) => setResults((r) => [...r, v])} /> */}
 
-               {/* </Physics> */}
+            {/* </Physics> */}
 
-               {/* <OrbitControls enablePan={false} /> */}
-               {/* </Canvas> */}
+            {/* <OrbitControls enablePan={false} /> */}
+            {/* </Canvas> */}
 
-               <Canvas camera={{ position: [6, 6, 6], fov: 50 }}>  {/*  fov: Nähe zum Betrachter */}
-                  <ambientLight intensity={0.4} />
-                  <directionalLight position={[5, 8, 5]} intensity={1} />
+            <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
+               <ambientLight intensity={0.4} />
+               <directionalLight position={[5, 8, 5]} intensity={1} />
 
-                  {/* ✅ Physics MUST wrap Dice */}
-                  <Physics gravity={[0, -9.81, 0]}>
-                     {/* Floor */}
-                     {/*                      <RigidBody type="fixed" colliders="cuboid">
+               {/* ✅ Physics MUST wrap Dice */}
+               <Physics gravity={[0, -9.81, 0]}>
+                  {/* Floor */}
+                  {/*                      <RigidBody type="fixed" colliders="cuboid">
                         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
                            <planeGeometry args={[20, 20]} />
                            <meshStandardMaterial color="#777" />
                         </mesh>
                      </RigidBody> */}
 
-                     {/* Dice */}
-                     {/* <Dice position={[0, 5, 0]} rolling={rolling} /> */}
-                     {/* <Dice position={[0, 7, 0]} /> */}
+                  {/* Dice */}
+                  <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} />
+                  {/* <Dice position={[0, 7, 0]} /> */}
 
-                     <RoundedBox
-                        position={[0, 0, 0]}  // bottom-right, vertical, bottom-left. [0,5,0] = out of sight
-                        args={[2.5, 2.5, 2.5]}      // size of the object. [1,1,1] = small
-                        radius={0.25}          // edge roundness
-                        smoothness={8}        // geometry quality
-                        castShadow
-                     >
-                        <meshStandardMaterial color="lightgreen" />
-                     </RoundedBox>
-                  </Physics>
+                  {/*                   <RoundedBox
+                     position={[0, 0, 0]}  // bottom-right, vertical, bottom-left. [0,5,0] = out of sight
+                     args={[2.5, 2.5, 2.5]}      // size of the object. [1,1,1] = small
+                     radius={0.25}          // edge roundness
+                     smoothness={8}        // geometry quality
+                     castShadow
+                  >
+                     <meshStandardMaterial color="lightgreen" />
+                  </RoundedBox> */}
+               </Physics>
 
-                  <Physics>
-
-                     {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
-                     {/* RigidBody owns the position, not RoundedBox */}
-                     {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
+               <Physics>
+                  {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
+                  {/* RigidBody owns the position, not RoundedBox */}
+                  {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
                         <RoundedBox args={[2, 2, 2]}>
                            <meshStandardMaterial color="red" />
                         </RoundedBox>
                      </RigidBody> */}
 
-                     {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
+                  {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
                         <RoundedBox args={[2, 2, 2]}>
                            <meshStandardMaterial color="blue" />
                         </RoundedBox>
                      </RigidBody> */}
 
-                     <RigidBody type="fixed" position={[-3.95, 2, 1]}>
-                        <RoundedBox args={[2, 2, 2]}>
-                           <meshStandardMaterial color="lightblue" roughness={0.95} metalness={0.5} emissive="blue" emissiveIntensity={0.5}
-                              transparent
-                              opacity={0.25}
-                              wireframe={true}
-                           />
-                        </RoundedBox>
-                     </RigidBody>
+                  <RigidBody type="fixed" position={[-3.95, 2, 1]}
+                     ref={body}
+                     canSleep
+                     onSleep={() => {
+                        alert('onSleep()')
+                        //    // 1. Get world rotation of dice
+                        //    const q = new THREE.Quaternion();
+                        //    body.current.rotation().toQuaternion(q);
 
-                     {/*                      <RigidBody type="fixed" position={[0, 0, 0]}>
+                        //    // 2. Compute top face
+                        //    const value = readDiceValue(q);
+
+                        //    // 3. Trigger callback
+                        //    onResult?.(value);
+
+                     }}
+                  >
+                     <RoundedBox
+                        args={[2, 2, 2]}
+                        radius={0.11}
+                        smoothness={10}
+                     >
+                        <meshStandardMaterial
+                           color="#f3ead7"
+                           // roughness={0.95} metalness={0.5} 
+                           // emissive="blue" emissiveIntensity={0.5}
+                           // transparent
+                           opacity={0.95}
+                           wireframe={false}
+                           envMapIntensity={0.6}
+                           clearcoat={0.9}
+                           clearcoatRoughness={0.05}
+                           dithering
+                        />
+                     </RoundedBox>
+
+                     {/* <mesh value={1} position={[5.5, 0.5, 0.5]} rotation={[0, 0, 0]}>
+                        <sphereGeometry args={[1, 1, 1]} radius={Math.PI / 2} />
+                        <meshStandardMaterial color="black" />
+                     </mesh> */}
+
+                     <mesh value={1} position={[1.5, 0.5, 0.5]} rotation={[-0.5, 0, 0]}>
+                        <cylinderGeometry args={[0.1, 0.1, 2.5, 64]} />
+                        <meshStandardMaterial color="darkred" />
+                     </mesh>
+
+                     <mesh value={1} position={[1.75, 0.5, 0.5]} rotation={[0.5, 0, 0]}>
+                        <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
+                        <meshStandardMaterial color="darkred" />
+                     </mesh>
+
+                     <mesh value={1} position={[3, 1, 0]} rotation={[0, 0, 0]}>
+                        {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                        <ringGeometry args={[0.5, 1, 64]} />
+                        <meshStandardMaterial color="black" />
+                     </mesh>
+                  </RigidBody>
+
+                  {/* <RigidBody type="fixed" position={[0, 0, 0]}>
                         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} >
                            <planeGeometry args={[10, 10]} />
                            <meshStandardMaterial color="lightyellow" />
                         </mesh>
                      </RigidBody> */}
+               </Physics>
 
-                  </Physics>
+               <mesh value={1} position={[1, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
 
-                  <OrbitControls />
-               </Canvas>
-            </div>
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="lightblue" />
+               </mesh>
+
+               <mesh value={1} position={[2.1, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="blue" />
+               </mesh>
+
+               <mesh value={1} position={[3.2, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="darkblue" />
+               </mesh>
+
+               <OrbitControls />
+            </Canvas>
          </div>
+         {/* </div> */}
 
-         {/* tabs  */}
-         <div className='row m-2 bg-light border border-2 border-success rounded'>
-            <TabContext value={value}>
-               <TabList onChange={handleChangeTabList} aria-label="lab API tabs example">
-                  <Tab label="Rotating cube" value="1" />
-                  <Tab label="Multiple cubes" value="2" />
-                  <Tab label="Rolling dice" value="3" />
-               </TabList>
+         {/* accordion with tabs  */}
 
-               <TabPanel className='bg-secondary-subtle text-black' value="1">
-                  <div className='col'>
-                     <p className='text-dark'>Canvas in bs-row</p>
-                     <Button variant="outlined" size="medium"
-                        onClick={(e) => {
+         <Accordion className='bg-component rounded-2 m-1 shadow' expanded={expanded} onChange={handleExpansion}>
+            <AccordionSummary
+               id="idAccordion"
+               className='mt-1'
+               expandIcon={<BubbleChartOutlinedIcon sx={{ color: 'black' }} />}
+               aria-controls="idAccordion01"
+            >
+               <Typography>
+                  Cubes and Dices 3D
+               </Typography>
+            </AccordionSummary>
+            <AccordionDetails className='bg-component-top rounded'>
+               <div className='row m-2 bg-light border border-2 border-success rounded'>
+                  <TabContext value={value}>
+                     <TabList onChange={handleChangeTabList} aria-label="lab API tabs example">
+                        <Tab label="Rotating cube" value="1" />
+                        <Tab label="Multiple cubes" value="2" />
+                        <Tab label="Rolling dice" value="3" />
+                     </TabList>
 
-                           // clone array "cubes03"
-                           let newCubeArray = cubes03.filter(() => {
-                              return true
-                           })
+                     <TabPanel className='bg-secondary-subtle text-black' value="1">
+                        <div className='col'>
+                           <p className='text-dark'>Canvas in bs-row</p>
+                           <Button variant="outlined" size="medium"
+                              onClick={(e) => {
 
-                           let newLength = newCubeArray.push(newCubeArray[0])
-                           newLength--
+                                 // clone array "cubes03"
+                                 let newCubeArray = cubes03.filter(() => {
+                                    return true
+                                 })
 
-                           let newX = newCubeArray[newLength].position[0]
-                           newX++
-                           newCubeArray[newLength].position[0] = newX
-                           newCubeArray[newLength].color = 'darkred'
-                           newCubeArray[newLength].speed = 1
+                                 let newLength = newCubeArray.push(newCubeArray[0])
+                                 newLength--
 
-                           // trotz Änderung des aktuellen DS newCubeArray[newLength] werden ALLE properties im Array geändert
+                                 let newX = newCubeArray[newLength].position[0]
+                                 newX++
+                                 newCubeArray[newLength].position[0] = newX
+                                 newCubeArray[newLength].color = 'darkred'
+                                 newCubeArray[newLength].speed = 1
 
-                           setNoCubes(newCubeArray)
+                                 // trotz Änderung des aktuellen DS newCubeArray[newLength] werden ALLE properties im Array geändert
 
-                           // setNoCubes(cubes03 => ({
-                           //     ...cubes03,
-                           //    position: position,
-                           //    color: 'red'
-                           // }))
-                        }}>
-                        add cube
-                     </Button>
-                     <FormControlLabel
-                        id='idFormControl'
-                        className='m-1 bg-warning rounded shadow'
-                        control={
-                           <Switch
-                              className='m-1'
-                              checked={enabled}
-                              // color="secondary"
-                              color="error"
-                              onChange={() => {
-                                 let formControl = document.getElementById('idFormControl')
-                                 let formControlClass = formControl.getAttribute('class')
+                                 setNoCubes(newCubeArray)
 
-                                 if (enabled) {
-                                    setEnabled(false)
-                                    setVisible(false)
+                                 // setNoCubes(cubes03 => ({
+                                 //     ...cubes03,
+                                 //    position: position,
+                                 //    color: 'red'
+                                 // }))
+                              }}>
+                              add cube
+                           </Button>
+                           <FormControlLabel
+                              id='idFormControl'
+                              className='m-1 bg-warning-subtle rounded shadow'
+                              control={
+                                 <Switch
+                                    className='m-1'
+                                    checked={enabled}
+                                    // color="secondary"
+                                    color="error"
+                                    onChange={() => {
+                                       let formControl = document.getElementById('idFormControl')
+                                       let formControlClass = formControl.getAttribute('class')
 
-                                    // set new background
-                                    formControlClass = formControlClass.replace('bg-warning', 'bg-dark')
-                                    formControl.setAttribute('class', formControlClass)
-                                 } else {
-                                    setEnabled(true)
-                                    setVisible(true)
-                                    // set new background
-                                    formControlClass = formControlClass.replace('bg-dark', 'bg-warning')
-                                    formControl.setAttribute('class', formControlClass)
-                                 }
-                              }}
-                              sx={{}}
+                                       if (enabled) {
+                                          setEnabled(false)
+                                          setVisible(false)
+
+                                          // set new background
+                                          formControlClass = formControlClass.replace('bg-warning-subtle', 'bg-dark-subtle')
+                                          formControl.setAttribute('class', formControlClass)
+                                       } else {
+                                          setEnabled(true)
+                                          setVisible(true)
+                                          // set new background
+                                          formControlClass = formControlClass.replace('bg-dark-subtle', 'bg-warning-subtle')
+                                          formControl.setAttribute('class', formControlClass)
+                                       }
+                                    }}
+                                    sx={{}}
+                                 />
+                              }
+                              label={enabled ? "disable column" : "enable column"}
+                              labelPlacement="end"
                            />
+                        </div>
+
+                        {visible &&
+                           <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+                              {/* param fov changes object size  */}
+                              <Canvas camera={{ position: [5, 5, 5], fov: 15 }}>
+                                 <ambientLight intensity={0.5} />
+                                 <directionalLight position={[5, 5, 5]} />
+
+                                 {cubes03.map((cube, index) => (
+                                    <Cube02 key={index} {...cube} />
+                                 ))}
+                              </Canvas>
+                           </div>
                         }
-                        label={enabled ? "disable column" : "enable column"}
-                        labelPlacement="end"
-                     />
-                  </div>
+                        {!visible &&
+                           <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
+                              <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                                 Column switched invisible. Refresh to renew UI.
+                              </Alert>
+                           </div>
+                        }
+                     </TabPanel>
 
-                  {visible &&
-                     <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
-                        {/* param fov changes object size  */}
-                        <Canvas camera={{ position: [5, 5, 5], fov: 15 }}>
-                           <ambientLight intensity={0.5} />
-                           <directionalLight position={[5, 5, 5]} />
+                     <TabPanel className='bg-secondary' value="2">
+                        <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
+                           <p className='text-dark'>Canvas in bs-row</p>
+                           <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+                              <ambientLight intensity={0.5} />
+                              <directionalLight position={[5, 5, 5]} />
 
-                           {cubes03.map((cube, index) => (
-                              <Cube02 key={index} {...cube} />
-                           ))}
-                        </Canvas>
-                     </div>
-                  }
-                  {!visible &&
-                     <div className='col m-1 bg-light border border-2 rounded shadow' width='50%'>
-                        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-                           Column switched invisible. Refresh to renew UI.
-                        </Alert>
-                     </div>
-                  }
-               </TabPanel>
+                              {cubes02.map((cube, index) => (
+                                 // <div className='col border border-1'>
+                                 <Cube02 key={index} {...cube} />
+                                 // </div>
+                              ))}
 
-               <TabPanel className='bg-secondary' value="2">
-                  <div className='row m-2 bg-light border border-2 border-success rounded shadow'>
-                     <p className='text-dark'>Canvas in bs-row</p>
-                     <Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
-                        <ambientLight intensity={0.5} />
-                        <directionalLight position={[5, 5, 5]} />
-
-                        {cubes02.map((cube, index) => (
-                           // <div className='col border border-1'>
-                           <Cube02 key={index} {...cube} />
-                           // </div>
-                        ))}
-
-                        {/*             <mesh visible userData={{ hello: 'world' }} position={[1, 0, 0]}>
+                              {/*             <mesh visible userData={{ hello: 'world' }} position={[1, 0, 0]}>
                <sphereGeometry args={[2, 2, 2]} />
                <meshStandardMaterial color="green" />
             </mesh> */}
-                     </Canvas>
-                  </div>
-               </TabPanel>
+                           </Canvas>
+                        </div>
+                     </TabPanel>
 
-               <TabPanel className='bg-dark' value="3">
-                  <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
-                     <Button className='m-2' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
-                        Roll
-                     </Button>
-                     {/* <div style={{ position: "absolute", top: 20, left: 20 }}> */}
+                     <TabPanel className='bg-dark' value="3">
+                        <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
+                           <Button className='m-2' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
+                              Roll
+                           </Button>
+                           {/* <div style={{ position: "absolute", top: 20, left: 20 }}> */}
 
-                     Results: {results.join(", ")}
-                  </div>
+                           Results: {results.join(", ")}
+                        </div>
 
-                  {/*  Würfel */}
-                  <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
-                     <Canvas
-                        shadows
-                        camera={{ position: [3, 3, 3], fov: 50 }}
-                        style={{ height: "250px" }}
-                     >
-                        <ambientLight intensity={0.4} />
-                        <directionalLight
-                           position={[5, 5, 5]}
-                           intensity={1}
-                           castShadow
-                        />
-                        <Dice rolling={rolling} />
-                        <OrbitControls enablePan={false} />
-                     </Canvas>
-                  </div>
-               </TabPanel>
-            </TabContext>
-         </div >  {/* row */}
+                        {/*  Würfel */}
+                        <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
+                           <Canvas
+                              shadows
+                              camera={{ position: [3, 3, 3], fov: 50 }}
+                              style={{ height: "250px" }}
+                           >
+                              <ambientLight intensity={0.4} />
+                              <directionalLight
+                                 position={[5, 5, 5]}
+                                 intensity={1}
+                                 castShadow
+                              />
+                              <Dice rolling={rolling} />
+                              <OrbitControls enablePan={false} />
+                           </Canvas>
+                        </div>
+                     </TabPanel>
+                  </TabContext>
+               </div >  {/* row */}
+            </AccordionDetails>
+         </Accordion>
       </>
    )  // return()
 }  // ThreeDTest()
