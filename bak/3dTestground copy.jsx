@@ -11,13 +11,14 @@ import CheckIcon from '@mui/icons-material/Check'
 import Switch from "@mui/material/Switch"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Tab from '@mui/material/Tab'
-import { Accordion, AccordionSummary, AccordionDetails, Box, Typography } from '@mui/material'
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material'
 import BubbleChartOutlinedIcon from '@mui/icons-material/BubbleChartOutlined'
 
 //
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
+
 
 //
 import { Canvas, useFrame } from '@react-three/fiber'
@@ -27,8 +28,8 @@ import { Physics } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
 
 // customer components
-import Dice from "./Dice3D.jsx"
-import Circle from "./Circle.jsx"
+import Dice from "../src/components/Dice3D.jsx"
+import Circle from "../src/components/Circle.jsx"
 
 //
 export default function ThreeDTest() {
@@ -116,24 +117,13 @@ export default function ThreeDTest() {
       setValue(newValue)
    }  // 
 
-   // for handling Accordion components
-   const [expanded, setExpanded] = useState(false)
-   const [expanded00, setExpanded00] = useState(false)
-
+   // for handling Accordion component
+   const [expanded, setExpanded] = useState(false);
    //* Event handler for <Accordion />
    const handleExpansion = (e) => {
-      // setExpanded((prevExpanded) => !prevExpanded);  // ok
-      // setExpanded((expanded) => !expanded);  // ok      
+      // setExpanded( (prevExpanded) => !prevExpanded );  // ok
 
-      if (e.currentTarget.id === 'idAccordion00') {
-         // setExpanded00((prevExpanded) => !prevExpanded)  //?
-         setExpanded00((expanded00) => !expanded00)
-      }
-
-      if (e.currentTarget.id === 'idAccordion01') {
-         // setExpanded((prevExpanded) => !prevExpanded)  // ok
-         setExpanded((expanded) => !expanded)
-      }
+      setExpanded((expanded) => !expanded);  // ok      
    }  // handleExpansion()
 
    // for 3D cubes 
@@ -144,91 +134,44 @@ export default function ThreeDTest() {
    // 
    return (
       <>
-         {/* row with a few 3D components */}
-         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
-            <Box orientation='col' className='m-2 bg-dark rounded shadow' sx={{ width: '22%' }}>
-               <p>In Box-Component: Physics, RigidBody, Dice, RoundedBox</p>
-            </Box>
-            <Box orientation='col' className='m-2 bg-dark-subtle rounded shadow' sx={{ width: '75%' }}>
-               <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
-                  <ambientLight intensity={0.4} />
-                  <directionalLight position={[5, 8, 5]} intensity={1} />
+         {/* <Circle /> */}
 
-                  {/* ✅ Physics MUST wrap Dice */}
-                  <Physics gravity={[0, -9.81, 0]}>
-                     {/* Dice */}
-                     <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} />
-                  </Physics>
+         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '500px' }}>
 
-                  <Physics>
-                     <RigidBody type="fixed" position={[-3.95, 2, 1]}
-                        ref={body}
-                        canSleep
-                        onSleep={() => {
-                           alert('onSleep()')
-                           //    // 1. Get world rotation of dice
-                           //    const q = new THREE.Quaternion();
-                           //    body.current.rotation().toQuaternion(q);
+            {/* <div className='col m-1 bg-dark-subtle border border-1 border-success rounded shadow'> */}
+            {/*                <Canvas shadows camera={{ position: [3, 3, 3], fov: 50 }} style={{ height: "250px" }}>
+                  <ambientLight intensity={0.75} />
+                  <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
 
-                           //    // 2. Compute top face
-                           //    const value = readDiceValue(q);
+                  {/* <Physics gravity={[0, -9.81, 0]}> */}
+            {/* <RidigBody></RidigBody> */}
 
-                           //    // 3. Trigger callback
-                           //    onResult?.(value);
+            {/* <Dice position={[0, 6, 0]} rolling={rolling} onResult={(v) => setResults((r) => [...r, v])} /> */}
 
-                        }}
-                     >
-                        <RoundedBox
-                           args={[2, 2, 2]}
-                           radius={0.11}
-                           smoothness={10}
-                        >
-                           <meshStandardMaterial
-                              color="#f3ead7"
-                              // roughness={0.95} metalness={0.5} 
-                              // emissive="blue" emissiveIntensity={0.5}
-                              // transparent
-                              opacity={0.95}
-                              wireframe={false}
-                              envMapIntensity={0.6}
-                              clearcoat={0.9}
-                              clearcoatRoughness={0.05}
-                              dithering
-                           />
-                        </RoundedBox>
-                     </RigidBody>
-                  </Physics>
+            {/* </Physics> */}
 
-                  <OrbitControls />
-               </Canvas>
-            </Box>
-         </div>
+            {/* <OrbitControls enablePan={false} /> */}
+            {/* </Canvas> */}
 
-         {/* </div row> */}
-         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
-            <Box orientation='col' className='m-2 bg-dark rounded shadow' sx={{ width: '22%' }}>
-               Text
-            </Box>
-            <Box orientation='col' className='m-2 bg-dark-subtle rounded shadow' sx={{ width: '75%' }}>
-               <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
-                  <ambientLight intensity={0.4} />
-                  <directionalLight position={[5, 8, 5]} intensity={1} />
+            <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
+               <ambientLight intensity={0.4} />
+               <directionalLight position={[5, 8, 5]} intensity={1} />
 
-                  {/* ✅ Physics MUST wrap Dice */}
-                  <Physics gravity={[0, -9.81, 0]}>
-                     {/* Floor */}
-                     {/*                      <RigidBody type="fixed" colliders="cuboid">
+               {/* ✅ Physics MUST wrap Dice */}
+               <Physics gravity={[0, -9.81, 0]}>
+                  {/* Floor */}
+                  {/*                      <RigidBody type="fixed" colliders="cuboid">
                         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
                            <planeGeometry args={[20, 20]} />
                            <meshStandardMaterial color="#777" />
                         </mesh>
                      </RigidBody> */}
 
-                     {/* Dice */}
-                     <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} />
-                     {/* <Dice position={[0, 7, 0]} /> */}
+                  {/* Dice */}
+                  <Dice position={[0, 5, 0]} rolling={rolling} onResult={(value) => console.log("Dice rolled:", value)} />
+                  {/* <Dice position={[0, 7, 0]} /> */}
 
-                     {/*                   <RoundedBox
+                  {/*                   <RoundedBox
                      position={[0, 0, 0]}  // bottom-right, vertical, bottom-left. [0,5,0] = out of sight
                      args={[2.5, 2.5, 2.5]}      // size of the object. [1,1,1] = small
                      radius={0.25}          // edge roundness
@@ -237,155 +180,120 @@ export default function ThreeDTest() {
                   >
                      <meshStandardMaterial color="lightgreen" />
                   </RoundedBox> */}
-                  </Physics>
+               </Physics>
 
-                  <Physics>
-                     {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
-                     {/* RigidBody owns the position, not RoundedBox */}
-                     {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
+               <Physics>
+                  {/* <RigidBody type="fixed" position={[0, 3, 2]}>; type="dynamic" bewegt sich auf der Vertikalen von oben aus dem Bild  */}
+                  {/* RigidBody owns the position, not RoundedBox */}
+                  {/*                      <RigidBody type="fixed" position={[0, 2, 1]}>
                         <RoundedBox args={[2, 2, 2]}>
                            <meshStandardMaterial color="red" />
                         </RoundedBox>
                      </RigidBody> */}
 
-                     {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
+                  {/*                      <RigidBody type="fixed" position={[-2, 2, 1]}>
                         <RoundedBox args={[2, 2, 2]}>
                            <meshStandardMaterial color="blue" />
                         </RoundedBox>
                      </RigidBody> */}
 
-                     <RigidBody type="fixed" position={[-3.95, 2, 1]}
-                        ref={body}
-                        canSleep
-                        onSleep={() => {
-                           alert('onSleep()')
-                           //    // 1. Get world rotation of dice
-                           //    const q = new THREE.Quaternion();
-                           //    body.current.rotation().toQuaternion(q);
+                  <RigidBody type="fixed" position={[-3.95, 2, 1]}
+                     ref={body}
+                     canSleep
+                     onSleep={() => {
+                        alert('onSleep()')
+                        //    // 1. Get world rotation of dice
+                        //    const q = new THREE.Quaternion();
+                        //    body.current.rotation().toQuaternion(q);
 
-                           //    // 2. Compute top face
-                           //    const value = readDiceValue(q);
+                        //    // 2. Compute top face
+                        //    const value = readDiceValue(q);
 
-                           //    // 3. Trigger callback
-                           //    onResult?.(value);
+                        //    // 3. Trigger callback
+                        //    onResult?.(value);
 
-                        }}
+                     }}
+                  >
+                     <RoundedBox
+                        args={[2, 2, 2]}
+                        radius={0.11}
+                        smoothness={10}
                      >
-                        <RoundedBox
-                           args={[2, 2, 2]}
-                           radius={0.11}
-                           smoothness={10}
-                        >
-                           <meshStandardMaterial
-                              color="#f3ead7"
-                              // roughness={0.95} metalness={0.5} 
-                              // emissive="blue" emissiveIntensity={0.5}
-                              // transparent
-                              opacity={0.95}
-                              wireframe={false}
-                              envMapIntensity={0.6}
-                              clearcoat={0.9}
-                              clearcoatRoughness={0.05}
-                              dithering
-                           />
-                        </RoundedBox>
+                        <meshStandardMaterial
+                           color="#f3ead7"
+                           // roughness={0.95} metalness={0.5} 
+                           // emissive="blue" emissiveIntensity={0.5}
+                           // transparent
+                           opacity={0.95}
+                           wireframe={false}
+                           envMapIntensity={0.6}
+                           clearcoat={0.9}
+                           clearcoatRoughness={0.05}
+                           dithering
+                        />
+                     </RoundedBox>
 
-                        {/* <mesh value={1} position={[5.5, 0.5, 0.5]} rotation={[0, 0, 0]}>
+                     {/* <mesh value={1} position={[5.5, 0.5, 0.5]} rotation={[0, 0, 0]}>
                         <sphereGeometry args={[1, 1, 1]} radius={Math.PI / 2} />
                         <meshStandardMaterial color="black" />
                      </mesh> */}
 
-                        <mesh value={1} position={[1.5, 0.5, 0.5]} rotation={[-0.5, 0, 0]}>
-                           <cylinderGeometry args={[0.1, 0.1, 2.5, 64]} />
-                           <meshStandardMaterial color="darkred" />
-                        </mesh>
+                     <mesh value={1} position={[1.5, 0.5, 0.5]} rotation={[-0.5, 0, 0]}>
+                        <cylinderGeometry args={[0.1, 0.1, 2.5, 64]} />
+                        <meshStandardMaterial color="darkred" />
+                     </mesh>
 
-                        <mesh value={1} position={[1.75, 0.5, 0.5]} rotation={[0.5, 0, 0]}>
-                           <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
-                           <meshStandardMaterial color="darkred" />
-                        </mesh>
+                     <mesh value={1} position={[1.75, 0.5, 0.5]} rotation={[0.5, 0, 0]}>
+                        <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
+                        <meshStandardMaterial color="darkred" />
+                     </mesh>
 
-                        <mesh value={1} position={[3, 1, 0]} rotation={[0, 0, 0]}>
-                           {/* <circleGeometry args={[1.5, 64]} /> */}
+                     <mesh value={1} position={[3, 1, 0]} rotation={[0, 0, 0]}>
+                        {/* <circleGeometry args={[1.5, 64]} /> */}
 
-                           <ringGeometry args={[0.5, 1, 64]} />
-                           <meshStandardMaterial color="black" />
-                        </mesh>
-                     </RigidBody>
+                        <ringGeometry args={[0.5, 1, 64]} />
+                        <meshStandardMaterial color="black" />
+                     </mesh>
+                  </RigidBody>
 
-                     {/* <RigidBody type="fixed" position={[0, 0, 0]}>
+                  {/* <RigidBody type="fixed" position={[0, 0, 0]}>
                         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} >
                            <planeGeometry args={[10, 10]} />
                            <meshStandardMaterial color="lightyellow" />
                         </mesh>
                      </RigidBody> */}
-                  </Physics>
+               </Physics>
 
-                  <OrbitControls />
-               </Canvas>
-            </Box>
+               <mesh value={1} position={[1, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="lightblue" />
+               </mesh>
+
+               <mesh value={1} position={[2.1, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="blue" />
+               </mesh>
+
+               <mesh value={1} position={[3.2, 1, 0]} rotation={[0, 0, 0]}>
+                  {/* <circleGeometry args={[1.5, 64]} /> */}
+
+                  <octahedronGeometry args={[0.5, 32]} />
+                  <meshStandardMaterial color="darkblue" />
+               </mesh>
+
+               <OrbitControls />
+            </Canvas>
          </div>
+         {/* </div> */}
 
-         {/* first accordion with tabs  */}
-         <Accordion className='bg-component m-3 rounded shadow' expanded={expanded00} onChange={handleExpansion}>
+         {/* accordion with tabs  */}
+         <Accordion className='bg-component rounded-2 m-1 shadow' expanded={expanded} onChange={handleExpansion}>
             <AccordionSummary
-               id="idAccordion00"
-               className='mt-1'
-               expandIcon={<BubbleChartOutlinedIcon sx={{ color: 'black' }} />}
-               aria-controls="idAccordion00"
-            >
-               <Typography>
-                  3D components
-               </Typography>
-            </AccordionSummary>
-            <AccordionDetails className='bg-component-top rounded'>
-               <div className='row m-2 bg-light border border-2 border-success rounded'>
-                  <TabContext value={value}>
-                     <TabList onChange={handleChangeTabList} aria-label="lab API tabs example">
-                        <Tab label="3D balls" value="1" />
-                        <Tab label="xxx" value="2" />
-                        <Tab label="yyy" value="3" />
-                     </TabList>
-
-                     <TabPanel className='bg-secondary-subtle text-black' value="1">
-                        <Canvas camera={{ position: [6, 6, 6], fov: 50 }} shadows>  {/*  fov: Nähe zum Betrachter */}
-                           <ambientLight intensity={0.4} />
-                           <directionalLight position={[5, 8, 5]} intensity={1} />
-
-                           <mesh value={1} position={[1, 1, 0]} rotation={[0, 0, 0]}>
-                              {/* <circleGeometry args={[1.5, 64]} /> */}
-                              <octahedronGeometry args={[0.5, 32]} />
-                              <meshStandardMaterial color="lightblue" />
-                           </mesh>
-                           <mesh value={1} position={[2.1, 1, 0]} rotation={[0, 0, 0]}>
-                              {/* <circleGeometry args={[1.5, 64]} /> */}
-                              <octahedronGeometry args={[0.5, 32]} />
-                              <meshStandardMaterial color="blue" />
-                           </mesh>
-                           <mesh value={1} position={[3.2, 1, 0]} rotation={[0, 0, 0]}>
-                              {/* <circleGeometry args={[1.5, 64]} /> */}
-                              <octahedronGeometry args={[0.5, 32]} />
-                              <meshStandardMaterial color="darkblue" />
-                           </mesh>
-
-                           <OrbitControls />
-                        </Canvas>
-                     </TabPanel>
-
-                     <TabPanel className='bg-secondary' value="2">
-                     </TabPanel>
-
-                     <TabPanel className='bg-dark' value="3">
-                     </TabPanel>
-                  </TabContext>
-               </div>
-            </AccordionDetails>
-         </Accordion>
-
-         {/* second accordion with tabs  */}
-         <Accordion className='bg-component m-3 rounded shadow' expanded={expanded} onChange={handleExpansion}>
-            <AccordionSummary
-               id="idAccordion01"
+               id="idAccordion"
                className='mt-1'
                expandIcon={<BubbleChartOutlinedIcon sx={{ color: 'black' }} />}
                aria-controls="idAccordion01"
