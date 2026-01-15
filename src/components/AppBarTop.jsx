@@ -144,6 +144,17 @@ export default function AppBarTop() {
                   sx={ menuItemSx }
                   onClick={() => {
                      setTimeout(() => {
+                        fnNavigate('/Carousel3D', {})
+                     }, 1000)
+                     setLoading(true)
+                  }}>
+                  3D Carousel...
+               </MenuItem>
+
+               <MenuItem
+                  sx={ menuItemSx }
+                  onClick={() => {
+                     setTimeout(() => {
                         // handleNavigate4gewinnt('/VierGewinnt')
                         // setLoading(true)
                         fnNavigate('/VierGewinnt', {})

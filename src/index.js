@@ -7,7 +7,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import AppRouter from './App'
+import AppRouter from './AppRouter'
 
 // ReactDOM.options: optional params
 const reactDomOptions = {

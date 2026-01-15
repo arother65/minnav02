@@ -21,12 +21,11 @@ import TabPanel from '@mui/lab/TabPanel'
 
 // @react-three with 3D geometric objects
 import { Canvas } from '@react-three/fiber' // 
-import { useFrame, useThree } from '@react-three/fiber' // rotating objects
+import { useFrame } from '@react-three/fiber' // rotating objects
 import { OrbitControls } from "@react-three/drei"
 import { RigidBody } from "@react-three/rapier"
 import { Physics } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
-import * as THREE from "three"
 
 // customer components
 import Dice from "./Dice3D.jsx"
@@ -140,7 +139,6 @@ export default function ThreeDTest() {
 
       useFrame((_, delta) => {
          if (rolling && boxRef.current) {
-            // console.log('rotating:', state, delta)
             boxRef.current.rotation.x += delta
             boxRef.current.rotation.y += delta
             boxRef.current.rotation.z += delta
@@ -148,7 +146,10 @@ export default function ThreeDTest() {
       })
 
       return (
-         <mesh ref={boxRef} position={position}>
+         <mesh 
+         ref={boxRef} 
+         position={position} 
+         onClick={(event) => alert('event: ', event) }>
             <boxGeometry args={args} />
             <meshStandardMaterial color={color} />
          </mesh>
@@ -437,13 +438,10 @@ export default function ThreeDTest() {
                   <ambientLight intensity={0.5} />
                   <directionalLight position={[3, 8, 5]} intensity={0.5} />
 
-                  <mesh value={1} position={[0, 0, 0]} rotation={[0, 0, 0]}>
+                  {/* <mesh value={1} position={[0, 0, 0]} rotation={[0, 0, 0]}>
                      <boxGeometry args={[1, 1, 1]} />
                      <meshStandardMaterial color="orange" />
                   </mesh>
-
-                  {/* <Physics> */}
-                  {/* <RigidBody ref={body} type="fixed" position={[-8, 2, 1]}> */}
 
                   <mesh value={1} position={[1, 3, 3]} rotation={[0, 0, 0]}>
                      <ringGeometry args={[0.5, 1, 64]} />
@@ -453,7 +451,7 @@ export default function ThreeDTest() {
                   <mesh value={1} position={[1, 1, -1]} rotation={[0, 0, 0]}>
                      <ringGeometry args={[0.5, 1, 64]} />
                      <meshStandardMaterial color="lightgrey" />
-                  </mesh>
+                  </mesh> */}
 
                   <RotatingBox name='idRotatingBox01'
                      position={[1, 2, 2]}
@@ -468,6 +466,8 @@ export default function ThreeDTest() {
                   <RotatingBox delta={1} position={[3.5, 2, 2]} args={[1, 1, 1]} color="darkgrey" />
                   <RotatingBox delta={1} position={[3.75, 2, 2]} args={[1, 1, 1]} color="darkred" /> */}
                   <RotatingBox name='idRotatingBox02' delta={0.1} position={[4, 2, 2]} args={[1, 1, 1]} color="red" />
+
+                  <Dice />
 
                   <OrbitControls enableRotate={true} />
                </Canvas>
