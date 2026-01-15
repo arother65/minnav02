@@ -10,6 +10,7 @@ export default function Carousel3D() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
+   //
    return (
       <>
          <header>
@@ -41,8 +42,12 @@ export default function Carousel3D() {
             </AppBar>
          </header>
 
-         <div className='w-100' style={{ height: '850px' }}>
-            <App />
+         <div className='m-2 mt-20 border border-success rounded shadow' style={{ height: '300px' }}>
+            <App radius={1.8} count={10} />
+         </div>
+
+         <div className='m-2 mt-1 border border-success rounded shadow' style={{ height: '300px' }}>
+            <App radius={1.5} count={8}  />
          </div>
       </>
    )  // return()
