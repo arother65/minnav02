@@ -7,24 +7,21 @@
 import './App.css'
 import { useState } from 'react'
 
-/** newer routing-logic
- *  using react-router-dom // parent->children navigation
- */
+// newer routing-logic
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider
-} from 'react-router-dom'  // 
+} from 'react-router-dom'
 
-// import of local components
+// import of local / customer components
 import Home from './pages/Home'
 import About from './pages/About'
 import UsrPwdInputForm from './pages/UsrPwdInputForm'
 import CryptString from './pages/CryptString'
 import VierGewinnt from './pages/VierGewinnt'
 import Dice from './pages/Dice'
-
 import NotFound404 from './pages/404'
 
 //

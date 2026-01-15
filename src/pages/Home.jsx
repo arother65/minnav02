@@ -13,15 +13,15 @@ import '../App.css'
 import { ToastContainer, toast } from 'react-toastify'
 
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material"
+import Rating from '@mui/material/Rating'
+import Skeleton from '@mui/material/Skeleton'
+import LinearProgress from '@mui/material/LinearProgress'
 
 // Import tool-functions for interaction with firebase 
 import { initializeApp } from "firebase/app"
 // import firebaseConfig from '../utils/getFirebaseConfig'  // err no default export
 
-import Rating from '@mui/material/Rating'
-import Skeleton from '@mui/material/Skeleton'
-import LinearProgress from '@mui/material/LinearProgress'
-
+// customer components
 import AppBarTop from '../components/AppBarTop'
 import Footer from '../components/Footer'
 

@@ -1,13 +1,11 @@
-// getting Component
 
-// imorts
-import DiceAvatar from '../components/DiceAvatar'
-import ThreeDTest from '../components/3dTestground'
-
-
+// imports
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Container, IconButton, Toolbar, Tooltip } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+
+//
+import ThreeDTest from '../components/3dTestground'
 
 //
 export default function Dice() {
@@ -33,10 +31,6 @@ export default function Dice() {
          </header>
 
          <main>
-{/*             <div className='row border border-1 rounded'>
-               <DiceAvatar size={64} />
-            </div> */}
-
             <ThreeDTest>
                <p>three d test</p>
             </ThreeDTest>
