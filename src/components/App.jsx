@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Image, Environment, ScrollControls, useScroll, useTexture } from '@react-three/drei'
 import { easing } from 'maath'
-import '../util'
+import '../utils/util'
 
 export const App = () => (
    <Canvas camera={{ position: [0, 0, 100], fov: 15 }}>
@@ -14,7 +14,7 @@ export const App = () => (
          <Rig rotation={[0, 0, 0.15]}>
             <Carousel />
          </Rig>
-         <Banner position={[0, -0.15, 0]} />
+         {/* <Banner position={[0, -0.15, 0]} /> */}
       </ScrollControls>
       <Environment preset="dawn" background blur={0.5} />
    </Canvas>
@@ -32,12 +32,16 @@ function Rig(props) {
    return <group ref={ref} {...props} />
 }
 
-function Carousel({ radius = 1.4, count = 8 }) {
+function Carousel({ radius = 1.5, count = 8 }) {
    return Array.from({ length: count }, (_, i) => (
       <Card
          key={i}
+
+         // Bilder aus /public : ''<img1_.jpg> bis '<img10_.jpg>' 
          url={`/img${Math.floor(i % 10) + 1}_.jpg`}
+
          position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
+
          rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}
       />
    ))
