@@ -21,11 +21,12 @@ import TabPanel from '@mui/lab/TabPanel'
 
 // @react-three with 3D geometric objects
 import { Canvas } from '@react-three/fiber' // 
-import { useFrame } from '@react-three/fiber' // rotating objects
+import { useFrame, useThree } from '@react-three/fiber' // rotating objects
 import { OrbitControls } from "@react-three/drei"
 import { RigidBody } from "@react-three/rapier"
 import { Physics } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
+import * as THREE from "three"
 
 // customer components
 import Dice from "./Dice3D.jsx"
@@ -49,15 +50,6 @@ export default function ThreeDTest() {
       { position: [-6, 0, 0], color: 'darkgreen', speed: 3.0 },
    ]
 
-   /*    const cubes03 = [
-         { position: [0, 0, 0], color: 'red', speed: 1 },
-         { position: [0.5, 0, 0], color: 'green', speed: 1 },
-         { position: [-1, 0, 0], color: 'blue', speed: 1 },
-         { position: [-1.5, 0, 0], color: 'yellow', speed: 1 },
-         { position: [-2, 0, 0], color: 'darkred', speed: 1 },
-         { position: [-2.5, 0, 0], color: 'darkgreen', speed: 1 },
-      ]
-    */
    const cubes03Init = [
       { position: [0, 0, 0], color: 'red', speed: 1 },
       // { position: [0.5, 0, 0], color: 'green', speed: 1 },
@@ -137,29 +129,40 @@ export default function ThreeDTest() {
    }  // handleExpansion()
 
    // for 3D cubes 
-   const [rolling, setRolling] = useState(false);
-   const [results, setResults] = useState([]);
+   const [rolling, setRolling] = useState(false)
+   const [results, setResults] = useState([])
    const body = useRef()
 
    /** function for rotating */
-   function RotatingBox({ ivDelta, position }) {
+   const [rollStateBox, setRollStateBox] = useState(true)
+   function RotatingBox({ delta, position, color, args, rolling }) {
       const boxRef = useRef()
 
-      useFrame((state, ivDelta) => {
-         // console.log('rotating:', state, delta)
-         // boxRef.current.rotation.y += delta
-         // boxRef.current.rotation.x += delta
-         // boxRef.current.rotation.z += delta
-         boxRef.current.rotation.z += ivDelta
+      useFrame((_, delta) => {
+         if (rolling && boxRef.current) {
+            // console.log('rotating:', state, delta)
+            boxRef.current.rotation.x += delta
+            boxRef.current.rotation.y += delta
+            boxRef.current.rotation.z += delta
+         }
       })
 
       return (
          <mesh ref={boxRef} position={position}>
-            <boxGeometry args={[5, 2, 3]} />
-            <meshStandardMaterial color="hotpink" />
+            <boxGeometry args={args} />
+            <meshStandardMaterial color={color} />
          </mesh>
       )
    }  // RotatingBox()
+
+   // function FindRotatingBox() {
+   //    const { scene } = useThree();
+
+   //    const box = scene.getObjectByName("idRotatingBox01");
+   //    console.log(box);
+
+   //    return null;
+   // }  // FindRotatingBox()
 
    // 
    return (
@@ -409,10 +412,23 @@ export default function ThreeDTest() {
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '23%', border: '1px solid red' }}>
                Some ringGeometry
+               <Button id={'idBtnRoll'} className='m-3' variant="outlined" size="medium"
+                  onClick={() => {
+                     setRollStateBox((r) => !r)
+
+                     let btn = document.getElementById('idBtnRoll')
+                     if (btn.innerText === 'STOP ROTATION') {
+                        btn.innerText = 'START ROTATION'
+                     }
+                     else {
+                        btn.innerText = 'STOP ROTATION'
+                     }
+                  }}>
+                  Stop rotation
+               </Button>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark-subtle rounded shadow' sx={{ width: '75%', border: '1px solid red' }}>
-
                <Canvas camera={{ position: [5, 5, 5], fov: 50 }}
                   dpr={[1, 2]}
                   gl={{ antialias: true }}
@@ -439,34 +455,19 @@ export default function ThreeDTest() {
                      <meshStandardMaterial color="lightgrey" />
                   </mesh>
 
-                  <RotatingBox delta={10} position={[1, 2, 2]} />
-                  <RotatingBox delta={1} position={[8, 3, 1]} />
-
-                  {/* </RigidBody> */}
-                  {/* </Physics> */}
-
-                  {/* <Physics>
-                     <RigidBody ref={body} type="fixed" position={[-7, 2, 1]} rotation={[0, 0, 0]}>
-                        <mesh value={1} position={[0, -2, 2]}>
-                           <ringGeometry args={[0.5, 1, 64]} />
-                           <meshStandardMaterial color="red" />
-                        </mesh>
-                     </RigidBody>
-
-                     <RigidBody ref={body} type="fixed" position={[-6, 2, 1]} rotation={[0, 0, 0]}>
-                        <mesh value={1} position={[0, -2, 2]}>
-                           <ringGeometry args={[0.5, 1, 64]} />
-                           <meshStandardMaterial color="green" />
-                        </mesh>
-                     </RigidBody>
-
-                     <RigidBody ref={body} type="fixed" position={[-5, 2, 1]} rotation={[0, 0, 0]}>
-                        <mesh value={1} position={[0, -2, 2]}>
-                           <ringGeometry args={[0.5, 1, 64]} />
-                           <meshStandardMaterial color="orange" />
-                        </mesh>
-                     </RigidBody>
-                  </Physics> */}
+                  <RotatingBox name='idRotatingBox01'
+                     position={[1, 2, 2]}
+                     args={[1, 1, 1]}
+                     color="lightgreen"
+                     rolling={rollStateBox} />
+                  {/* <RotatingBox delta={1} position={[1.5, 2, 2]} args={[1, 1, 1]} color="lightgrey" />
+                  <RotatingBox delta={1} position={[2, 2, 2]} args={[1, 1, 1]} color="lightgrey" />
+                  <RotatingBox delta={1} position={[2.5, 2, 2]} args={[1, 1, 1]} color="lightgrey" />
+                  <RotatingBox delta={1} position={[2.75, 2, 2]} args={[1, 1, 1]} color="grey" />
+                  <RotatingBox delta={1} position={[3, 2, 2]} args={[1, 1, 1]} color="grey" />
+                  <RotatingBox delta={1} position={[3.5, 2, 2]} args={[1, 1, 1]} color="darkgrey" />
+                  <RotatingBox delta={1} position={[3.75, 2, 2]} args={[1, 1, 1]} color="darkred" /> */}
+                  <RotatingBox name='idRotatingBox02' delta={0.1} position={[4, 2, 2]} args={[1, 1, 1]} color="red" />
 
                   <OrbitControls enableRotate={true} />
                </Canvas>
