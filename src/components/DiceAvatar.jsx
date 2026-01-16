@@ -16,7 +16,7 @@ export default function DiceAvatar({ size = 64 }) {
    const [value, setValue] = useState(1);
 
    const roll = () => {
-      if (rolling) return;
+      if (rolling) return
 
       setRolling(true);
       const next = Math.floor(Math.random() * 6) + 1;

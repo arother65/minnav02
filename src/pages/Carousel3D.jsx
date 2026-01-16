@@ -42,13 +42,24 @@ export default function Carousel3D() {
             </AppBar>
          </header>
 
-         <div className='m-2 mt-20 border border-success rounded shadow' style={{ height: '300px' }}>
-            <App radius={1.8} count={10} />
+         <div className='row mt-5'>
          </div>
 
-         <div className='m-2 mt-1 border border-success rounded shadow' style={{ height: '300px' }}>
-            <App radius={1.5} count={8}  />
+         <div className='row mt-3'>
+
+            <div className='col w-50 border border-primary'>
+               <div className='m-2 mt-20 border border-success rounded shadow' style={{ height: '300px' }}>
+                  <App radius={1.8} count={10} />
+               </div>
+            </div>
+
+            <div className='col w-50 border border-primary'>
+               <div className='m-2 mt-1 border border-success rounded shadow' style={{ height: '300px' }}>
+                  <App radius={1.5} count={8} />
+               </div>
+            </div>
          </div>
+
       </>
    )  // return()
 }  // Carousel3D()

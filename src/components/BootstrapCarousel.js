@@ -3,7 +3,8 @@
 import './BootstrapCarousel.css'
 
 import logo192 from '../carouselPics/logo192.png'
-import flagDE334px200px from '../carouselPics/flagDE334px200px.png'
+// import flagDE334px200px from '../carouselPics/'
+
 import Tooltip from '@mui/material/Tooltip'
 import Stack from '@mui/material/Stack'
 import ReactSpeedometer from "react-d3-speedometer"
@@ -37,7 +38,7 @@ export default function BootstrapCarousel() {
                         </div>
                      </div>
                      <div className="carousel-item">
-                        <img src={flagDE334px200px} className="d-block w-100" alt="not loaded" />
+                        <img src='null' className="d-block w-100" alt="not loaded" />
                         <div className="carousel-caption d-none d-md-block">
                            <h5>Second slide label</h5>
                            <p>Some representative placeholder content for the second slide.</p>
@@ -94,7 +95,7 @@ export default function BootstrapCarousel() {
                      </div>
 
                      <div className="carousel-item">
-                        <img src={flagDE334px200px} className="d-block w-100" alt="not loaded" />
+                        <img src={''} className="d-block w-100" alt="not loaded" />
                         <div className="carousel-caption d-none d-md-block">
                            <h5>Second slide label</h5>
                            <p>Some representative placeholder content for the second slide.</p>
