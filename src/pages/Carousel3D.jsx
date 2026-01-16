@@ -58,19 +58,19 @@ export default function Carousel3D() {
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
                <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
-                  <App radius={1.5} count={10} rolling={rolling} />
+                  <App radius={1.5} count={8} rolling={rolling} speed={2} />
                </Canvas>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
                <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
-                  <App radius={1.5} count={8} rolling={rolling} />
+                  <App radius={1.5} count={8} rolling={rolling} speed={3} />
                </Canvas>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
                <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
-                  <App radius={1.5} count={8} rolling={rolling} />
+                  <App radius={1.5} count={8} rolling={rolling} speed={5} />
                </Canvas>
             </Box>
 

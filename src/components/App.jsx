@@ -5,20 +5,27 @@
 // 
 import * as THREE from 'three'
 import { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Image, Environment, ScrollControls, useScroll, useTexture } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber'
+import { Image, ScrollControls, useScroll, useTexture } from '@react-three/drei'
 import { easing } from 'maath'
 import '../utils/util'
 
 // The main App component that sets up the 3D scene   
-export const App = ({ radius, count, rolling }) => {
+export const App = ({ radius, count, rolling, speed }) => {
 
+   const { scene } = useThree()
+   // console.log(scene)
+
+   // 
    const boxRef = useRef()
    useFrame((_, delta) => {
       if (rolling && boxRef.current) {
-         boxRef.current.rotation.x += delta
-         boxRef.current.rotation.y += delta
-         boxRef.current.rotation.z += delta
+         boxRef.current.rotation.x += delta * speed
+         // boxRef.current.rotation.y += delta
+         // boxRef.current.rotation.z += delta
+      // console.log(scene)
+         // console.log(boxRef)
       }
    })
 
@@ -34,7 +41,7 @@ export const App = ({ radius, count, rolling }) => {
             {/* <Banner position={[0, -0.25, 0.5]} /> */}
          </ScrollControls >
       </mesh >
-   )
+   )  // return()
 }  // App()
 
 
@@ -81,7 +88,7 @@ function Carousel({ radius, count }) {
 
 function Card({ url, ...props }) {
 
-   const ref = useRef()
+   const refImg = useRef()
    const [hovered, hover] = useState(false)
 
    const pointerOver = (e) => {
@@ -95,19 +102,19 @@ function Card({ url, ...props }) {
 
    useFrame((state, delta) => {
       // when hovered, image gets enlarged: hovered ? 2.15 : 1 
-      easing.damp3(ref.current.scale, hovered ? 2.5 : 1, 0.1, delta)
+      easing.damp3(refImg.current.scale, hovered ? 2.5 : 1, 0.1, delta)
 
       // easing.damp(ref.current.material, 'radius', hovered ? 0.25 : 0.1, 0.2, delta)
       // easing.damp(ref.current.material, 'zoom', hovered ? 1 : 1.5, 0.2, delta)
    })
 
    return (
-      <Image ref={ref} url={url}
+      <Image ref={refImg} url={url}
          transparent side={THREE.DoubleSide}
          onPointerOver={pointerOver}
          onPointerOut={pointerOut}
          onClick={() => {
-            // alert(`You clicked on:\n${url}`)   // ok, gets the current image
+            alert(`You clicked on:\n${url}`)   // ok, gets the current image
             console.log(url)
          }}
          {...props}>
