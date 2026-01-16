@@ -132,7 +132,7 @@ export default function ThreeDTest() {
    const [results, setResults] = useState([])
    const body = useRef()
 
-   /** function for rotating */
+   /** function for rotating the box referenced with boxRef*/
    const [rollStateBox, setRollStateBox] = useState(true)
    function RotatingBox({ delta, position, color, args, rolling }) {
       const boxRef = useRef()
@@ -145,11 +145,12 @@ export default function ThreeDTest() {
          }
       })
 
+      // 
       return (
-         <mesh 
-         ref={boxRef} 
-         position={position} 
-         onClick={(event) => alert('event: ', event) }>
+         <mesh
+            ref={boxRef}
+            position={position}
+            onClick={(event) => alert('event: ', event)}>
             <boxGeometry args={args} />
             <meshStandardMaterial color={color} />
          </mesh>

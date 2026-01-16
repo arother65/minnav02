@@ -1,5 +1,7 @@
 // https://cydstumpel.nl/
 
+import { Badge } from '@mui/material'
+
 import * as THREE from 'three'
 import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
@@ -9,28 +11,34 @@ import '../utils/util'
 
 
 // The main App component that sets up the 3D scene   
-export const App = ( { radius, count } ) => (
-   <Canvas camera={{ position: [0, 0, 10], fov: 30 }}>
+export const App = ({ radius, count }) => (
 
-      <fog attach="fog" args={['#a79', 8.5, 12]} />
-      
-      <ScrollControls pages={4} infinite>
-         <Rig rotation={[0, 0, 0.15]}>
+   <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
+      {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
+
+      <ScrollControls pages={5} infinite>  {/* vertikaler Rollbalken */}
+         <Rig rotation={[0, 0, -4.685]}>  {/* neigt den Ring: 0,0,-x kippt vertikal */}
             <Carousel radius={radius} count={count} />
          </Rig>
-         <Banner position={[0, -0.25, 0.5]} />
-      
+
+         {/* <Banner position={[0, -0.25, 0.5]} /> */}
       </ScrollControls>
-      <Environment preset="dawn" background blur={0.5} />
+
+      {/* <Environment preset="sunset" background blur={0} /> */}
+      {/* <Environment preset="night" background blur={0.5} /> */}
    </Canvas>
 )  // App()
 
 function Rig(props) {
+
    const ref = useRef()
    const scroll = useScroll()
 
    useFrame((state, delta) => {
-      ref.current.rotation.y = -scroll.offset * (Math.PI * 2) // Rotate contents
+      // ref.current.rotation.y = -scroll.offset * (Math.PI * 2) // Rotate contents
+      ref.current.rotation.x = -scroll.offset * (Math.PI * 2) // Rotate contents vertically
+      // ref.current.rotation.z = -scroll.offset * (Math.PI * 2) // Rotate contents
+
       state.events.update() // Raycasts every frame rather than on pointer-move
 
       easing.damp3(state.camera.position, [-state.pointer.x * 2, state.pointer.y + 1.5, 10], 0.3, delta) // Move camera
@@ -51,7 +59,8 @@ function Carousel({ radius = 1.5, count = 8 }) {
 
          position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
 
-         rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}  // dreht die erzeugten Cards 
+         rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}  // dreht die erzeugten Cards und ordnet diese im Kreis an 
+      // rotation={[0, 5, 0]}
       />
    ))
 }  // Carousel()
@@ -60,12 +69,12 @@ function Card({ url, ...props }) {
    const ref = useRef()
    const [hovered, hover] = useState(false)
 
-   const pointerOver =  (e) => {
+   const pointerOver = (e) => {
       e.stopPropagation();
       hover(true);
       // alert(e.currentTarget.url);
       // console.log(ref.current)
-   } 
+   }
 
    const pointerOut = () => hover(false)
 
@@ -78,16 +87,16 @@ function Card({ url, ...props }) {
    })
 
    return (
-      <Image ref={ref} url={url} 
-         transparent side={THREE.DoubleSide} 
-         onPointerOver={pointerOver} 
-         onPointerOut={pointerOut} 
-         onClick={ () => { 
+      <Image ref={ref} url={url}
+         transparent side={THREE.DoubleSide}
+         onPointerOver={pointerOver}
+         onPointerOut={pointerOut}
+         onClick={() => {
             // alert(`You clicked on:\n${url}`)   // ok, gets the current image
             console.log(url)
          }}
          {...props}>
-      
+
          <bentPlaneGeometry args={[0.1, 1, 1, 20, 20]} />
       </Image>
    )
@@ -99,7 +108,7 @@ function Banner(props) {
    // const texture = useTexture('/work_.png')
    const texture = useTexture('/logo.svg')   // alien-1294345.svg
    texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-   
+
    const scroll = useScroll()
 
    useFrame((state, delta) => {

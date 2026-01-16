@@ -1,8 +1,12 @@
+/**
+ * 
+ */
+
+import { useNavigate } from 'react-router-dom'
+import { AppBar, Box, Typography, Toolbar, Tooltip, IconButton } from '@mui/material'
+import HomeIcon from '@mui/icons-material/Home'
 
 import { App } from '../components/App.jsx'
-import { useNavigate } from 'react-router-dom'
-import { AppBar, Toolbar, Tooltip, IconButton } from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
 import logo from '../logo.svg'
 
 //
@@ -45,21 +49,26 @@ export default function Carousel3D() {
          <div className='row mt-5'>
          </div>
 
-         <div className='row mt-3'>
+         {/* <div className='row mt-4 w-100 vh-100 justify-content-center align-items-center'> */}
+         <div className='row mt-4 m-1 w-100 h-75'>
 
-            <div className='col w-50 border border-primary'>
-               <div className='m-2 mt-20 border border-success rounded shadow' style={{ height: '300px' }}>
-                  <App radius={1.8} count={10} />
-               </div>
-            </div>
+            <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
+               <App radius={1.5} count={10} />
+            </Box>
 
-            <div className='col w-50 border border-primary'>
-               <div className='m-2 mt-1 border border-success rounded shadow' style={{ height: '300px' }}>
-                  <App radius={1.5} count={8} />
-               </div>
-            </div>
+            <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
+               <App radius={1.5} count={8} />
+            </Box>
+
+            <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
+               <App radius={1.5} count={8} />
+            </Box>
+
+            <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '20%', border: '1px solid green' }}>
+               <Typography >Ihr Spielergebnis</Typography>
+
+            </Box>
          </div>
-
       </>
    )  // return()
 }  // Carousel3D()
