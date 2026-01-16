@@ -109,10 +109,8 @@ export default function AppBarTop() {
 						</DialogActions>
 					</Dialog> */}
 
-
-
                <MenuItem
-                  sx={ menuItemSx }
+                  sx={menuItemSx}
                   onClick={() => {
                      fnNavigate('/UsrPwdInputForm')
                   }}>
@@ -120,7 +118,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={ menuItemSx }
+                  sx={menuItemSx}
                   onClick={() => {
                      fnNavigate('/CryptString')
                   }}>
@@ -128,7 +126,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={ menuItemSx }
+                  sx={menuItemSx}
                   onClick={() => {
                      setTimeout(() => {
                         // handleNavigate4gewinnt('/VierGewinnt')
@@ -141,7 +139,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={ menuItemSx }
+                  sx={menuItemSx}
                   onClick={() => {
                      setTimeout(() => {
                         fnNavigate('/Carousel3D', {})
@@ -152,7 +150,7 @@ export default function AppBarTop() {
                </MenuItem>
 
                <MenuItem
-                  sx={ menuItemSx }
+                  sx={menuItemSx}
                   onClick={() => {
                      setTimeout(() => {
                         // handleNavigate4gewinnt('/VierGewinnt')
@@ -164,7 +162,15 @@ export default function AppBarTop() {
                   Vier gewinnt
                </MenuItem>
 
-                              <MenuItem
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/SpinWheel')
+                  }}>
+                  Spinning wheel
+               </MenuItem>
+
+               <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
                      fnNavigate('/about')
