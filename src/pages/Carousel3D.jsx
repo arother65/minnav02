@@ -3,8 +3,11 @@
  */
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Box, Typography, Toolbar, Tooltip, IconButton } from '@mui/material'
+import { useState } from 'react'
+import { AppBar, Box, Button, Typography, Toolbar, Tooltip, IconButton } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+
+import { Canvas } from '@react-three/fiber'
 
 import { App } from '../components/App.jsx'
 import logo from '../logo.svg'
@@ -12,6 +15,7 @@ import logo from '../logo.svg'
 //
 export default function Carousel3D() {
 
+   const [rolling, setRolling] = useState(false)
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
    //
@@ -53,22 +57,47 @@ export default function Carousel3D() {
          <div className='row mt-4 m-1 w-100 h-75'>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
-               <App radius={1.5} count={10} />
+               <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
+                  <App radius={1.5} count={10} rolling={rolling} />
+               </Canvas>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
-               <App radius={1.5} count={8} />
+               <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
+                  <App radius={1.5} count={8} rolling={rolling} />
+               </Canvas>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
-               <App radius={1.5} count={8} />
+               <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
+                  <App radius={1.5} count={8} rolling={rolling} />
+               </Canvas>
             </Box>
 
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '20%', border: '1px solid green' }}>
-               <Typography >Ihr Spielergebnis</Typography>
-
+               <Typography variant="h6" component="h6">Ihr Spielergebnis</Typography>
             </Box>
          </div>
+
+         {/* Bedienelemente */}
+         <div className='row mt-1 w-100 justify-content-center align-items-center'>
+            <div className='col m-2'>
+               <Button className='m-1' variant="contained" color="primary"
+                  onClick={() => {
+                     setRolling(true)
+                  }}>
+                  Start
+               </Button>
+               <Button className='m-1' variant="contained" color="secondary"
+                  onClick={() => { setRolling(false) }}>
+                  Stop
+               </Button>
+            </div>
+            <div className='col m-1'>
+
+            </div>
+         </div>
+
       </>
    )  // return()
 }  // Carousel3D()

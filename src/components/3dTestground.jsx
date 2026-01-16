@@ -150,7 +150,8 @@ export default function ThreeDTest() {
          <mesh
             ref={boxRef}
             position={position}
-            onClick={(event) => alert('event: ', event)}>
+            onClick={(event) => alert('event: ', event)}
+         >
             <boxGeometry args={args} />
             <meshStandardMaterial color={color} />
          </mesh>

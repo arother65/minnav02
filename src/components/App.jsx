@@ -1,7 +1,8 @@
-// https://cydstumpel.nl/
+/**
+ *  https://cydstumpel.nl/
+ */
 
-import { Badge } from '@mui/material'
-
+// 
 import * as THREE from 'three'
 import { useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
@@ -9,25 +10,33 @@ import { Image, Environment, ScrollControls, useScroll, useTexture } from '@reac
 import { easing } from 'maath'
 import '../utils/util'
 
-
 // The main App component that sets up the 3D scene   
-export const App = ({ radius, count }) => (
+export const App = ({ radius, count, rolling }) => {
 
-   <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
-      {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
+   const boxRef = useRef()
+   useFrame((_, delta) => {
+      if (rolling && boxRef.current) {
+         boxRef.current.rotation.x += delta
+         boxRef.current.rotation.y += delta
+         boxRef.current.rotation.z += delta
+      }
+   })
 
-      <ScrollControls pages={5} infinite>  {/* vertikaler Rollbalken */}
-         <Rig rotation={[0, 0, -4.685]}>  {/* neigt den Ring: 0,0,-x kippt vertikal */}
-            <Carousel radius={radius} count={count} />
-         </Rig>
+   //
+   return (
+      <mesh ref={boxRef}>
+         <ScrollControls pages={5} infinite > {/* vertikaler Rollbalken */}
+            <Rig rotation={[0, 0, -4.685]} > {/* neigt den Ring: 0,0,-x kippt vertikal */}
+               <Carousel
+                  radius={radius}
+                  count={count} />
+            </Rig >
+            {/* <Banner position={[0, -0.25, 0.5]} /> */}
+         </ScrollControls >
+      </mesh >
+   )
+}  // App()
 
-         {/* <Banner position={[0, -0.25, 0.5]} /> */}
-      </ScrollControls>
-
-      {/* <Environment preset="sunset" background blur={0} /> */}
-      {/* <Environment preset="night" background blur={0.5} /> */}
-   </Canvas>
-)  // App()
 
 function Rig(props) {
 
@@ -48,24 +57,30 @@ function Rig(props) {
    return <group ref={ref} {...props} />
 }  // Rig()
 
-function Carousel({ radius = 1.5, count = 8 }) {
+// function Carousel({ radius = 1.5, count = 8 }) {
+function Carousel({ radius, count }) {
 
-   return Array.from({ length: count }, (_, i) => (
-      <Card
-         key={i}
+   return (
+      // <mesh ref={cardRef}>
+      Array.from({ length: count }, (_, i) => (
+         <Card
+            key={i}
 
-         // Bilder aus /public : ''<img1_.jpg> bis '<img10_.jpg>' 
-         url={`/img${Math.floor(i % 8) + 1}_.jpg`}
+            // Bilder aus /public : ''<img1_.jpg> bis '<img10_.jpg>' 
+            url={`/img${Math.floor(i % 8) + 1}_.jpg`}
 
-         position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
+            position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
 
-         rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}  // dreht die erzeugten Cards und ordnet diese im Kreis an 
-      // rotation={[0, 5, 0]}
-      />
-   ))
+            rotation={[0, Math.PI + (i / count) * Math.PI * 2, 0]}  // dreht die erzeugten Cards und ordnet diese im Kreis an 
+         // rotation={[0, 5, 0]}
+         />
+      ))
+      // </mesh >
+   )
 }  // Carousel()
 
 function Card({ url, ...props }) {
+
    const ref = useRef()
    const [hovered, hover] = useState(false)
 
@@ -82,8 +97,8 @@ function Card({ url, ...props }) {
       // when hovered, image gets enlarged: hovered ? 2.15 : 1 
       easing.damp3(ref.current.scale, hovered ? 2.5 : 1, 0.1, delta)
 
-      easing.damp(ref.current.material, 'radius', hovered ? 0.25 : 0.1, 0.2, delta)
-      easing.damp(ref.current.material, 'zoom', hovered ? 1 : 1.5, 0.2, delta)
+      // easing.damp(ref.current.material, 'radius', hovered ? 0.25 : 0.1, 0.2, delta)
+      // easing.damp(ref.current.material, 'zoom', hovered ? 1 : 1.5, 0.2, delta)
    })
 
    return (
