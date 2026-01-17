@@ -55,7 +55,6 @@ export default function Carousel3D() {
 
          {/* <div className='row mt-4 w-100 vh-100 justify-content-center align-items-center'> */}
          <div className='row mt-4 m-1 w-100 h-75'>
-
             <Box orientation='col' className='m-1 bg-dark rounded shadow' sx={{ width: '25%', border: '1px solid red' }}>
                <Canvas camera={{ position: [0, 0, 0], fov: 15 }}>
                   <App radius={1.5} count={8} rolling={rolling} speed={2} />

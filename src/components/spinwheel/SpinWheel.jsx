@@ -26,24 +26,28 @@ function HtmlOverlay({ spin, winner }) {
       <Html>
          <div
             style={{
-               position: "absolute",
-               top: 20,
-               left: 20,
+               position: "static",
+               top: 1,
+               left: 150,
+               right: 0,
                color: "black",
                fontFamily: "sans-serif",
                backgroundColor: "lightgrey",
                textAlign: "center"
             }}
          >
-            <button className="btn btn-primary" onClick={spin} style={{ fontSize: 18 }}>
+            <button className="btn btn-secondary" onClick={spin} style={{ fontSize: 16 }}>
                SPIN 🎡
             </button>
 
             {winner && (
-               <p style={{ marginTop: 10 }}>
+               <p style={{ marginTop: 1 }}>
                   Winner: <h6>{winner}</h6>
                </p>
             )}
+         </div>
+         <div>
+            <p>text </p>
          </div>
       </Html>
    )
@@ -96,6 +100,7 @@ export default function SpinWheel() {
 
    const spin = () => {
       if (spinning.current) return;
+
       spinning.current = true;
 
       const spins = Math.random() * 6 + 6; // 6–12 spins
@@ -111,6 +116,7 @@ export default function SpinWheel() {
 
          if (progress < 1) {
             requestAnimationFrame(animate);
+
          } else {
             spinning.current = false;
 
@@ -127,17 +133,16 @@ export default function SpinWheel() {
 
             setWinner(SEGMENTS[index].label);
          }
-      };
-
+      }
       requestAnimationFrame(animate);
-   };
+   }
 
    return (
       <>
          <Wheel wheelRef={wheelRef} />
 
          {/* Pointer */}
-         <mesh position={[0, 2.3, 0.6]}>
+         <mesh position={[0.01, 2.09, -0.1]}>
             <coneGeometry args={[0.15, 0.4, 32]} />
             <meshStandardMaterial color="black" />
          </mesh>
@@ -145,5 +150,5 @@ export default function SpinWheel() {
          {/* HTML overlay */}
          <HtmlOverlay spin={spin} winner={winner} />
       </>
-   );
-}
+   )  // return()
+}  // SpinWheel()

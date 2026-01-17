@@ -2,10 +2,10 @@
  * SpinningWheel.jsx
  */
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Box, AppBar, Toolbar, Tooltip, IconButton } from '@mui/material'
+import { AppBar, Box, Button, Toolbar, Tooltip, IconButton } from '@mui/material'
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import SpinWheel from "../components/spinwheel/SpinWheel";
@@ -22,19 +22,30 @@ export default function SpinningWheel() {
    const spinRef = useRef();
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
+   // reload of scenes
+   const [reload, setReload] = useState(true)  // reload trigger
+   useEffect(() => {
+      // fetch data here
+   }, [reload])
+
+   const [reload01, setReload01] = useState(true)  // reload trigger
+   useEffect(() => {
+      // fetch data here
+   }, [reload01])
+
    // 
    function PhysicsBall({ position, color }) {
       // Create a physics-enabled sphere
       const [ref, api] = useSphere(() => ({
-         mass: 2,
+         mass: 20,
          // position: [0, 2, 0],
          position: position,
-         args: [1.5], // radius of the Ball
+         args: [1.25], // radius of the Ball
       }))
 
       return (
          // Anzahl der Segmente des Balles in: args={[1.5, 16, 16] 
-         <Sphere ref={ref} args={[1.5, 64, 64]}>
+         <Sphere ref={ref} args={[1.25, 64, 64]}>
             <meshStandardMaterial color={color} />
          </Sphere>
       )
@@ -85,46 +96,121 @@ export default function SpinningWheel() {
                </Toolbar>
             </AppBar>
          </header>
-         <div className='row m-4'></div>
+         <div className='row m-5'></div>
 
          {/* Wheel  */}
-         <Box orientation='row'
-            className='m-5 bg-dark-subtle rounded shadow vh-100'
-            sx={{ width: '95%', border: '1px solid red' }}
-         >
-            <Canvas camera={{ position: [0, 4, 5], fov: 50 }}>
-               <ambientLight intensity={0.6} />
-               <directionalLight position={[5, 5, 5]} />
+         <div className='row mt-1 m-1 w-100'>
+            <Box orientation='col' className='m-1 bg-dark rounded shadow ' sx={{ width: '15%', border: '1px solid green' }}
+            >
+               <Tooltip title='press to spin' arrow>
+                  <Button className='m-1' variant="contained" color="primary"
+                     onClick={() => {
+                        //
+                     }}>
+                     spin wheel
+                  </Button>
+               </Tooltip>
+               {/* <HtmlOverlay spin={spin} winner={winner} /> */}
+            </Box>
+            <Box orientation='col'
+               className='m-1 bg-dark-subtle rounded shadow '
+               sx={{ width: '83%', minHeight: '200px', border: '1px solid red' }}
+            >
+               <Canvas camera={{ position: [0, 4, 5], fov: 50 }}>
+                  <ambientLight intensity={0.6} />
+                  <directionalLight position={[5, 5, 5]} />
 
-               <SpinWheel spinRef={spinRef} />
-
-               <OrbitControls />
-            </Canvas>
-         </Box>
+                  <SpinWheel spinRef={spinRef} />
+                  <OrbitControls />
+               </Canvas>
+            </Box>
+         </div>
 
          {/* Ball /Bälle */}
-         <Box orientation='row'
-            className='m-5 bg-dark-subtle rounded shadow vh-100'
-            sx={{ width: '95%', border: '1px solid red' }}
-         >
-            {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
-            <Canvas camera={{ position: [0, 1, 20] }}>
+         <div className='row mt-1 m-1 w-100'>
+            <Box orientation='col'
+               className='m-1 bg-dark rounded shadow '
+               sx={{ width: '15%', border: '1px solid green' }}
+            >
+               <Tooltip title='press 2x to reload' arrow>
+                  <Button className='m-1' variant="contained" color="primary"
+                     onClick={() => {
+                        setReload(reload => !reload)
+                     }}>
+                     Reload Scene
+                  </Button>
+               </Tooltip>
+            </Box>
+            <Box orientation='col'
+               className='m-1 bg-dark-subtle rounded shadow '
+               sx={{ width: '83%', minHeight: '200px', border: '1px solid red' }}
+            >
+               {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
+               {reload &&
+                  <Canvas camera={{ position: [0, 1, 20] }}>
+                     <ambientLight intensity={0.5} />
+                     <directionalLight position={[5, 5, 5]} />
 
-               <ambientLight intensity={0.5} />
-               <directionalLight position={[5, 5, 5]} />
+                     {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
+                     <Physics gravity={[0, -10, 10]}>
+                        <PhysicsBall position={[-1, 0, -1]} color={'blue'} />
+                        <PhysicsBall position={[-1.5, 0, -2]} color={'lightblue'} />
+                        <PhysicsBall position={[-2, 0, -3]} color={'darkblue'} />
 
-               <Physics gravity={[0, -5, 0]}>
-                  <PhysicsBall position={[-1, 0, -2]} color={'blue'} />
-                  <PhysicsBall position={[-2, 0, -2]} color={'orange'} />
-                  <PhysicsBall position={[-3, 0, -2]} color={'red'} />
-                  <PhysicsBall position={[-4, 0, -2]} color={'green'} />
-                  <PhysicsBall position={[-5, 0, -2]} color={'grey'} />
-                  <PhysicsBall position={[-6, 0, -2]} color={'purple'} />
-                  <PhysicsBall position={[-7, 0, -2]} color={'darkpurple'} />
-                  <Ground />
-               </Physics>
-            </Canvas>
-         </Box>
+                        {/* <PhysicsBall position={[1, 0, -1]} color={'green'} />
+                  <PhysicsBall position={[2, 0, -1]} color={'grey'} />
+                  <PhysicsBall position={[3, 0, -1]} color={'purple'} /> */}
+
+                        {/* <PhysicsBall position={[-7, 0, -1]} color={'darkpurple'} /> */}
+                        {/* <Ground /> */}
+                     </Physics>
+                  </Canvas>
+               }
+            </Box>
+         </div>
+
+         {/* Ball /Bälle */}
+         <div className='row mt-1 m-1 w-100'>
+            <Box orientation='col'
+               className='m-1 bg-dark rounded shadow '
+               sx={{ width: '15%', border: '1px solid green' }}
+            >
+               <Tooltip title='press 2x to reload' arrow>
+                  <Button className='m-1' variant="contained" color="primary"
+                     onClick={() => {
+                        setReload01(reload01 => !reload01)
+                     }}>
+                     Reload Scene
+                  </Button>
+               </Tooltip>
+            </Box>
+            <Box orientation='col'
+               className='m-1 bg-dark-subtle rounded shadow '
+               sx={{ width: '83%', minHeight: '200px', border: '1px solid green' }}
+            >
+               {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
+               {reload01 &&
+                  <Canvas camera={{ position: [0, 1, 10] }}>
+                     <ambientLight intensity={0.5} />
+                     <directionalLight position={[5, 5, 5]} />
+
+                     {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
+                     <Physics gravity={[0, -10, 20]}>
+                        {/* <PhysicsBall position={[1, 0, -1]} color={'blue'} />
+                  <PhysicsBall position={[1.5, 0.5, -2]} color={'lightblue'} />
+                  <PhysicsBall position={[2, 1.0, -3]} color={'darkblue'} /> */}
+
+                        <PhysicsBall position={[1, 0, -1]} color={'green'} />
+                        <PhysicsBall position={[1, 0, -2]} color={'grey'} />
+                        <PhysicsBall position={[1, 0, -3]} color={'purple'} />
+
+                        {/* <PhysicsBall position={[-7, 0, -1]} color={'darkpurple'} /> */}
+                        <Ground />
+                     </Physics>
+                  </Canvas>
+               }
+            </Box>
+         </div>
       </>
    )
 }  // SpinningWheel()
