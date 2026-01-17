@@ -3,10 +3,22 @@
 */
 
 // imports
-import { useState, forwardRef } from 'react'
-import { AppBar, Box, Backdrop, CircularProgress, IconButton, Toolbar, Menu, MenuItem, } from "@mui/material"
+import { useState } from 'react'
+import {
+   AppBar, Box, Backdrop, Card, CardContent, CircularProgress, IconButton,
+   Typography, Toolbar, Menu, MenuItem,
+}
+   from "@mui/material"
+
 import MenuIcon from '@mui/icons-material/Menu'
 import { useNavigate } from 'react-router-dom'  // or imported from react-router
+
+// for 3D animations
+import { Canvas } from "@react-three/fiber";
+
+// animating Ball
+import { Sphere } from '@react-three/drei'
+import { Physics, useSphere } from '@react-three/cannon'
 
 //
 export default function AppBarTop() {
@@ -36,6 +48,25 @@ export default function AppBarTop() {
          backgroundColor: 'primary.light',
       }
    }  // 
+
+   // 
+   function PhysicsBall({ position, color }) {
+      // Create a physics-enabled sphere
+      const [ref, api] = useSphere(() => ({
+         mass: 20,
+         // position: [0, 2, 0],
+         position: position,
+         args: [1.25], // radius of the Ball
+      }))
+
+      return (
+         // Anzahl der Segmente des Balles in: args={[1.5, 16, 16] 
+         <Sphere ref={ref} args={[1.25, 64, 64]}>
+            <meshStandardMaterial color={color} />
+         </Sphere>
+      )  // return()
+   }  // PhysicsBall()
+
 
    // 
    return (
@@ -129,10 +160,8 @@ export default function AppBarTop() {
                   sx={menuItemSx}
                   onClick={() => {
                      setTimeout(() => {
-                        // handleNavigate4gewinnt('/VierGewinnt')
-                        // setLoading(true)
                         fnNavigate('/Dice', {})
-                     }, 1000)
+                     }, 4000)
                      setLoading(true)
                   }}>
                   Würfeln...
@@ -162,6 +191,7 @@ export default function AppBarTop() {
                   Vier gewinnt
                </MenuItem>
 
+               {/* goto /Spinwheel */}
                <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
@@ -180,7 +210,33 @@ export default function AppBarTop() {
 
                <Backdrop open={loading} sx={{ zIndex: 500 }} onClick={() => { setLoading(false) }}>
                   <Box sx={{ display: 'flex' }}>
-                     <CircularProgress color="midnightblue" sx={{ position: 'fixed' }} />
+                     <Card >
+                        <CardContent>
+                           <Typography gutterBottom variant="h5" component="div">
+                              ...navigating
+                           </Typography>
+                           {/* <CircularProgress color="midnightblue" sx={{ position: 'relative' }} /> */}
+
+                           {/* 3d animation  */}
+                           <Box orientation='col w-100'
+                              className='m-1 bg-dark-subtle rounded shadow '
+                              sx={{ minHeight: '150px', border: '1px solid green' }}
+                           >
+                              {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
+                              <Canvas camera={{ position: [0, 1, 10] }}>
+                                 <ambientLight intensity={0.5} />
+                                 <directionalLight position={[5, 5, 5]} />
+
+                                 {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
+                                 <Physics gravity={[0, 0, 10]}>
+                                    <PhysicsBall position={[1, 0, -3]} color={'green'} />
+                                    <PhysicsBall position={[1, 0, -4]} color={'lightgreen'} />
+                                    <PhysicsBall position={[1, 0, 1]} color={'darkgreen'} />
+                                 </Physics>
+                              </Canvas>
+                           </Box>
+                        </CardContent>
+                     </Card>
                   </Box>
                </Backdrop>
             </Menu>

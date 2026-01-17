@@ -47,7 +47,6 @@ export default function Home({ skeletonOn, setSkeletonOn }) {
 
    // useState()-hooks for Skeleton
    const [value, setValue] = useState(1)  // for setting the Rating-component
-   // const [skeletonOn, setSkeletonOn] = useState(true)  // for Skeleton-components
 
    // handler-functions 
    const skeletonHandler = () => {

@@ -195,17 +195,18 @@ export default function SpinningWheel() {
                      <directionalLight position={[5, 5, 5]} />
 
                      {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
-                     <Physics gravity={[0, -10, 20]}>
-                        {/* <PhysicsBall position={[1, 0, -1]} color={'blue'} />
-                  <PhysicsBall position={[1.5, 0.5, -2]} color={'lightblue'} />
-                  <PhysicsBall position={[2, 1.0, -3]} color={'darkblue'} /> */}
-
-                        <PhysicsBall position={[1, 0, -1]} color={'green'} />
-                        <PhysicsBall position={[1, 0, -2]} color={'grey'} />
-                        <PhysicsBall position={[1, 0, -3]} color={'purple'} />
-
+                     <Physics gravity={[0, -10, 10]}>
+{/*                         <PhysicsBall position={[1, 0, -10]} color={'blue'} />
+                        <PhysicsBall position={[1, 0, -20]} color={'lightblue'} />
+                        <PhysicsBall position={[1, 0, -20]} color={'darkblue'} /> */}
                         {/* <PhysicsBall position={[-7, 0, -1]} color={'darkpurple'} /> */}
                         <Ground />
+                     </Physics>
+
+                     <Physics gravity={[0, 0, 10]}>
+                        <PhysicsBall position={[1, 0, -3]} color={'green'} />
+                        <PhysicsBall position={[1, 0, -4]} color={'lightgreen'} />
+                        <PhysicsBall position={[1, 0, 1]} color={'darkgreen'} />
                      </Physics>
                   </Canvas>
                }
