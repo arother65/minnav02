@@ -209,35 +209,33 @@ export default function AppBarTop() {
                </MenuItem>
 
                <Backdrop open={loading} sx={{ zIndex: 500 }} onClick={() => { setLoading(false) }}>
-                  <Box sx={{ display: 'flex' }}>
-                     <Card >
-                        <CardContent>
-                           <Typography gutterBottom variant="h5" component="div">
-                              ...navigating
-                           </Typography>
-                           {/* <CircularProgress color="midnightblue" sx={{ position: 'relative' }} /> */}
+                  <Card >
+                     <CardContent>
+                        <Typography gutterBottom variant="h6" component="div">
+                           ...navigating
+                        </Typography>
+                        {/* <CircularProgress color="midnightblue" sx={{ position: 'relative' }} /> */}
 
-                           {/* 3d animation  */}
-                           <Box orientation='col w-100'
-                              className='m-1 bg-dark-subtle rounded shadow '
-                              sx={{ minHeight: '150px', border: '1px solid green' }}
-                           >
-                              {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
-                              <Canvas camera={{ position: [0, 1, 10] }}>
-                                 <ambientLight intensity={0.5} />
-                                 <directionalLight position={[5, 5, 5]} />
+                        {/* 3d animation  */}
+                        <Box orientation='col'
+                           className='m-1 bg-dark-subtle rounded shadow '
+                           sx={{ minHeight: '100px', minWidth: '150px', border: '1px solid green' }}
+                        >
+                           {/* von oben die Szene betrachten: camera={{ position: [0, 5, 0] }} */}
+                           <Canvas camera={{ position: [0, 1, 10] }}>
+                              <ambientLight intensity={0.5} />
+                              <directionalLight position={[5, 5, 5]} />
 
-                                 {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
-                                 <Physics gravity={[0, 0, 10]}>
-                                    <PhysicsBall position={[1, 0, -3]} color={'green'} />
-                                    <PhysicsBall position={[1, 0, -4]} color={'lightgreen'} />
-                                    <PhysicsBall position={[1, 0, 1]} color={'darkgreen'} />
-                                 </Physics>
-                              </Canvas>
-                           </Box>
-                        </CardContent>
-                     </Card>
-                  </Box>
+                              {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
+                              <Physics gravity={[0, 0, 20]}>
+                                 <PhysicsBall position={[1, 0, -3]} color={'lightgreen'} />
+                                 <PhysicsBall position={[1, 0, -2]} color={'green'} />
+                                 <PhysicsBall position={[1, 0, -1]} color={'darkgreen'} />
+                              </Physics>
+                           </Canvas>
+                        </Box>
+                     </CardContent>
+                  </Card>
                </Backdrop>
             </Menu>
 

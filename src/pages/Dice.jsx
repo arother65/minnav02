@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
-//
+// custom components
 import ThreeDTest from '../components/3dTestground'
 
 //

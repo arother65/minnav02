@@ -29,6 +29,7 @@ import { RoundedBox } from "@react-three/drei"
 
 // customer components
 import Dice from "./Dice3D.jsx"
+import { Explosions, ExplodingWall } from '../components/Explosions'
 
 //
 export default function ThreeDTest() {
@@ -170,6 +171,17 @@ export default function ThreeDTest() {
    // 
    return (
       <>
+         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
+            <Box orientation='col'
+               className='m-1 bg-dark rounded shadow'
+               sx={{ width: '23%', border: '1px solid red' }}>
+               <p>exploding balls, click on one...</p>
+            </Box>
+
+            <Explosions />
+         </div>
+         {/* <ExplodingWall /> */}
+
          {/* row with a few 3D components */}
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
             <Box orientation='col'
