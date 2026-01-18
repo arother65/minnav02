@@ -179,7 +179,7 @@ export default function ThreeDTest() {
             <CuboidCollider args={[10, 0.1, 10]} />
          </RigidBody>
       )
-   }
+   }  // Ground()
 
    // 
    return (
@@ -704,9 +704,9 @@ export default function ThreeDTest() {
 
                      <TabPanel className='bg-dark' value="3">
                         <div className='col m-1 bg-light border border-1 border-success rounded shadow'>
-                           <Button className='m-2' variant="outlined" size="medium" 
-                              onClick={ () => { 
-                                 setRolling((rolling) => !rolling) 
+                           <Button className='m-2' variant="outlined" size="medium"
+                              onClick={() => {
+                                 setRolling((rolling) => !rolling)
                                  setResult(result)
                               }}>
                               Roll
@@ -735,8 +735,8 @@ export default function ThreeDTest() {
                                  {/* <DiceCup position={[0, 2, 0]} /> */}
 
                                  <Dice rolling={rolling} position={[0, 0.5, 0]}
-                                    onResult={  
-                                       (result) => { 
+                                    onResult={
+                                       (result) => {
                                           console.log("🎲 Rolled:", result)
                                           setResult(result)
                                        }} />

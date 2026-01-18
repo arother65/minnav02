@@ -2,7 +2,7 @@
 // created with util SASS from SCSS-source code
 import './BootstrapCarousel.css'
 
-import logo192 from '../carouselPics/logo192.png'
+import logo192 from './logo192.png'
 // import flagDE334px200px from '../carouselPics/'
 
 import Tooltip from '@mui/material/Tooltip'
