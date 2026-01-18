@@ -110,7 +110,7 @@ export default function Pyramid3D() {
    return (
       <div className="w-full h-screen">
          <Canvas camera={{ position: [5, 5, 5], fov: 100 }}
-            fog={['#3b1c5a', 10, 40]}   // color, near, far
+            // fog={['#3b1c5a', 10, 40]}   // color, near, far
             shadows
          >
             <ambientLight intensity={0.4} />
@@ -150,26 +150,29 @@ export default function Pyramid3D() {
 
 
             {/* Wall components */}
-            <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./flags/img1_.jpg'} />
+            <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            {/* <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./flags/img1_.jpg'} /> */}
             {/* <Wall position={[5, 0, 0]} color='darkblue' /> */}
 
-            <Wall position={[6, 0, 0]} color='blue' />
-            <Wall position={[7, 0, 0]} color='lightblue' />
+            <Wall position={[6, 0, 0]} color='blue' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 0, 0]} color='lightblue' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 1, 0]} color='darkred' />
-            <Wall position={[6, 1, 0]} color='red' />
-            <Wall position={[7, 1, 0]} color='orange' />
+            <Wall position={[5, 1, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 1, 0]} color='red' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 1, 0]} color='orange' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 2, 0]} color='darkgreen' />
-            <Wall position={[6, 2, 0]} color='green' />
-            <Wall position={[7, 2, 0]} color='lightgreen' />
+            <Wall position={[5, 2, 0]} color='darkgreen' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 2, 0]} color='green' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 2, 0]} color='lightgreen' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 3, 0]} color='darkred' />
-            <Wall position={[6, 3, 0]} color='beige' />
-            <Wall position={[7, 3, 0]} color='darkred' />
+            <Wall position={[5, 3, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 3, 0]} color='beige' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 3, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+
+            <Wall position={[-10, 0, 2]} color='darkblue' />   {/*ivTexture={'./damaged_plaster_diff_2k.jpg'} /> */}
+            <Wall position={[-10, 1, 2]} color='darkblue' />
 
             <Ground />
-
             <OrbitControls />
          </Canvas>
 
