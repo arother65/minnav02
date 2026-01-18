@@ -11,7 +11,6 @@ import { useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { Physics, RigidBody } from '@react-three/rapier'
-import { GridKeyboardArrowRight } from '@mui/x-data-grid'
 
 // local functions
 function Fragment({ velocity }) {

@@ -23,13 +23,14 @@ import TabPanel from '@mui/lab/TabPanel'
 import { Canvas } from '@react-three/fiber' // 
 import { useFrame } from '@react-three/fiber' // rotating objects
 import { OrbitControls } from "@react-three/drei"
-import { RigidBody } from "@react-three/rapier"
-import { Physics } from "@react-three/rapier"
+import { RigidBody, Physics, CuboidCollider } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
 
 // customer components
 import Dice from "./Dice3D.jsx"
 import { Explosions, ExplodingWall } from '../components/Explosions'
+import Pyramid3D from '../components/Pyramid3D'
+
 
 //
 export default function ThreeDTest() {
@@ -109,7 +110,7 @@ export default function ThreeDTest() {
    }  // 
 
    // for handling Accordion components
-   const [expanded, setExpanded] = useState(false)
+   const [expanded, setExpanded] = useState(true)
    const [expanded00, setExpanded00] = useState(false)
 
    //* Event handler for <Accordion />
@@ -130,7 +131,7 @@ export default function ThreeDTest() {
 
    // for 3D cubes 
    const [rolling, setRolling] = useState(false)
-   const [results, setResults] = useState([])
+   const [result, setResult] = useState(0)
    const body = useRef()
 
    /** function for rotating the box referenced with boxRef*/
@@ -168,9 +169,33 @@ export default function ThreeDTest() {
    //    return null;
    // }  // FindRotatingBox()
 
+   function Ground() {
+      return (
+         <RigidBody type="fixed" colliders={false}>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+               <planeGeometry args={[20, 20]} />
+               <meshStandardMaterial color="green" />
+            </mesh>
+            <CuboidCollider args={[10, 0.1, 10]} />
+         </RigidBody>
+      )
+   }
+
    // 
    return (
       <>
+         {/* a simple pyramid */}
+         <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '350px' }}>
+            <Box orientation='col'
+               className='m-1 bg-dark rounded shadow'
+               sx={{ width: '23%', border: '1px solid red' }}>
+               <p>Pyramid on Ground...</p>
+            </Box>
+
+            <Pyramid3D />
+         </div>
+
+         {/* Exploding balls */}
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>
             <Box orientation='col'
                className='m-1 bg-dark rounded shadow'
@@ -643,6 +668,7 @@ export default function ThreeDTest() {
                                  {cubes03.map((cube, index) => (
                                     <Cube02 key={index} {...cube} />
                                  ))}
+
                               </Canvas>
                            </div>
                         }
@@ -677,13 +703,16 @@ export default function ThreeDTest() {
                      </TabPanel>
 
                      <TabPanel className='bg-dark' value="3">
-                        <div className='col m-1 bg-dark border border-1 border-success rounded shadow'>
-                           <Button className='m-2' variant="outlined" size="medium" onClick={() => setRolling((r) => !r)}>
+                        <div className='col m-1 bg-light border border-1 border-success rounded shadow'>
+                           <Button className='m-2' variant="outlined" size="medium" 
+                              onClick={ () => { 
+                                 setRolling((rolling) => !rolling) 
+                                 setResult(result)
+                              }}>
                               Roll
                            </Button>
                            {/* <div style={{ position: "absolute", top: 20, left: 20 }}> */}
-
-                           Results: {results.join(", ")}
+                           Result: {result}
                         </div>
 
                         {/*  Würfel */}
@@ -699,7 +728,20 @@ export default function ThreeDTest() {
                                  intensity={1}
                                  castShadow
                               />
-                              <Dice rolling={rolling} />
+
+                              <Physics gravity={[0, -0.001, 0]}>
+                                 <Ground />
+
+                                 {/* <DiceCup position={[0, 2, 0]} /> */}
+
+                                 <Dice rolling={rolling} position={[0, 0.5, 0]}
+                                    onResult={  
+                                       (result) => { 
+                                          console.log("🎲 Rolled:", result)
+                                          setResult(result)
+                                       }} />
+                              </Physics>
+
                               <OrbitControls enablePan={false} />
                            </Canvas>
                         </div>
