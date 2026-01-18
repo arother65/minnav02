@@ -172,7 +172,7 @@ export default function AppBarTop() {
                   onClick={() => {
                      setTimeout(() => {
                         fnNavigate('/Carousel3D', {})
-                     }, 1000)
+                     }, 500)
                      setLoading(true)
                   }}>
                   3D Carousel...
@@ -185,7 +185,7 @@ export default function AppBarTop() {
                         // handleNavigate4gewinnt('/VierGewinnt')
                         // setLoading(true)
                         fnNavigate('/VierGewinnt', {})
-                     }, 1000)
+                     }, 500)
                      setLoading(true)
                   }}>
                   Vier gewinnt
@@ -198,6 +198,14 @@ export default function AppBarTop() {
                      fnNavigate('/SpinWheel')
                   }}>
                   Spinning wheel
+               </MenuItem>
+
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/car3d')
+                  }}>
+                  simple car 3D
                </MenuItem>
 
                <MenuItem
