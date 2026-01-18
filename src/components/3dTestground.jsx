@@ -22,7 +22,7 @@ import TabPanel from '@mui/lab/TabPanel'
 // @react-three with 3D geometric objects
 import { Canvas } from '@react-three/fiber' // 
 import { useFrame } from '@react-three/fiber' // rotating objects
-import { OrbitControls } from "@react-three/drei"
+import { OrbitControls, Stars } from "@react-three/drei"
 import { RigidBody, Physics, CuboidCollider } from "@react-three/rapier"
 import { RoundedBox } from "@react-three/drei"
 

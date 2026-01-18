@@ -24,7 +24,7 @@ export const App = ({ radius, count, rolling, speed }) => {
          boxRef.current.rotation.x += delta * speed
          // boxRef.current.rotation.y += delta
          // boxRef.current.rotation.z += delta
-      // console.log(scene)
+         // console.log(scene)
          // console.log(boxRef)
       }
    })
@@ -74,7 +74,7 @@ function Carousel({ radius, count }) {
             key={i}
 
             // Bilder aus /public : ''<img1_.jpg> bis '<img10_.jpg>' 
-            url={`/img${Math.floor(i % 8) + 1}_.jpg`}
+            url={`/flags/img${Math.floor(i % 8) + 1}_.jpg`}
 
             position={[Math.sin((i / count) * Math.PI * 2) * radius, 0, Math.cos((i / count) * Math.PI * 2) * radius]}
 

@@ -3,7 +3,7 @@
  */
 
 import { Canvas } from '@react-three/fiber'
-import { Environment, OrbitControls, useTexture } from '@react-three/drei'
+import { Environment, OrbitControls, useTexture, Stars } from '@react-three/drei'
 import { RigidBody, CuboidCollider } from '@react-three/rapier'
 import { Physics } from '@react-three/rapier'
 
@@ -79,8 +79,16 @@ export default function Pyramid3D() {
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} />
 
+        {/* <Stars radius={100} depth={50} count={1000} factor={6} saturation={0.5} fade speed={1} /> */}
+
+        {/* HDRI Environment */}
+        <Environment
+          files="/hdri/sunflowers_puresky_2k.hdr"
+          background   // <-- makes it the sky
+        />
+
         {/* Sky */}
-        {/* <Sky
+        {/* <Sky     
           sunPosition={[100, 20, 100]}
           turbidity={8}
           rayleigh={6}

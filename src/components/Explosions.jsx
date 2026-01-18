@@ -6,7 +6,7 @@
  */
 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Environment, OrbitControls } from '@react-three/drei'
 import { useRef, useState } from 'react'
 import * as THREE from 'three'
 
@@ -48,12 +48,19 @@ function ExplodingCannonBall({ position, color, noFragments }) {
       onClick={() => {
         setExploded(true)
       }}>
+
+      {/* HDRI Environment */}
+      <Environment
+        files="/hdri/sunflowers_puresky_2k.hdr"
+        background   // <-- makes it the sky
+      />
+
       <sphereGeometry args={[2, 64, 64]} />
       <meshStandardMaterial
         color={color}
-        // transparent
-        // opacity={0.5}
-        // emissive="orange"
+      // transparent
+      // opacity={0.5}
+      // emissive="orange"
       />
     </mesh>
   )
@@ -68,8 +75,8 @@ export function Explosions() {
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} />
 
-        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50}/>
-        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120}/>
+        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50} />
+        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120} />
         <ExplodingCannonBall position={[-15, -1, 0]} color="darkblue" noFragments={10} />
 
         <OrbitControls />
