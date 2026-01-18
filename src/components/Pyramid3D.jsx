@@ -94,7 +94,7 @@ function Wall({
          <boxGeometry args={[width, height, depth]} />
 
          {/* <meshStandardMaterial color={color}  map={texture}/> */}
-         <meshStandardMaterial 
+         <meshStandardMaterial
             color={ivTexture ? undefined : color}
             map={ivTexture ? texture : undefined}
             roughness={0.8}
@@ -120,9 +120,9 @@ export default function Pyramid3D() {
 
             {/* HDRI Environment */}
             {/* <Environment
-          files="/hdri/sunflowers_puresky_2k.hdr"
-          background   // <-- makes it the sky
-        /> */}
+               files="/hdri/charolettenbrunn_park_2k.hdr"
+               background   // <-- makes it the sky
+            /> */}
 
             {/* Sky */}
             {/* <Sky     
