@@ -50,24 +50,24 @@ function WheelRear({ position }) {
 }  // WheelRear() 
 
 // Car component 
-function Car() {
+function Car({ groupPosition, bodyColor }) {
 
    return (
-      <group position={[0, 0.5, 0]}>
-         {/* Body */}
+      <group position={groupPosition}>
+         {/* Chassis */}
          <mesh castShadow>
             <boxGeometry args={[1, 0.5, 5]} />
-            <meshStandardMaterial color="red" />
+            <meshStandardMaterial color={bodyColor} />
          </mesh>
 
          {/* Cabin */}
-         <mesh position={[0, 0.6, 1.5]}>
+         <mesh position={[0, 0.579, 1.5]}>
             <boxGeometry args={[-1, 0.65, 0.75]} />
             <meshStandardMaterial color="darkred" />
          </mesh>
 
          {/* Cabin level 1 */}
-         <mesh position={[0, 0.95, 1.75]}>
+         <mesh position={[0, 0.85, 1.75]}>
             <boxGeometry args={[-1, 0.03, 0.5]} />
             <meshStandardMaterial color="green" />
          </mesh>
@@ -87,6 +87,64 @@ function Car() {
          <WheelHub position={[0.74, -0.25, 1.5]} />
          <WheelHub position={[-0.74, -0.25, -1.5]} />
          <WheelHub position={[0.74, -0.25, -1.5]} />
+
+         {/* fuel tanks, driver's side */}
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.85]} receiveShadow>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.25]} receiveShadow>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+
+         {/* fuel tanks, passenger's side */}
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.85]} receiveShadow>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.25]} receiveShadow>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+
+         {/* Headlight passenger's side */}
+         <mesh value={1} position={[-0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.05, 0.1, 64, 64]} />
+            <meshStandardMaterial color="darkgrey" />
+         </mesh>
+
+         {/* Headlight driver's side */}
+         <mesh value={1} position={[0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.05, 0.1, 64, 64]} />
+            <meshStandardMaterial color="darkgrey" />
+         </mesh>
+
+         {/* backlight driver's side */}
+         <mesh value={1} position={[0.35, 0.1, -2.55]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.05, 0.1, 64, 64]} />
+            <meshStandardMaterial color="red" />
+         </mesh>
+
+         {/* exhaust pipe */}
+         <mesh position={[0.35, 0.75, 1.015]}>
+            {/* Cylinder is vertical on Y axis */}
+            <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
+            <meshStandardMaterial color={'white'} 
+               metalness={1}
+               roughness={0.55} 
+               envMapIntensity={0.5} />
+         </mesh>
+
+         {/* front bumper */}
+         <mesh position={[0, -0.15, 2.5]} rotation={[1.75, 0, 1.5]}>
+            {/* Cylinder is vertical on Y axis */}
+            <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
+            <meshStandardMaterial color={'orange'} 
+               metalness={1}
+               roughness={0.55} 
+               envMapIntensity={0.5} />
+         </mesh>
 
       </group>
    )
@@ -130,39 +188,11 @@ export default function Car3D() {
                      <ambientLight intensity={0.4} />
                      <directionalLight position={[5, 5, 5]} castShadow />
 
-                     <Car />
+                     {/* <Car groupPosition={[-2, 0.5, 0]} bodyColor={'darkgreen'} /> */}
 
-                     {/* fuel tanks, driver's side */}
-                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.4, 0.85]} receiveShadow>
-                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-                        <meshStandardMaterial color="lightblue" />
-                     </mesh>
-                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.4, 0.25]} receiveShadow>
-                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-                        <meshStandardMaterial color="lightblue" />
-                     </mesh>
+                     <Car groupPosition={[0, 0.5, 0]} bodyColor={'darkred'} />
 
-                     {/* fuel tanks, passenger's side */}
-                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.4, 0.85]} receiveShadow>
-                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-                        <meshStandardMaterial color="lightblue" />
-                     </mesh>
-                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.4, 0.25]} receiveShadow>
-                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-                        <meshStandardMaterial color="lightblue" />
-                     </mesh>
-
-                     {/* Headlight passenger's side */}
-                     <mesh value={1} position={[-0.35, 0.5, 2.55]} rotation={[0, 0, 0]}>
-                        <ringGeometry args={[0.05, 0.1, 64, 64]} />
-                        <meshStandardMaterial color="darkgrey" />
-                     </mesh>
-
-                     {/* Headlight driver's side */}
-                     <mesh value={1} position={[0.35, 0.5, 2.55]} rotation={[0, 0, 0]}>
-                        <ringGeometry args={[0.05, 0.1, 64, 64]} />
-                        <meshStandardMaterial color="darkgrey" />
-                     </mesh>
+                     {/* <Car groupPosition={[2, 0.5, 0]} bodyColor={'darkblue'} /> */}
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
