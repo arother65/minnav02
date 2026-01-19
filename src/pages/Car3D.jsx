@@ -6,15 +6,45 @@ import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 
+// Wheel hubs
+function WheelHub({ position }) {
+   return (
+      <group>
+         {/* ? wheel hubs */}
+         <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.2, 0.2, 0.1, 64]} />
+            <meshStandardMaterial color="white" />
+         </mesh>
+      </group>
+   )
+}  // WheelHub() 
+
 // Wheel component 
 function Wheel({ position }) {
    return (
-      <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
-         <cylinderGeometry args={[0.3, 0.3, 0.45, 48]} />
-         <meshStandardMaterial color="black" />
-      </mesh>
+      <group>
+         {/* <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow> */}
+         <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.25, 0.25, 0.25, 64]} />
+
+             {/* <ringGeometry args={[10, 10, 64]} /> */}
+            <meshStandardMaterial color="black" />
+         </mesh>
+      </group>
    )
 }  // Wheel() 
+
+// Wheel component 
+function WheelRear({ position }) {
+   return (
+      <group>
+         <mesh position={position} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 64]} />
+            <meshStandardMaterial color="black" />
+         </mesh>
+      </group>
+   )
+}  // WheelRear() 
 
 // Car component 
 function Car() {
@@ -34,17 +64,27 @@ function Car() {
          </mesh>
 
          {/* Cabin level 1 */}
-         <mesh position={[0, 1, 1.75]}>
-            <boxGeometry args={[-1, 0.05, 0.5]} />
+         <mesh position={[0, 0.95, 1.75]}>
+            <boxGeometry args={[-1, 0.03, 0.5]} />
             <meshStandardMaterial color="green" />
          </mesh>
 
 
          {/* Wheels */}
-         <Wheel position={[-0.8, -0.25, 1.5]} />
-         <Wheel position={[0.8, -0.25, 1.5]} />
-         <Wheel position={[-0.8, -0.25, -1.5]} />
-         <Wheel position={[0.8, -0.25, -1.5]} />
+         <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
+         <Wheel position={[0.65, -0.25, 1.5]}  />  {/* front, driver's side */}
+         
+         <Wheel position={[-0.65, -0.25, -1.5]} />  {/* back/rear */}
+
+         {/* <Wheel position={[0.65, -0.25, -1.5]}  /> */}
+         <WheelRear position={[0.75, -0.25, -1.5]}/>
+
+         {/* WheelHubs */}
+         <WheelHub position={[-0.74, -0.25, 1.5]} />
+         <WheelHub position={[0.74, -0.25, 1.5]} />
+         <WheelHub position={[-0.74, -0.25, -1.5]} />
+         <WheelHub position={[0.74, -0.25, -1.5]} />
+
       </group>
    )
 }  // Car()
@@ -81,21 +121,23 @@ export default function Car3D() {
          <main>
             <div className="row mt-5"></div>
 
-            <div className="col min-vh-100 min-vw-100">
-               <Canvas shadows camera={{ position: [5, 3, 5], fov: 50 }}>
-                  <ambientLight intensity={0.4} />
-                  <directionalLight position={[5, 5, 5]} castShadow />
+            <div className="row mt-1 min-vh-100">
+               <div className="col min-vh-75 min-vw-75">
+                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 50 }}>
+                     <ambientLight intensity={0.4} />
+                     <directionalLight position={[5, 5, 5]} castShadow />
 
-                  <Car />
+                     <Car />
 
-                  {/* Ground */}
-                  <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                     <planeGeometry args={[50, 50]} />
-                     <meshStandardMaterial color="#4caf50" />
-                  </mesh>
+                     {/* Ground */}
+                     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                        <planeGeometry args={[50, 50]} />
+                        <meshStandardMaterial color="#4caf50" />
+                     </mesh>
 
-                  <OrbitControls />
-               </Canvas>
+                     <OrbitControls />
+                  </Canvas>
+               </div>
             </div>
          </main>
       </>
