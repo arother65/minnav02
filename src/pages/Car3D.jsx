@@ -1,9 +1,19 @@
+/**
+ * 
+ *  Stand: 19.01.2026
+ * 
+ */
+
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, RoundedBox } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+
+//
+import { useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
 
 
 // Wheel hubs
@@ -199,6 +209,57 @@ function MetalRod({ args, position, rotation, color }) {
    )
 }  // MetalRod()
 
+// wheel with spokes
+// WheelSpokes.jsx
+
+function WheelWithSpokes({
+   rimRadius = 1,
+   rimTube = 0.15,
+   spokeCount = 20,
+   spokeRadius = 0.02,
+   spokeLength = 2,
+   rotationSpeed = 0.01
+}) {
+
+   const spokes = useMemo(() => {
+      const arr = [];
+      for (let i = 0; i < spokeCount; i++) {
+         const angle = (i / spokeCount) * Math.PI * 2;
+         arr.push({ angle });
+      }
+      return arr;
+   }, [spokeCount]);
+
+   // Optional animation
+   // useFrame(({ clock }, mesh) => {
+   //    mesh.rotation.z = clock.getElapsedTime() * rotationSpeed;
+   // })
+
+   return (
+      <group>
+         {/* Rim */}
+         <mesh position={[5, 1.25, 6.5]} rotation={[-0.25, 1, 1]} >
+            <torusGeometry args={[rimRadius, rimTube, 10, 100]} />
+            <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+         </mesh>
+
+         {/* Spokes */}
+         {spokes.map(({ angle }, i) => (
+            <mesh
+               key={i}
+               // rotation-z={angle}
+               position={[5, 1.25, 6.5]}
+               rotation={[-0.25, 1, 1]}
+            >
+               <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 8]} />
+               <meshStandardMaterial color="#777" />
+            </mesh>
+         ))}
+      </group>
+   )  // return()
+}  // WheelWithSpokes()
+
+
 // Train component
 function Train({ groupPosition, bodyColor }) {
    return (
@@ -320,7 +381,6 @@ function Train({ groupPosition, bodyColor }) {
                envMapIntensity={0.5} />
          </mesh>
 
-         
          <mesh position={[0, 1, -0.5]}>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.15, 0.3, 0.05, 32]} />
@@ -329,6 +389,9 @@ function Train({ groupPosition, bodyColor }) {
                roughness={0.55}
                envMapIntensity={0.5} />
          </mesh>
+
+         {/* wheels with spokes */}
+
 
       </group>
    )
@@ -395,6 +458,9 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />
+
+
+                     <WheelWithSpokes />
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
