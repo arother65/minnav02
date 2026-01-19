@@ -26,10 +26,13 @@ function Wheel({ position }) {
          {/* <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow> */}
          <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.25, 64]} />
-
-             {/* <ringGeometry args={[10, 10, 64]} /> */}
             <meshStandardMaterial color="black" />
          </mesh>
+
+         {/* <mesh position={[0, 0, 2]} rotation={[0, 0, 0]} castShadow>
+            <ringGeometry args={[1, 1, 32]} />
+            <meshStandardMaterial color="blue" />
+         </mesh> */}
       </group>
    )
 }  // Wheel() 
@@ -72,12 +75,12 @@ function Car() {
 
          {/* Wheels */}
          <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
-         <Wheel position={[0.65, -0.25, 1.5]}  />  {/* front, driver's side */}
-         
+         <Wheel position={[0.65, -0.25, 1.5]} />  {/* front, driver's side */}
+
          <Wheel position={[-0.65, -0.25, -1.5]} />  {/* back/rear */}
 
          {/* <Wheel position={[0.65, -0.25, -1.5]}  /> */}
-         <WheelRear position={[0.75, -0.25, -1.5]}/>
+         <WheelRear position={[0.75, -0.25, -1.5]} />
 
          {/* WheelHubs */}
          <WheelHub position={[-0.74, -0.25, 1.5]} />
@@ -129,10 +132,42 @@ export default function Car3D() {
 
                      <Car />
 
+                     {/* fuel tanks, driver's side */}
+                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.4, 0.85]} receiveShadow>
+                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+                        <meshStandardMaterial color="lightblue" />
+                     </mesh>
+                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.4, 0.25]} receiveShadow>
+                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+                        <meshStandardMaterial color="lightblue" />
+                     </mesh>
+
+                     {/* fuel tanks, passenger's side */}
+                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.4, 0.85]} receiveShadow>
+                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+                        <meshStandardMaterial color="lightblue" />
+                     </mesh>
+                     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.4, 0.25]} receiveShadow>
+                        <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
+                        <meshStandardMaterial color="lightblue" />
+                     </mesh>
+
+                     {/* Headlight passenger's side */}
+                     <mesh value={1} position={[-0.35, 0.5, 2.55]} rotation={[0, 0, 0]}>
+                        <ringGeometry args={[0.05, 0.1, 64, 64]} />
+                        <meshStandardMaterial color="darkgrey" />
+                     </mesh>
+
+                     {/* Headlight driver's side */}
+                     <mesh value={1} position={[0.35, 0.5, 2.55]} rotation={[0, 0, 0]}>
+                        <ringGeometry args={[0.05, 0.1, 64, 64]} />
+                        <meshStandardMaterial color="darkgrey" />
+                     </mesh>
+
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                        <planeGeometry args={[50, 50]} />
-                        <meshStandardMaterial color="#4caf50" />
+                        <planeGeometry args={[20, 20]} />
+                        <meshStandardMaterial color="olive" />
                      </mesh>
 
                      <OrbitControls />
