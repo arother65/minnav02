@@ -212,10 +212,10 @@ function Train({ groupPosition, bodyColor }) {
                radius={0.35}         // corner radius
                smoothness={64}        // segments
             >
-               <meshStandardMaterial color={bodyColor}
-                  metalness={1}
-                  roughness={0.55}
-                  envMapIntensity={0.45}
+               <meshStandardMaterial color={'darkred'}
+                  metalness={0.55}
+                  roughness={0.1}
+                  envMapIntensity={0.95}
                />
             </RoundedBox>
          </mesh>
@@ -309,6 +309,27 @@ function Train({ groupPosition, bodyColor }) {
                roughness={0.55}
                envMapIntensity={0.5} />
          </mesh>
+
+         {/* hatches */}
+         <mesh position={[0, 1, 1.5]}>
+            {/* Cylinder is vertical on Y axis */}
+            <cylinderGeometry args={[0.15, 0.3, 0.05, 32]} />
+            <meshStandardMaterial color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5} />
+         </mesh>
+
+         
+         <mesh position={[0, 1, -0.5]}>
+            {/* Cylinder is vertical on Y axis */}
+            <cylinderGeometry args={[0.15, 0.3, 0.05, 32]} />
+            <meshStandardMaterial color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5} />
+         </mesh>
+
       </group>
    )
 }  // Train()
@@ -346,9 +367,9 @@ export default function Car3D() {
          <main>
             <div className="row mt-5"></div>
 
-            <div className="row mt-1 min-vh-100">
-               <div className="col min-vh-75 min-vw-75">
-                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 50 }}>
+            <div className="row mt-1 min-vh-100 min-vw-75">
+               <div className="col min-vh-75">
+                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 40 }}>
                      <ambientLight intensity={0.4} />
                      <directionalLight position={[5, 5, 5]} castShadow />
 
