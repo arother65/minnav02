@@ -168,11 +168,11 @@ function Car({ groupPosition, bodyColor }) {
    )
 }  // Car()
 
-function MetalRod({ position, color }) {
+function MetalRod({ args, position, rotation, color }) {
    return (
-      <mesh position={position}>
+      <mesh position={position} rotation={rotation}>
          <RoundedBox
-            args={[0.25, 0.05, 3.5]}   // width, height, depth
+            args={args}   // width, height, depth
             radius={0.15}         // corner radius
             smoothness={32}        // segments
          >
@@ -226,15 +226,25 @@ export default function Car3D() {
                      <directionalLight position={[5, 5, 5]} castShadow />
 
                      {/* <Car groupPosition={[-2, 0.5, 0]} bodyColor={'darkgreen'} /> */}
-
                      <Car groupPosition={[0, 0.5, 0]} bodyColor={'darkred'} />
-
                      {/* <Car groupPosition={[2, 0.5, 0]} bodyColor={'darkblue'} /> */}
 
-                     <MetalRod position={[1.5, 0.25, 1]} color={'red'} />
-                     <MetalRod position={[2, 0.25, 1]} color={'blue'} />
-                     <MetalRod position={[2.5, 0.25, 1]} color={'grey'} />
-                     <MetalRod position={[3, 0.25, 1]} color={'white'} />
+                     {/* load on the truck: args: width, height, depth */}
+                     <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
+                     <MetalRod position={[0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
+                     <MetalRod position={[0, 1.51, -0.5]} args={[0.25, 0.5, 3]} color={'red'} />
+
+                     {/* top layer of rods on truck */}
+                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, .5]} rotation={[0, -1.5, 0]} color={'blue'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.15]} rotation={[0, -1.5, 0]} color={'lightblue'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
+
+
+                     {/* rods besides the truck; args: width, height, depth */}
+                     <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
