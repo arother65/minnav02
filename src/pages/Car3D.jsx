@@ -58,7 +58,6 @@ function Car({ groupPosition, bodyColor, chassisType }) {
 
          {/* Chassis */}
          <mesh rotation={[0, 0, 0]} castShadow receiveShadow >
-
             {chassisType === 'box' &&
                <boxGeometry args={[1, 0.5, 5]} />
             }
@@ -222,10 +221,10 @@ function Train({ groupPosition, bodyColor }) {
          </mesh>
 
          {/* Cabin */}
-         <mesh position={[0, 0.5, 0.95]} castShadow receiveShadow>
+         <mesh position={[0, 0.5, 0.65]} castShadow receiveShadow>
             <RoundedBox
-               args={[0.25, 0.75, 3]}   // width, height, depth
-               radius={0.45}         // corner radius
+               args={[1, 1, 3.99]}   // width, height, depth
+               radius={0.35}         // corner radius
                smoothness={64}        // segments
             >
                <meshStandardMaterial color={bodyColor}
@@ -266,10 +265,24 @@ function Train({ groupPosition, bodyColor }) {
          <WheelHub position={[-0.74, -0.25, -1.5]} />
          <WheelHub position={[0.74, -0.25, -1.5]} />
 
-         {/* Headlight driver's side */}
-         <mesh value={1} position={[0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
-            <ringGeometry args={[0.05, 0.1, 64, 64]} />
-            <meshStandardMaterial color="darkgrey" />
+         {/* Headlight front side, lower light */}
+         <mesh value={1} position={[0, 0.45, 2.67]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.085, 0.1, 64, 64]} />
+            <meshStandardMaterial color="white" />
+         </mesh>
+         <mesh value={1} position={[0, 0.45, 2.67]} rotation={[0, 0, 0]}>
+            <circleGeometry args={[0.075, 32]} />
+            <meshStandardMaterial color="orange" />
+         </mesh>
+
+         {/* upper light */}
+         <mesh value={1} position={[0, 0.65, 2.67]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.085, 0.1, 64, 64]} />
+            <meshStandardMaterial color="white" />
+         </mesh>
+         <mesh position={[0, 0.65, 2.67]} rotation={[0, 0, 0]}>
+            <circleGeometry args={[0.075, 32]} />
+            <meshStandardMaterial color="orange" />
          </mesh>
 
          {/* exhaust pipe */}
@@ -283,6 +296,13 @@ function Train({ groupPosition, bodyColor }) {
          </mesh>
 
          <mesh position={[0, 1.5, 2]}>
+            <cylinderGeometry args={[0.35, 0.15, 0.25, 64]} />
+            <meshStandardMaterial color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5} />
+         </mesh>
+         <mesh position={[0, 1.75, 2]}>
             <cylinderGeometry args={[0.15, 0.35, 0.25, 64]} />
             <meshStandardMaterial color={'white'}
                metalness={1}
