@@ -273,9 +273,17 @@ function Train({ groupPosition, bodyColor }) {
          </mesh>
 
          {/* exhaust pipe */}
-         <mesh position={[0.35, 0.75, 1.015]}>
+         <mesh position={[0, 1, 2]}>
             {/* Cylinder is vertical on Y axis */}
-            <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
+            <cylinderGeometry args={[0.15, 0.15, 1, 64]} />
+            <meshStandardMaterial color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5} />
+         </mesh>
+
+         <mesh position={[0, 1.5, 2]}>
+            <cylinderGeometry args={[0.15, 0.35, 0.25, 64]} />
             <meshStandardMaterial color={'white'}
                metalness={1}
                roughness={0.55}
