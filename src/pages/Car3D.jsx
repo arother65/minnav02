@@ -20,13 +20,14 @@ function WheelHub({ position }) {
 }  // WheelHub() 
 
 // Wheel component 
-function Wheel({ position }) {
+function Wheel({ position, color = 'black' }) {
    return (
       <group>
          {/* <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow> */}
          <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <cylinderGeometry args={[0.25, 0.25, 0.25, 64]} />
-            <meshStandardMaterial color="black" />
+            <cylinderGeometry args={[0.25, 0.25, 0.25, 64]}>
+            </cylinderGeometry>
+            <meshStandardMaterial color={color} />
          </mesh>
 
          {/* <mesh position={[0, 0, 2]} rotation={[0, 0, 0]} castShadow>
@@ -50,25 +51,37 @@ function WheelRear({ position }) {
 }  // WheelRear() 
 
 // Car component 
-function Car({ groupPosition, bodyColor }) {
+function Car({ groupPosition, bodyColor, chassisType }) {
 
    return (
       <group position={groupPosition}>
+
          {/* Chassis */}
          <mesh rotation={[0, 0, 0]} castShadow receiveShadow >
-            <boxGeometry args={[1, 0.5, 5]} />
+
+            {chassisType === 'box' &&
+               <boxGeometry args={[1, 0.5, 5]} />
+            }
+            <meshStandardMaterial color={bodyColor}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.45}
+            />
 
             {/* test using RoundedBox */}
-            {/* <RoundedBox
-               args={[1, 0.01, 5.05]}   // width, height, depth
-               radius={0.25}         // corner radius
-               smoothness={16}        // segments
-            /> */}
-
-            <meshStandardMaterial color={bodyColor}
-            // metalness={0.75}
-            // roughness={0.15}
-            />
+            {chassisType === 'rounded' &&
+               <RoundedBox
+                  args={[1, 1, 5.05]}   // width, height, depth
+                  radius={0.35}         // corner radius
+                  smoothness={64}        // segments
+               >
+                  <meshStandardMaterial color={bodyColor}
+                     metalness={1}
+                     roughness={0.55}
+                     envMapIntensity={0.45}
+                  />
+               </RoundedBox>
+            }
          </mesh>
 
          {/* Cabin */}
@@ -187,6 +200,92 @@ function MetalRod({ args, position, rotation, color }) {
    )
 }  // MetalRod()
 
+// Train component
+function Train({ groupPosition, bodyColor }) {
+   return (
+      <group position={groupPosition}>
+
+         {/* Chassis */}
+         <mesh rotation={[0, 0, 0]} castShadow receiveShadow>
+            {/* */}
+            <RoundedBox
+               args={[0.25, 1, 5.05]}   // width, height, depth
+               radius={0.35}         // corner radius
+               smoothness={64}        // segments
+            >
+               <meshStandardMaterial color={bodyColor}
+                  metalness={1}
+                  roughness={0.55}
+                  envMapIntensity={0.45}
+               />
+            </RoundedBox>
+         </mesh>
+
+         {/* Cabin */}
+         <mesh position={[0, 0.5, 0.95]} castShadow receiveShadow>
+            <RoundedBox
+               args={[0.25, 0.75, 3]}   // width, height, depth
+               radius={0.45}         // corner radius
+               smoothness={64}        // segments
+            >
+               <meshStandardMaterial color={bodyColor}
+                  metalness={1}
+                  roughness={0.55}
+                  envMapIntensity={0.45}
+               />
+            </RoundedBox>
+         </mesh>
+
+         {/* rear cabin */}
+         <mesh position={[0, 1.05, -1.95]} castShadow receiveShadow>
+            <boxGeometry
+               args={[1.05, 1.75, 1]}   // width, height, depth
+               smoothness={64}        // segments
+            >
+            </boxGeometry>
+            <meshStandardMaterial color={'red'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.45}
+            />
+         </mesh>
+
+         {/* Wheels */}
+         <Wheel position={[-0.65, -0.25, 1.5]} color={'darkred'} />  {/* front, passenger's side */}
+         <Wheel position={[-0.65, -0.25, 0.85]} color={'black'} />  {/* front, passenger's side */}
+
+         <Wheel position={[0.65, -0.25, 1.5]} />  {/* front, driver's side */}
+         <Wheel position={[0.65, -0.25, 0.85]} color={'black'} />
+
+         <Wheel position={[-0.65, -0.25, -1.5]} />  {/* back/rear */}
+         <Wheel position={[0.65, -0.25, -1.5]} />
+
+         {/* WheelHubs */}
+         <WheelHub position={[-0.74, -0.25, 1.5]} />
+         <WheelHub position={[0.74, -0.25, 1.5]} />
+         <WheelHub position={[-0.74, -0.25, -1.5]} />
+         <WheelHub position={[0.74, -0.25, -1.5]} />
+
+         {/* Headlight driver's side */}
+         <mesh value={1} position={[0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.05, 0.1, 64, 64]} />
+            <meshStandardMaterial color="darkgrey" />
+         </mesh>
+
+         {/* exhaust pipe */}
+         <mesh position={[0.35, 0.75, 1.015]}>
+            {/* Cylinder is vertical on Y axis */}
+            <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
+            <meshStandardMaterial color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5} />
+         </mesh>
+      </group>
+   )
+}  // Train()
+
+
 // Car3D page component
 export default function Car3D() {
 
@@ -225,11 +324,14 @@ export default function Car3D() {
                      <ambientLight intensity={0.4} />
                      <directionalLight position={[5, 5, 5]} castShadow />
 
-                     {/* <Car groupPosition={[-2, 0.5, 0]} bodyColor={'darkgreen'} /> */}
-                     <Car groupPosition={[0, 0.5, 0]} bodyColor={'darkred'} />
-                     {/* <Car groupPosition={[2, 0.5, 0]} bodyColor={'darkblue'} /> */}
+                     <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} />
 
-                     {/* load on the truck: args: width, height, depth */}
+                     <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
+                     <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />
+
+                     <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} />
+
+                     {/* load on the truck; args: width, height, depth */}
                      <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
                      <MetalRod position={[0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
                      <MetalRod position={[0, 1.51, -0.5]} args={[0.25, 0.5, 3]} color={'red'} />
@@ -238,7 +340,6 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, .5]} rotation={[0, -1.5, 0]} color={'blue'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.15]} rotation={[0, -1.5, 0]} color={'lightblue'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
-
 
                      {/* rods besides the truck; args: width, height, depth */}
                      <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
