@@ -168,16 +168,16 @@ function Car({ groupPosition, bodyColor }) {
    )
 }  // Car()
 
-function MetalRod() {
+function MetalRod({ position, color }) {
    return (
-      <mesh position={[1.5, 0.25, 1]}>
+      <mesh position={position}>
          <RoundedBox
             args={[0.25, 0.05, 3.5]}   // width, height, depth
             radius={0.15}         // corner radius
             smoothness={32}        // segments
          >
             <meshStandardMaterial
-               color={'white'}
+               color={color}
                metalness={1}
                roughness={0.55}
                envMapIntensity={0.5}
@@ -231,7 +231,10 @@ export default function Car3D() {
 
                      {/* <Car groupPosition={[2, 0.5, 0]} bodyColor={'darkblue'} /> */}
 
-                     <MetalRod />
+                     <MetalRod position={[1.5, 0.25, 1]} color={'red'} />
+                     <MetalRod position={[2, 0.25, 1]} color={'blue'} />
+                     <MetalRod position={[2.5, 0.25, 1]} color={'grey'} />
+                     <MetalRod position={[3, 0.25, 1]} color={'white'} />
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
