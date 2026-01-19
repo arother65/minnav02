@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls } from "@react-three/drei"
+import { OrbitControls, RoundedBox } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
@@ -12,8 +12,8 @@ function WheelHub({ position }) {
       <group>
          {/* ? wheel hubs */}
          <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <cylinderGeometry args={[0.2, 0.2, 0.1, 64]} />
-            <meshStandardMaterial color="white" />
+            <cylinderGeometry args={[0.15, 0.15, 0.1, 64]} />
+            <meshStandardMaterial color={'white'} />
          </mesh>
       </group>
    )
@@ -55,9 +55,20 @@ function Car({ groupPosition, bodyColor }) {
    return (
       <group position={groupPosition}>
          {/* Chassis */}
-         <mesh castShadow>
+         <mesh rotation={[0, 0, 0]} castShadow receiveShadow >
             <boxGeometry args={[1, 0.5, 5]} />
-            <meshStandardMaterial color={bodyColor} />
+
+            {/* test using RoundedBox */}
+            {/* <RoundedBox
+               args={[1, 0.01, 5.05]}   // width, height, depth
+               radius={0.25}         // corner radius
+               smoothness={16}        // segments
+            /> */}
+
+            <meshStandardMaterial color={bodyColor}
+            // metalness={0.75}
+            // roughness={0.15}
+            />
          </mesh>
 
          {/* Cabin */}
@@ -71,7 +82,6 @@ function Car({ groupPosition, bodyColor }) {
             <boxGeometry args={[-1, 0.03, 0.5]} />
             <meshStandardMaterial color="green" />
          </mesh>
-
 
          {/* Wheels */}
          <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
@@ -89,21 +99,29 @@ function Car({ groupPosition, bodyColor }) {
          <WheelHub position={[0.74, -0.25, -1.5]} />
 
          {/* fuel tanks, driver's side */}
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.85]} receiveShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.85]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-            <meshStandardMaterial color="lightblue" />
+            <meshStandardMaterial color="white"
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5}
+            />
          </mesh>
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.25]} receiveShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.25]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-            <meshStandardMaterial color="lightblue" />
+            <meshStandardMaterial color="lightblue"
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5}
+            />
          </mesh>
 
          {/* fuel tanks, passenger's side */}
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.85]} receiveShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.85]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.25]} receiveShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.25]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
@@ -130,9 +148,9 @@ function Car({ groupPosition, bodyColor }) {
          <mesh position={[0.35, 0.75, 1.015]}>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
-            <meshStandardMaterial color={'white'} 
+            <meshStandardMaterial color={'white'}
                metalness={1}
-               roughness={0.55} 
+               roughness={0.55}
                envMapIntensity={0.5} />
          </mesh>
 
@@ -140,15 +158,34 @@ function Car({ groupPosition, bodyColor }) {
          <mesh position={[0, -0.15, 2.5]} rotation={[1.75, 0, 1.5]}>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
-            <meshStandardMaterial color={'orange'} 
+            <meshStandardMaterial color={'orange'}
                metalness={1}
-               roughness={0.55} 
+               roughness={0.55}
+               normalScale={[1, 1]} // directional brushing
                envMapIntensity={0.5} />
          </mesh>
-
       </group>
    )
 }  // Car()
+
+function MetalRod() {
+   return (
+      <mesh position={[1.5, 0.25, 1]}>
+         <RoundedBox
+            args={[0.25, 0.05, 3.5]}   // width, height, depth
+            radius={0.15}         // corner radius
+            smoothness={32}        // segments
+         >
+            <meshStandardMaterial
+               color={'white'}
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.5}
+            />
+         </RoundedBox>
+      </mesh>
+   )
+}  // MetalRod()
 
 // Car3D page component
 export default function Car3D() {
@@ -193,6 +230,8 @@ export default function Car3D() {
                      <Car groupPosition={[0, 0.5, 0]} bodyColor={'darkred'} />
 
                      {/* <Car groupPosition={[2, 0.5, 0]} bodyColor={'darkblue'} /> */}
+
+                     <MetalRod />
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
