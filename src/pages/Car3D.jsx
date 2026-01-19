@@ -213,22 +213,24 @@ function MetalRod({ args, position, rotation, color }) {
 // WheelSpokes.jsx
 
 function WheelWithSpokes({
-   rimRadius = 1,
-   rimTube = 0.15,
-   spokeCount = 20,
-   spokeRadius = 0.02,
-   spokeLength = 2,
-   rotationSpeed = 0.01
+   rimRadius = 0.165,
+   rimTube = 0.075,
+   spokeCount = 32,
+   spokeRadius = 0.003,
+   spokeLength = 0.35,
+   // rotationSpeed = 0.01,
+   wheelPosition = [5, 0.5, 6.5]
 }) {
 
    const spokes = useMemo(() => {
       const arr = [];
       for (let i = 0; i < spokeCount; i++) {
-         const angle = (i / spokeCount) * Math.PI * 2;
-         arr.push({ angle });
+
+         const angle = (i / spokeCount) * Math.PI * 2
+         arr.push({ angle })
       }
       return arr;
-   }, [spokeCount]);
+   }, [spokeCount])
 
    // Optional animation
    // useFrame(({ clock }, mesh) => {
@@ -238,8 +240,8 @@ function WheelWithSpokes({
    return (
       <group>
          {/* Rim */}
-         <mesh position={[5, 1.25, 6.5]} rotation={[-0.25, 1, 1]} >
-            <torusGeometry args={[rimRadius, rimTube, 10, 100]} />
+         <mesh position={wheelPosition} rotation={[-0.25, 1, 1]} >
+            <torusGeometry args={[rimRadius, rimTube, 50, 150]} />
             <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
          </mesh>
 
@@ -247,12 +249,12 @@ function WheelWithSpokes({
          {spokes.map(({ angle }, i) => (
             <mesh
                key={i}
-               // rotation-z={angle}
-               position={[5, 1.25, 6.5]}
+               rotation-z={angle}
+               position={wheelPosition}
                rotation={[-0.25, 1, 1]}
             >
-               <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 8]} />
-               <meshStandardMaterial color="#777" />
+               <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 16]} />
+               <meshStandardMaterial color="red" />
             </mesh>
          ))}
       </group>
@@ -459,8 +461,8 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />
 
-
-                     <WheelWithSpokes />
+                     <WheelWithSpokes wheelPosition={[2, 0.2, 6.5]} />
+                     <WheelWithSpokes wheelPosition={[3, 0.2, 6.5]} />
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
