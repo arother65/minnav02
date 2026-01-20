@@ -24,6 +24,10 @@ import Dice from './pages/Dice'
 import Carousel3D from './pages/Carousel3D'
 import SpinningWheel from './pages/SpinningWheel'
 import Car3D from './pages/Car3D'
+// import TrackedVehicle from './pages/TrackedVehicle'
+
+import ChessScene from './pages/ChessScene'
+
 import About from './pages/About'
 import NotFound404 from './pages/404'
 
@@ -52,7 +56,11 @@ export default function AppRouter() {
         <Route path="/Dice" element={<Dice />} />
         <Route path="/Carousel3D" element={<Carousel3D />} />
         <Route path="/SpinWheel" element={<SpinningWheel />} />
-        <Route path="/Car3D" element={<Car3D />} /> 
+        <Route path="/Car3D" element={<Car3D />} />
+        {/* <Route path="/trackedVehicle" element={<TrackedVehicle />} />  */}
+
+        <Route path="/ChessScene" element={<ChessScene />} />
+
         <Route path="/about" element={<About />} />
 
         <Route path="*" element={<NotFound404 />} />

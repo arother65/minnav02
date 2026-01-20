@@ -31,7 +31,7 @@
 
 @keyframes Avatar-spin {
   from {
-    background-color: darkred;
+    background-color: #8b0000;
     /* transform: rotate(0deg); */
     transform: translateX(-25px);
   }
@@ -53,6 +53,7 @@
 .Player1-animate {
   pointer-events: all;
 }
+
 @keyframes Player1-translate {
   from {
     background-color: darkred;
@@ -66,6 +67,7 @@
     transform: translateX(0px);
   }
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .Player1-animate {
     animation: Player1-translate alternate 1s linear;
@@ -76,6 +78,7 @@
 .Player2-animate {
   pointer-events: all;
 }
+
 @keyframes Player2-translate {
   from {
     background-color: darkred;
@@ -89,6 +92,7 @@
     transform: translateX(0px);
   }
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .Player2-animate {
     animation: Player2-translate alternate 1s linear;
@@ -103,7 +107,7 @@
 @keyframes Coin-spin {
   from {
     /* background-color: darkred; */
-    
+
     transform: rotate(0deg);
     /* transform: translateX(-50px); */
   }

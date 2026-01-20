@@ -107,7 +107,9 @@ function Car({ groupPosition, bodyColor, chassisType }) {
 
          {/* Wheels */}
          <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
-         <Wheel position={[0.65, -0.25, 1.5]} />  {/* front, driver's side */}
+
+         {/* <Wheel position={[0.65, -0.25, 1.5]} />  front, driver's side */}
+         <WheelWithSpokes wheelPosition={[0.55, -0.25, 1.55]} />
 
          <Wheel position={[-0.65, -0.25, -1.5]} />  {/* back/rear */}
 
@@ -115,10 +117,10 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          <WheelRear position={[0.75, -0.25, -1.5]} />
 
          {/* WheelHubs */}
-         <WheelHub position={[-0.74, -0.25, 1.5]} />
-         <WheelHub position={[0.74, -0.25, 1.5]} />
-         <WheelHub position={[-0.74, -0.25, -1.5]} />
-         <WheelHub position={[0.74, -0.25, -1.5]} />
+         {/* <WheelHub position={[-0.74, -0.25, 1.5]} /> */}
+         {/* <WheelHub position={[0.74, -0.25, 1.5]} /> */}
+         {/* <WheelHub position={[-0.74, -0.25, -1.5]} /> */}
+         {/* <WheelHub position={[0.74, -0.25, -1.5]} /> */}
 
          {/* fuel tanks, driver's side */}
          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.85]} receiveShadow castShadow>
@@ -213,11 +215,11 @@ function MetalRod({ args, position, rotation, color }) {
 // WheelSpokes.jsx
 
 function WheelWithSpokes({
-   rimRadius = 0.165,
-   rimTube = 0.075,
-   spokeCount = 32,
-   spokeRadius = 0.003,
-   spokeLength = 0.35,
+   rimRadius = 0.2,
+   rimTube = 0.15,
+   spokeCount = 40,
+   spokeRadius = 0.002,
+   spokeLength = 0.2,
    // rotationSpeed = 0.01,
    wheelPosition = [5, 0.5, 6.5]
 }) {
@@ -240,9 +242,15 @@ function WheelWithSpokes({
    return (
       <group>
          {/* Rim */}
-         <mesh position={wheelPosition} rotation={[-0.25, 1, 1]} >
+         <mesh position={wheelPosition} rotation={[0.25, 1.6, 0]} >
             <torusGeometry args={[rimRadius, rimTube, 50, 150]} />
             <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+         </mesh>
+
+         {/* Rim middle part */}
+         <mesh value={1} position={[0.71, -0.25, 1.6]} rotation={[0.25, 1.65, 0]}>
+            <ringGeometry args={[0.125, 0.225, 64, 64]} />
+            <meshStandardMaterial color="white" metalness={1} roughness={0.55}/>
          </mesh>
 
          {/* Spokes */}
@@ -251,10 +259,10 @@ function WheelWithSpokes({
                key={i}
                rotation-z={angle}
                position={wheelPosition}
-               rotation={[-0.25, 1, 1]}
+               rotation={[0.25, 1.6, 0]}
             >
-               <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 16]} />
-               <meshStandardMaterial color="red" />
+               <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 32]} />
+               <meshStandardMaterial color="white" metalness={0.95} roughness={0.75}/>
             </mesh>
          ))}
       </group>
@@ -434,16 +442,16 @@ export default function Car3D() {
 
             <div className="row mt-1 min-vh-100 min-vw-75">
                <div className="col min-vh-75">
-                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 40 }}>
-                     <ambientLight intensity={0.4} />
+                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 50 }}>
+                     <ambientLight intensity={1} />
                      <directionalLight position={[5, 5, 5]} castShadow />
 
-                     <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} />
+                     {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
 
                      <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
-                     <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />
+                     {/* <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />  */}
 
-                     <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} />
+                     {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
 
                      {/* load on the truck; args: width, height, depth */}
                      <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
@@ -456,13 +464,10 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
 
                      {/* rods besides the truck; args: width, height, depth */}
-                     <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
+                     {/* <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
-                     <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />
-
-                     <WheelWithSpokes wheelPosition={[2, 0.2, 6.5]} />
-                     <WheelWithSpokes wheelPosition={[3, 0.2, 6.5]} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
                      {/* Ground */}
                      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>

@@ -211,6 +211,22 @@ export default function AppBarTop() {
                <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
+                     fnNavigate('/ChessScene')
+                  }}>
+                  ChessScene
+               </MenuItem>
+
+               {/* <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/trackedVehicle')
+                  }}>
+                  simple tracked vehicle
+               </MenuItem> */}
+
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
                      fnNavigate('/about')
                   }}>
                   about page
