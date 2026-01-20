@@ -27,6 +27,8 @@ import Car3D from './pages/Car3D'
 // import TrackedVehicle from './pages/TrackedVehicle'
 
 import ChessScene from './pages/ChessScene'
+import ThreeShapes from './pages/ThreeShapes'
+
 
 import About from './pages/About'
 import NotFound404 from './pages/404'
@@ -60,6 +62,7 @@ export default function AppRouter() {
         {/* <Route path="/trackedVehicle" element={<TrackedVehicle />} />  */}
 
         <Route path="/ChessScene" element={<ChessScene />} />
+        <Route path="/ThreeShapes" element={<ThreeShapes />} />
 
         <Route path="/about" element={<About />} />
 

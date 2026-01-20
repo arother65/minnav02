@@ -29,7 +29,7 @@ function Pyramid({ args, position, ivTexture }) {
 }  // Pyramid()
 
 function Ground() {
-   const grass = useTexture('/grass.png')
+   const grass = useTexture('./grass.png')
    grass.wrapS = grass.wrapT = 1000
    grass.repeat.set(1, 1)  // small numbers = higher detail
 

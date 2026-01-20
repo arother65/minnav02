@@ -216,6 +216,14 @@ export default function AppBarTop() {
                   ChessScene
                </MenuItem>
 
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/ThreeShapes')
+                  }}>
+                  R3F ThreeShapes
+               </MenuItem>
+
                {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {

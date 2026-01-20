@@ -68,6 +68,11 @@ function Car({ groupPosition, bodyColor, chassisType }) {
 
          {/* Chassis */}
          <mesh rotation={[0, 0, 0]} castShadow receiveShadow >
+            <directionalLight
+               position={[0, 5, 0]}
+               intensity={8}
+               target-position={[0, 0, 0]} />
+
             {chassisType === 'box' &&
                <boxGeometry args={[1, 0.5, 5]} />
             }
@@ -169,7 +174,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* exhaust pipe */}
-         <mesh position={[0.35, 0.75, 1.015]}>
+         <mesh position={[0.35, 0.75, 1.015]} receiveShadow castShadow>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
             <meshStandardMaterial color={'white'}
@@ -188,7 +193,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                normalScale={[1, 1]} // directional brushing
                envMapIntensity={0.5} />
          </mesh>
-      </group>
+      </group >
    )
 }  // Car()
 
@@ -250,7 +255,7 @@ function WheelWithSpokes({
          {/* Rim middle part */}
          <mesh value={1} position={[0.71, -0.25, 1.6]} rotation={[0.25, 1.65, 0]}>
             <ringGeometry args={[0.125, 0.225, 64, 64]} />
-            <meshStandardMaterial color="white" metalness={1} roughness={0.55}/>
+            <meshStandardMaterial color="white" metalness={1} roughness={0.55} />
          </mesh>
 
          {/* Spokes */}
@@ -262,7 +267,7 @@ function WheelWithSpokes({
                rotation={[0.25, 1.6, 0]}
             >
                <cylinderGeometry args={[spokeRadius, spokeRadius, spokeLength, 32]} />
-               <meshStandardMaterial color="white" metalness={0.95} roughness={0.75}/>
+               <meshStandardMaterial color="white" metalness={0.95} roughness={0.75} />
             </mesh>
          ))}
       </group>
