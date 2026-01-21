@@ -4,10 +4,7 @@
 
 // imports
 import { useState } from 'react'
-import {
-   AppBar, Box, Backdrop, Card, CardContent, CircularProgress, IconButton,
-   Typography, Toolbar, Menu, MenuItem,
-}
+import { AppBar, Box, Backdrop, Card, CardContent, IconButton, Typography, Toolbar, Menu, MenuItem }
    from "@mui/material"
 
 import MenuIcon from '@mui/icons-material/Menu'
@@ -230,6 +227,14 @@ export default function AppBarTop() {
                      fnNavigate('/LegoTestground')
                   }}>
                   LegoTestground
+               </MenuItem>
+
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/Mario3D')
+                  }}>
+                  Mario3D
                </MenuItem>
 
                {/* <MenuItem

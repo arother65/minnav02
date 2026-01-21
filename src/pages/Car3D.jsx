@@ -442,48 +442,49 @@ export default function Car3D() {
             </AppBar>
          </header>
 
-         <main>
+         <main className="App-main">
             <div className="row mt-5"></div>
 
-            <div className="row mt-1 min-vh-100 min-vw-75">
-               <div className="col min-vh-75">
-                  <Canvas shadows camera={{ position: [5, 3, 5], fov: 50 }}>
-                     <ambientLight intensity={1} />
-                     <directionalLight position={[5, 5, 5]} castShadow />
+            <Canvas shadows camera={{ position: [5, 5, 5], fov: 75 }}
+               style={{
+                  width: "90vw",
+                  height: "90vh",
+                  display: "block"
+               }}>
+               <ambientLight intensity={1} />
+               <directionalLight position={[5, 5, 5]} castShadow />
 
-                     {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
+               {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
 
-                     <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
-                     {/* <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />  */}
+               <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
+               {/* <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />  */}
 
-                     {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
+               {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
 
-                     {/* load on the truck; args: width, height, depth */}
-                     <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
-                     <MetalRod position={[0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
-                     <MetalRod position={[0, 1.51, -0.5]} args={[0.25, 0.5, 3]} color={'red'} />
+               {/* load on the truck; args: width, height, depth */}
+               <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
+               <MetalRod position={[0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
+               <MetalRod position={[0, 1.51, -0.5]} args={[0.25, 0.5, 3]} color={'red'} />
 
-                     {/* top layer of rods on truck */}
-                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, .5]} rotation={[0, -1.5, 0]} color={'blue'} />
-                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.15]} rotation={[0, -1.5, 0]} color={'lightblue'} />
-                     <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
+               {/* top layer of rods on truck */}
+               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, .5]} rotation={[0, -1.5, 0]} color={'blue'} />
+               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.15]} rotation={[0, -1.5, 0]} color={'lightblue'} />
+               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
 
-                     {/* rods besides the truck; args: width, height, depth */}
-                     {/* <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
+               {/* rods besides the truck; args: width, height, depth */}
+               {/* <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
-                     {/* Ground */}
-                     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                        <planeGeometry args={[20, 20]} />
-                        <meshStandardMaterial color="olive" />
-                     </mesh>
+               {/* Ground */}
+               <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                  <planeGeometry args={[20, 20]} />
+                  <meshStandardMaterial color="olive" />
+               </mesh>
 
-                     <OrbitControls />
-                  </Canvas>
-               </div>
-            </div>
+               <OrbitControls />
+            </Canvas>
          </main>
       </>
    )

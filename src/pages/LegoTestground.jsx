@@ -137,7 +137,7 @@ export default function LegoScene() {
       </header>
 
       <main className="App-main">
-        <Canvas shadows camera={{ position: [6, 6, 6], fov: 75 }}
+        <Canvas shadows camera={{ position: [5, 5, 5], fov: 75 }}
           style={{
             width: "90vw",
             height: "90vh",

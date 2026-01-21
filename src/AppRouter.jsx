@@ -29,6 +29,7 @@ import Car3D from './pages/Car3D'
 import ChessScene from './pages/ChessScene'
 import ThreeShapes from './pages/ThreeShapes'
 import LegoTestground from './pages/LegoTestground'
+import Mario3D from './pages/Mario3D'
 
 import About from './pages/About'
 import NotFound404 from './pages/404'
@@ -64,6 +65,7 @@ export default function AppRouter() {
         <Route path="/ChessScene" element={<ChessScene />} />
         <Route path="/ThreeShapes" element={<ThreeShapes />} />
         <Route path="/LegoTestground" element={<LegoTestground />} />
+        <Route path="/Mario3D" element={<Mario3D />} />
 
         <Route path="/about" element={<About />} />
 
