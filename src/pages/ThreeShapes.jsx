@@ -9,7 +9,7 @@ import { useState } from 'react'
 
 import { Canvas } from "@react-three/fiber"
 import * as THREE from "three"
-import { OrbitControls, Text } from "@react-three/drei"
+import { Billboard, OrbitControls, Text } from "@react-three/drei"
 
 // import { useState } from 'react'
 // import { useNavigate } from 'react-router-dom'
@@ -51,7 +51,7 @@ function Pentagon({ radius = 1, depth = 0.4 }) {
          </mesh>
 
          {/* Text label */}
-{/*          <Text
+         {/*          <Text
             position={[0, 1.95, 0.5]}   // slightly above
             fontSize={1.5}
             color="black"
@@ -62,13 +62,15 @@ function Pentagon({ radius = 1, depth = 0.4 }) {
          </Text> */}
 
          {hovered && (
-            <Text
-               position={[2, 2, 2.7]}
-               fontSize={1.2}
-               color="white"
-            >
-               Click me!
-            </Text>
+            <Billboard position={[0, 0, 0.7]}>
+               <Text
+                  position={[2, 2, 2.7]}
+                  fontSize={1.2}
+                  color="white"
+               >
+                  Click me!
+               </Text>
+            </Billboard>
          )}
       </group>
    )

@@ -224,6 +224,14 @@ export default function AppBarTop() {
                   R3F ThreeShapes
                </MenuItem>
 
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/LegoTestground')
+                  }}>
+                  LegoTestground
+               </MenuItem>
+
                {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
