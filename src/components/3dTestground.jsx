@@ -191,7 +191,6 @@ export default function ThreeDTest() {
                sx={{ width: '23%', border: '1px solid red' }}>
                <p>Pyramid on Ground...</p>
             </Box>
-
             <Pyramid3D />
          </div>
 
@@ -202,10 +201,9 @@ export default function ThreeDTest() {
                sx={{ width: '23%', border: '1px solid red' }}>
                <p>exploding balls, click on one...</p>
             </Box>
-
             <Explosions />
          </div>
-         {/* <ExplodingWall /> */}
+         {/* <Explosions /> */}
 
          {/* row with a few 3D components */}
          <div className='row m-2 bg-dark-subtle rounded shadow' style={{ width: '98vw', height: '300px' }}>

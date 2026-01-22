@@ -13,7 +13,7 @@ import * as THREE from 'three'
 import { Physics, RigidBody } from '@react-three/rapier'
 
 // local functions
-function Fragment({ velocity }) {
+function Fragment({ velocity, color }) {
   const ref = useRef()
 
   useFrame((_, delta) => {
@@ -24,7 +24,7 @@ function Fragment({ velocity }) {
   return (
     <mesh ref={ref}>
       <sphereGeometry args={[0.08, 8, 8]} />
-      <meshStandardMaterial color="orange" />
+      <meshStandardMaterial color={color} />
     </mesh>
   )
 }  // Fragment()
@@ -37,7 +37,7 @@ function ExplodingCannonBall({ position, color, noFragments }) {
       <Fragment
         key={i}
         velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-        color={'red'}  // bleibt Orange
+        color={color} 
       />
     ))
   }

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
+import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, Text } from "@react-three/drei"
@@ -27,12 +28,11 @@ export default function LegoScene() {
   // navigation 
   const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
-  const [hovered, setHovered] = useState(null);
-  const [selected, setSelected] = useState(null);
+  const [hovered, setHovered] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   // imported bricks from JSON-object
   const [bricks, setBricks] = useState(importedBricks)
-
   const [bricksLoaded, setBricksLoaded] = useState(false)
 
   const checkData = () => {
@@ -68,7 +68,39 @@ export default function LegoScene() {
     }
   ]
 
+  // states for the bricks
   const [wireframe, setWireframe] = useState(false);
+  const [explodedBrick, setExplodedBrick] = useState(false);
+
+  function Fragment({ position, color, velocity }) {
+    const ref = useRef()
+
+    useFrame((_, delta) => {
+      ref.current.position.addScaledVector(velocity, delta)
+      velocity.y -= 3 * delta // gravity
+    })
+
+    return (
+      <mesh ref={ref}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshStandardMaterial color={color} />
+      </mesh>
+    )
+  }  // Fragment()
+
+  function ExplodingCannonBall({ position, color, noFragments }) {
+
+    return (
+      Array.from({ length: noFragments }).map((_, i) => (
+        <Fragment
+          key={i}
+          velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+          position={position}
+          color={color}
+        />
+      ))
+    )
+  }  // ExplodingCannonBall()
 
   //
   function Fade3DText({ text, delay = 5 }) {
@@ -86,9 +118,9 @@ export default function LegoScene() {
     }, [delay])
 
     return (
-      <Text 
-        ref={ref} 
-        color="white" 
+      <Text
+        ref={ref}
+        color="white"
         position={[0, 4, 0]}
         rotation={[0, 0.75, 0]}>
         {text}
@@ -96,9 +128,8 @@ export default function LegoScene() {
     )
   }  // Fade3DText()
 
-  //
+  // Main component 
   return (
-    // <div onLoad={checkData()}>
     <div>
       <header>
         <AppBar
@@ -133,21 +164,51 @@ export default function LegoScene() {
 
         <div className='col m-1 text-bg-dark w-25 h-100 rounded shadow'>
           Steuerelemente
-          <Card>
-            <Button variant="outlined" className='m-1' onClick={() => {
-              if (wireframe) {
-                setWireframe(false)
-              }
-              else {
-                setWireframe(true)
-              }
-            }}>
+          <Card className='col m-1 rounded shadow'>
+            <Button variant="outlined"
+              color="success"
+              className='m-1'
+              onClick={() => {
+                if (wireframe) {
+                  setWireframe(false)
+                }
+                else {
+                  setWireframe(true)
+                }
+              }}>
               wireframe
             </Button>
-            <Button variant="outlined" className='m-1' onClick={() => {
-
-            }}>
+            <Button variant="outlined" color="warning" className='m-1'
+              onClick={() => { setExplodedBrick(true) }} >
               explode scene
+            </Button>
+            <Button variant="outlined"
+              color="success"
+              className='m-1'
+              onClick={() => {
+                if (wireframe) {
+                  setWireframe(false)
+                }
+                else {
+                  setWireframe(true)
+                }
+              }}
+              disabled>
+              save scene
+            </Button>
+            <Button variant="outlined"
+              color="success"
+              className='m-1'
+              onClick={() => {
+                if (wireframe) {
+                  setWireframe(false)
+                }
+                else {
+                  setWireframe(true)
+                }
+              }}
+              disabled>
+              load scene
             </Button>
           </Card>
         </div>
@@ -181,10 +242,16 @@ export default function LegoScene() {
               No bricks data available
             </Text>
           }
-          {bricks &&
+
+          {bricks && !explodedBrick &&
             <>
               <Fade3DText text={'bricks data loaded'} />
               <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+            </>
+          }
+          {explodedBrick &&
+            <>
+              <ExplodingCannonBall position={[-5, -1, 1]} color="darkred" noFragments={32} />
             </>
           }
 
@@ -198,6 +265,6 @@ export default function LegoScene() {
       <footer id='idFooterAbout' className="App-footer" >
         <Footer visible={null} />
       </footer>
-    </div>
+    </div >
   )
 }  // LegoScene()
