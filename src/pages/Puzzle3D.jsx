@@ -69,7 +69,7 @@ function AnimatedTerrain() {
    )
 }  // AnimatedTerrain()
 
-const GRID_SIZE = 3   // 3x3x3 soma cube
+const GRID_SIZE = 5   // 3x3x3 soma cube
 const CELL = 1
 
 const PIECES = [
@@ -192,7 +192,7 @@ export default function Puzzle3D() {
          <main className="App-main">
             <div className="row mt-5"></div>
 
-            <Canvas shadows camera={{ position: [5, 5, 5], fov: 75 }}
+            <Canvas shadows camera={{ position: [5, 5, 5], fov: 95 }}
                style={{
                   width: "90vw",
                   height: "90vh",
@@ -202,6 +202,7 @@ export default function Puzzle3D() {
                <directionalLight position={[5, 5, 5]} castShadow />
 
                <Grid />
+
                {PIECES.map(p => (
                   <Piece key={p.id} piece={p} />
                ))}

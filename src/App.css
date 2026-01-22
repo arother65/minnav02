@@ -81,13 +81,13 @@
 
 @keyframes Player2-translate {
   from {
-    background-color: darkred;
+    background-color: #8b0000;
     /* transform: rotate(0deg); */
     transform: translateX(200px);
   }
 
   to {
-    background-color: lightsalmon;
+    background-color: #ffa07a;
     /* transform: rotate(360deg); */
     transform: translateX(0px);
   }
@@ -201,3 +201,7 @@
   background-color: rgba(140, 145, 160, 0.95);
   min-height: 500px;
 } */
+
+.Test {
+  color:#364d2f86
+}

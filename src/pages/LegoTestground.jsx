@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
+import { AppBar, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 import { Canvas } from "@react-three/fiber"
@@ -45,64 +45,73 @@ export default function LegoScene() {
     },
     {
       id: 3,
-      position: [-3.5, 0, 0],
+      position: [-2, 0, 0],
       width: 2,
       depth: 4,
       color: "darkgreen",
     },
     {
       id: 4,
-      position: [-5.55, 0, 0],
+      position: [-4, 0, 0],
       width: 2,
       depth: 4,
       color: "darkgreen",
     },
     {
       id: 5,
-      position: [-5.55, 2, 0],
+      position: [-6, 0, 0],
       width: 2,
       depth: 4,
       color: "darkgrey",
     },
     {
       id: 6,
-      position: [-7.55, 2, 3],
+      position: [-6, 1, 0],
       width: 2,
       depth: 2,
       color: "white",
     },
     {
       id: 6,
-      position: [7, 1.5, 2],
+      position: [-4, 1, 2],
       width: 2,
       depth: 2,
       color: "black",
+    },
+    {
+      id: 7,
+      position: [-4, 2, 2],
+      width: 1,
+      depth: 1,
+      color: "orange",
     }
   ]
 
   const bricks01 = [
     {
       id: 1,
-      position: [2, 0, 1.5],
-      width: 2,
-      depth: 2,
-      color: "black",
+      position: [3, 0, 0.5],
+      width: 1,
+      depth: 1,
+      color: "goldenrod",
     },
     {
       id: 2,
-      position: [2.5, 0.75, 2],
+      position: [2.5, 0, 1.5],
       width: 2,
-      depth: 2,
-      color: "black",
+      depth: 1,
+      color: "#ffa07a",
     },
     {
       id: 3,
-      position: [4, 1.5, 2.5],
+      position: [4, 0, 2.5],
       width: 2,
       depth: 2,
-      color: "black",
+      color: "#8b0000",
     }
   ]
+
+  const [wireframe, setWireframe] = useState(false);
 
   //
   return (
@@ -137,10 +146,29 @@ export default function LegoScene() {
       </header>
 
       <main className="App-main">
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 75 }}
+
+        <div className='col m-1 text-bg-dark w-25 h-100 rounded shadow'>
+          Steuerelemente
+          <Card>
+            <Button variant="outlined" onClick={() => {
+              if (wireframe) {
+                setWireframe(false)
+              }
+              else {
+                setWireframe(true)
+              }
+            }}>
+              wireframe
+            </Button>
+            <p>p</p>
+          </Card>
+        </div>
+        {/* <div> </div> */}
+
+        <Canvas shadows camera={{ position: [5, 5, 5], fov: 105 }}
           style={{
-            width: "90vw",
-            height: "90vh",
+            width: "95vw",
+            height: "95vh",
             display: "block"
           }}
           onPointerMissed={() => {
@@ -153,11 +181,12 @@ export default function LegoScene() {
 
           <Environment preset="sunset" />
 
-          <InstancedLegoBricks bricks={bricks} />
-          <InstancedLegoBricks bricks={bricks01} />
+          <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+          {/* <InstancedLegoBricks bricks={bricks01} /> */}
 
           <OrbitControls />
         </Canvas>
+
       </main>
 
       <footer id='idFooterAbout' className="App-footer" >

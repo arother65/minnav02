@@ -17,7 +17,7 @@ const LEGO = {
 
 
 //
-export function InstancedLegoBricks({ bricks = [],
+export function InstancedLegoBricks({ bricks = [], wireframe = false
    // [{ id, position: [x, y, z], width, depth, color }] 
 }) {
 
@@ -85,10 +85,11 @@ export function InstancedLegoBricks({ bricks = [],
          >
             <boxGeometry />
             <meshStandardMaterial
-               // transparent
-               // opacity={0.5}  // ev. funktioniert: bricks.opacity 
                roughness={0.05}
-               metalness={0} />
+               metalness={0.5} 
+               // vertexColors
+               wireframe = {wireframe}
+               />
          </instancedMesh>
 
          {/* Studs */}
@@ -107,8 +108,9 @@ export function InstancedLegoBricks({ bricks = [],
             <meshStandardMaterial
                // transparent
                // opacity={0.5}
+               wireframe = {wireframe}
                roughness={0.05}
-               metalness={0} />
+               metalness={0.5} />
          </instancedMesh>
       </>
    )
