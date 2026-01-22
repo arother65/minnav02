@@ -76,7 +76,7 @@ function SquareHighlight({ position, color = "#66ccff", opacity = 0.35 }) {
 
 
 //
-export default function Board() {
+export default function Board({rotation}) {
   const tiles = [];
 
   for (let x = 0; x < 8; x++) {
@@ -103,7 +103,7 @@ export default function Board() {
   }
 
   return (
-    <group>
+    <group rotation={rotation}>
       {tiles}
       {/* <Text
       // key={`${x}-${y}`}

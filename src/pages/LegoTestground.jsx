@@ -150,7 +150,7 @@ export default function LegoScene() {
         <div className='col m-1 text-bg-dark w-25 h-100 rounded shadow'>
           Steuerelemente
           <Card>
-            <Button variant="outlined" onClick={() => {
+            <Button variant="outlined" className='m-1' onClick={() => {
               if (wireframe) {
                 setWireframe(false)
               }
@@ -160,7 +160,11 @@ export default function LegoScene() {
             }}>
               wireframe
             </Button>
-            <p>p</p>
+            <Button variant="outlined" className='m-1' onClick={() => {
+
+            }}>
+              explode scene
+            </Button>
           </Card>
         </div>
         {/* <div> </div> */}
@@ -182,7 +186,7 @@ export default function LegoScene() {
           <Environment preset="sunset" />
 
           <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
-          {/* <InstancedLegoBricks bricks={bricks01} /> */}
+          <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
 
           <OrbitControls />
         </Canvas>

@@ -77,7 +77,8 @@ export default function ChessScene() {
           <ambientLight intensity={0.4} />
           <directionalLight position={[5, 10, 5]} castShadow />
 
-          <Board />
+          <Board rotation={[0,0.79,0]} />
+
           <Pawn position={[0, 0.1, 1]} color="#f5f5f5" />
           <Pawn position={[0.75, 0.1, 1]} color="#f5f5f5" />
           <King position={[1.99, 0.1, 1]} color="#f5f5f5" />

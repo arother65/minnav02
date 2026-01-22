@@ -76,42 +76,44 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
 
    return (
       <>
-         {/* Brick bodies */}
-         <instancedMesh
-            ref={bodyRef}
-            args={[null, null, bricks.length]}  // count = number of instances
-            castShadow
-            receiveShadow
-         >
-            <boxGeometry />
-            <meshStandardMaterial
-               roughness={0.05}
-               metalness={0.5} 
-               // vertexColors
-               wireframe = {wireframe}
+         <group position={[0, 0, 0]}>
+            {/* Brick bodies */}
+            <instancedMesh
+               ref={bodyRef}
+               args={[null, null, bricks.length]}  // count = number of instances
+               castShadow
+               receiveShadow
+            >
+               <boxGeometry />
+               <meshStandardMaterial
+                  roughness={0.05}
+                  metalness={0.5}
+                  // vertexColors
+                  wireframe={wireframe}
                />
-         </instancedMesh>
+            </instancedMesh>
 
-         {/* Studs */}
-         <instancedMesh
-            ref={studRef}
-            args={[null, null, totalStuds]}
-         >
-            <cylinderGeometry
-               args={[
-                  LEGO.STUD_RADIUS,
-                  LEGO.STUD_RADIUS,
-                  LEGO.STUD_HEIGHT,
-                  16,
-               ]}
-            />
-            <meshStandardMaterial
-               // transparent
-               // opacity={0.5}
-               wireframe = {wireframe}
-               roughness={0.05}
-               metalness={0.5} />
-         </instancedMesh>
+            {/* Studs */}
+            <instancedMesh
+               ref={studRef}
+               args={[null, null, totalStuds]}
+            >
+               <cylinderGeometry
+                  args={[
+                     LEGO.STUD_RADIUS,
+                     LEGO.STUD_RADIUS,
+                     LEGO.STUD_HEIGHT,
+                     16,
+                  ]}
+               />
+               <meshStandardMaterial
+                  // transparent
+                  // opacity={0.5}
+                  wireframe={wireframe}
+                  roughness={0.05}
+                  metalness={0.5} />
+            </instancedMesh>
+         </group >
       </>
    )
 }
