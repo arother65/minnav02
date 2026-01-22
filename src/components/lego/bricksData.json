@@ -1,0 +1,58 @@
+[
+        {
+      "id": 1,
+      "position": [0, 0, 0],
+      "width": 2,
+      "depth": 4,
+      "color": "darkred"
+    },
+    {
+      "id": 2,
+      "position": [0, 0.96, 0],
+      "width": 2,
+      "depth": 2,
+      "color": "darkblue"
+    },
+    {
+      "id": 3,
+      "position": [-2, 0, 0],
+      "width": 2,
+      "depth": 4,
+      "color": "darkgreen"
+    },
+    {
+      "id": 4,
+      "position": [-4, 0, 0],
+      "width": 2,
+      "depth": 4,
+      "color": "darkgreen"
+    },
+    {
+      "id": 5,
+      "position": [-6, 0, 0],
+      "width": 2,
+      "depth": 4,
+      "color": "darkgrey"
+    },
+    {
+      "id": 6,
+      "position": [-6, 1, 0],
+      "width": 2,
+      "depth": 2,
+      "color": "white"
+    },
+    {
+      "id": 6,
+      "position": [-4, 1, 2],
+      "width": 2,
+      "depth": 2,
+      "color": "black"
+    },
+    {
+      "id": 7,
+      "position": [-4, 2, 2],
+      "width": 1,
+      "depth": 1,
+      "color": "orange"
+    }
+]

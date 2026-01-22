@@ -5,19 +5,21 @@
  */
 
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Environment } from "@react-three/drei"
+import { useFrame } from '@react-three/fiber'
+import { OrbitControls, Environment, Text } from "@react-three/drei"
 import logo from '../logo.svg'
 import Footer from '../components/Footer'
 
 // customer components for this page
 import { InstancedLegoBricks } from "../components/InstancedLegoBricks"
 
+import importedBricks from '../components/lego/bricksData.json'
 
 //
 export default function LegoScene() {
@@ -28,64 +30,19 @@ export default function LegoScene() {
   const [hovered, setHovered] = useState(null);
   const [selected, setSelected] = useState(null);
 
-  const bricks = [
-    {
-      id: 1,
-      position: [0, 0, 0],
-      width: 2,
-      depth: 4,
-      color: "darkred",
-    },
-    {
-      id: 2,
-      position: [0, 0.96, 0],
-      width: 2,
-      depth: 2,
-      color: "darkblue",
-    },
-    {
-      id: 3,
-      position: [-2, 0, 0],
-      width: 2,
-      depth: 4,
-      color: "darkgreen",
-    },
-    {
-      id: 4,
-      position: [-4, 0, 0],
-      width: 2,
-      depth: 4,
-      color: "darkgreen",
-    },
-    {
-      id: 5,
-      position: [-6, 0, 0],
-      width: 2,
-      depth: 4,
-      color: "darkgrey",
-    },
-    {
-      id: 6,
-      position: [-6, 1, 0],
-      width: 2,
-      depth: 2,
-      color: "white",
-    },
-    {
-      id: 6,
-      position: [-4, 1, 2],
-      width: 2,
-      depth: 2,
-      color: "black",
-    },
-    {
-      id: 7,
-      position: [-4, 2, 2],
-      width: 1,
-      depth: 1,
-      color: "orange",
+  // imported bricks from JSON-object
+  const [bricks, setBricks] = useState(importedBricks)
+
+  const [bricksLoaded, setBricksLoaded] = useState(false)
+
+  const checkData = () => {
+    if (bricks) {
+      // setBricks(importedBricks)
+      setBricksLoaded(true)
+    } else {
+      setBricksLoaded(false)
     }
-  ]
+  }  // checkData()
 
   const bricks01 = [
     {
@@ -114,8 +71,35 @@ export default function LegoScene() {
   const [wireframe, setWireframe] = useState(false);
 
   //
+  function Fade3DText({ text, delay = 5 }) {
+    const ref = useRef()
+
+    useFrame((_, delta) => {
+      if (!ref.current) return
+      ref.current.material.opacity = Math.max(0, ref.current.material.opacity - delta * 0.5)
+    })
+
+    useEffect(() => {
+      setTimeout(() => {
+        ref.current.material.transparent = true
+      }, delay * 1000)
+    }, [delay])
+
+    return (
+      <Text 
+        ref={ref} 
+        color="white" 
+        position={[0, 4, 0]}
+        rotation={[0, 0.75, 0]}>
+        {text}
+      </Text>
+    )
+  }  // Fade3DText()
+
+  //
   return (
-    <>
+    // <div onLoad={checkData()}>
+    <div>
       <header>
         <AppBar
           /* className='App-bar' */ // no effect
@@ -180,12 +164,30 @@ export default function LegoScene() {
             setHovered(null);
           }}
         >
-          <ambientLight intensity={0.25} />
-          <directionalLight position={[5, 10, 5]} castShadow />
+          <ambientLight intensity={2} />
+          <directionalLight position={[5, 5, 5]} castShadow />
 
           <Environment preset="sunset" />
 
-          <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+          {!bricks &&
+            <Text
+              position={[-3.5, 0, -4]}
+              rotation={[0, 0, 0]}
+              fontSize={1}
+              color="red"
+              anchorX="center"
+              anchorY="middle"
+            >
+              No bricks data available
+            </Text>
+          }
+          {bricks &&
+            <>
+              <Fade3DText text={'bricks data loaded'} />
+              <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+            </>
+          }
+
           <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
 
           <OrbitControls />
@@ -196,6 +198,6 @@ export default function LegoScene() {
       <footer id='idFooterAbout' className="App-footer" >
         <Footer visible={null} />
       </footer>
-    </>
+    </div>
   )
 }  // LegoScene()
