@@ -24,6 +24,8 @@ import Dice from './pages/Dice'
 import Carousel3D from './pages/Carousel3D'
 import SpinningWheel from './pages/SpinningWheel'
 import Car3D from './pages/Car3D'
+import Puzzle3D from './pages/Puzzle3D'
+
 // import TrackedVehicle from './pages/TrackedVehicle'
 
 import ChessScene from './pages/ChessScene'
@@ -66,6 +68,7 @@ export default function AppRouter() {
         <Route path="/ThreeShapes" element={<ThreeShapes />} />
         <Route path="/LegoTestground" element={<LegoTestground />} />
         <Route path="/Mario3D" element={<Mario3D />} />
+        <Route path="/Puzzle3D" element={<Puzzle3D />} />
 
         <Route path="/about" element={<About />} />
 

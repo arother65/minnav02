@@ -17,6 +17,25 @@ import { Canvas } from "@react-three/fiber";
 import { Sphere } from '@react-three/drei'
 import { Physics, useSphere } from '@react-three/cannon'
 
+// 
+function PhysicsBall({ position, color }) {
+   // Create a physics-enabled sphere
+   const [ref, api] = useSphere(() => ({
+      mass: 20,
+      // position: [0, 2, 0],
+      position: position,
+      args: [1.25], // radius of the Ball
+   }))
+
+   return (
+      // Anzahl der Segmente des Balles in: args={[1.5, 16, 16] 
+      <Sphere ref={ref} args={[1.25, 64, 64]}>
+         <meshStandardMaterial color={color} />
+      </Sphere>
+   )  // return()
+}  // PhysicsBall()
+
+
 //
 export default function AppBarTop() {
 
@@ -45,25 +64,6 @@ export default function AppBarTop() {
          backgroundColor: 'primary.light',
       }
    }  // 
-
-   // 
-   function PhysicsBall({ position, color }) {
-      // Create a physics-enabled sphere
-      const [ref, api] = useSphere(() => ({
-         mass: 20,
-         // position: [0, 2, 0],
-         position: position,
-         args: [1.25], // radius of the Ball
-      }))
-
-      return (
-         // Anzahl der Segmente des Balles in: args={[1.5, 16, 16] 
-         <Sphere ref={ref} args={[1.25, 64, 64]}>
-            <meshStandardMaterial color={color} />
-         </Sphere>
-      )  // return()
-   }  // PhysicsBall()
-
 
    // 
    return (
@@ -235,6 +235,14 @@ export default function AppBarTop() {
                      fnNavigate('/Mario3D')
                   }}>
                   Mario3D
+               </MenuItem>
+
+               <MenuItem
+                  sx={menuItemSx}
+                  onClick={() => {
+                     fnNavigate('/Puzzle3D')
+                  }}>
+                  Puzzle3D
                </MenuItem>
 
                {/* <MenuItem

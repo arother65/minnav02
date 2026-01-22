@@ -102,7 +102,6 @@ function SkinnedCharacter() {
 }
 
 
-
 function Mario() {
    return (
       <group position={[0, -0.05, 0]}>
