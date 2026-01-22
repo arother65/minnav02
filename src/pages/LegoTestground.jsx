@@ -5,7 +5,7 @@
  */
 
 
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
@@ -21,6 +21,7 @@ import Footer from '../components/Footer'
 import { InstancedLegoBricks } from "../components/InstancedLegoBricks"
 
 import importedBricks from '../components/lego/bricksData.json'
+import { Physics, RigidBody } from '@react-three/rapier'
 
 //
 export default function LegoScene() {
@@ -34,6 +35,10 @@ export default function LegoScene() {
   // imported bricks from JSON-object
   const [bricks, setBricks] = useState(importedBricks)
   const [bricksLoaded, setBricksLoaded] = useState(false)
+  useEffect(() => {
+    // setBricks()
+  }, bricks)
+
 
   const checkData = () => {
     if (bricks) {
@@ -71,6 +76,9 @@ export default function LegoScene() {
   // states for the bricks
   const [wireframe, setWireframe] = useState(false);
   const [explodedBrick, setExplodedBrick] = useState(false);
+  // useEffect(() => {
+  //   //?
+  // }, explodedBrick)
 
   function Fragment({ position, color, velocity }) {
     const ref = useRef()
@@ -81,26 +89,30 @@ export default function LegoScene() {
     })
 
     return (
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
+      <RigidBody linearVelocity={velocity} canSleep>
+        <mesh ref={ref}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      </RigidBody>
     )
   }  // Fragment()
 
-  function ExplodingCannonBall({ position, color, noFragments }) {
+  function ExplodingBrick({ position, color, noFragments }) {
 
     return (
       Array.from({ length: noFragments }).map((_, i) => (
-        <Fragment
-          key={i}
-          velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-          position={position}
-          color={color}
-        />
+        <React.Fragment key={i}>
+          <Fragment
+            key={i}
+            velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+            position={position}
+            color={color}
+          />
+        </React.Fragment>
       ))
     )
-  }  // ExplodingCannonBall()
+  }  // ExplodingBrick()
 
   //
   function Fade3DText({ text, delay = 5 }) {
@@ -179,7 +191,10 @@ export default function LegoScene() {
               wireframe
             </Button>
             <Button variant="outlined" color="warning" className='m-1'
-              onClick={() => { setExplodedBrick(true) }} >
+              onClick={() => {
+                setExplodedBrick(true)
+                // setBricks([])
+              }}>
               explode scene
             </Button>
             <Button variant="outlined"
@@ -247,15 +262,27 @@ export default function LegoScene() {
             <>
               <Fade3DText text={'bricks data loaded'} />
               <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+              <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
             </>
           }
-          {explodedBrick &&
+          {bricks && explodedBrick &&
             <>
-              <ExplodingCannonBall position={[-5, -1, 1]} color="darkred" noFragments={32} />
+              <Physics
+                gravity={[0, -9.81, 0]}
+                timeStep="vary"
+                paused={false}
+                debug={false}
+                colliders={false}
+                interpolate={true}
+                updateLoop="follow"
+              >
+                <RigidBody>
+                  <ExplodingBrick position={[-5, -1, 1]} color="darkred" noFragments={32} />
+                  <Fade3DText text={'...bricks destroyed as ordered.'} />
+                </RigidBody>
+              </Physics>
             </>
           }
-
-          <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
 
           <OrbitControls />
         </Canvas>
