@@ -83,6 +83,10 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
                args={[null, null, bricks.length]}  // count = number of instances
                castShadow
                receiveShadow
+               onClick={(e) => {
+                  // setExploded(true)
+                  console.log('bricks:', bricks, 'coords: ',  e.barycoord)
+               }}
             >
                <boxGeometry />
                <meshStandardMaterial

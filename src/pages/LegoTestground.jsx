@@ -5,9 +5,9 @@
  */
 
 
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
+import { AppBar, Box, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 import * as THREE from 'three'
@@ -37,7 +37,7 @@ export default function LegoScene() {
   const [bricksLoaded, setBricksLoaded] = useState(false)
   useEffect(() => {
     // setBricks()
-  }, bricks)
+  }, [bricks])
 
 
   const checkData = () => {
@@ -76,23 +76,53 @@ export default function LegoScene() {
   // states for the bricks
   const [wireframe, setWireframe] = useState(false);
   const [explodedBrick, setExplodedBrick] = useState(false);
-  // useEffect(() => {
-  //   //?
-  // }, explodedBrick)
 
-  function Fragment({ position, color, velocity }) {
+
+  function Fragment({ position, color, velocity, noFragments }) {
+
     const ref = useRef()
+    const matRef = useRef()
+    let modNoFragments = noFragments % 2
 
-    useFrame((_, delta) => {
-      ref.current.position.addScaledVector(velocity, delta)
-      velocity.y -= 3 * delta // gravity
-    })
+    useFrame(() => {
+      if (!ref.current) { return }
+      if (!matRef.current) { return }
+    })  // useFrame() 
+
+    const [actColor] = useState(color)
+    useEffect(() => {
+      if (matRef.current) {
+        matRef.current.color.set(actColor)
+      }
+      else { return }
+    }, [actColor])
 
     return (
-      <RigidBody linearVelocity={velocity} canSleep>
-        <mesh ref={ref}>
-          <sphereGeometry args={[0.08, 8, 8]} />
-          <meshStandardMaterial color={color} />
+      <RigidBody
+        position={position}
+        linearVelocity={velocity}
+        angularVelocity={[
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
+        ]}
+        gravityScale={0.5}
+        restitution={0.4}
+        friction={0.6}
+        colliders="ball"
+      >
+        <mesh ref={ref} position={position} linearVelocity={velocity}>
+          {(modNoFragments === 0) &&
+            <sphereGeometry args={[0.08, 8, 8]}>
+              {/* <meshStandardMaterial ref={matRef} color={color} /> */}
+            </sphereGeometry>
+          }
+          {(modNoFragments > 0) &&
+            <coneGeometry args={[0.05, 0.2, 3]}>
+              {/* <meshStandardMaterial ref={matRef} color={color} /> */}
+            </coneGeometry>
+          }
+          <meshStandardMaterial ref={matRef} />
         </mesh>
       </RigidBody>
     )
@@ -102,16 +132,16 @@ export default function LegoScene() {
 
     return (
       Array.from({ length: noFragments }).map((_, i) => (
-        <React.Fragment key={i}>
-          <Fragment
-            key={i}
-            velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-            position={position}
-            color={color}
-          />
-        </React.Fragment>
-      ))
-    )
+
+        <Fragment
+          velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+          position={position}
+          color={color}
+          noFragments={noFragments}
+        />
+
+      ))  // Array.from()
+    )  // return()
   }  // ExplodingBrick()
 
   //
@@ -144,10 +174,7 @@ export default function LegoScene() {
   return (
     <div>
       <header>
-        <AppBar
-          /* className='App-bar' */ // no effect
-          sx={{ backgroundColor: 'rgba(40, 45, 60, 0.75)', position: 'fixed' }}
-        >
+        <AppBar sx={{ backgroundColor: 'rgba(40, 45, 60, 0.75)', position: 'fixed' }}>
           <Toolbar>
             <Tooltip title='Home' arrow sx={{}}>
               <IconButton
@@ -161,7 +188,7 @@ export default function LegoScene() {
                 <HomeIcon sx={{ color: 'green' }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title='ReactJS home' arrow >
+            <Tooltip title='ReactJS home' arrow>
               <nav>
                 <a href="https://reactnative.dev/" rel='noreferrer' target='_blank'>
                   <img src={logo} className="App-logo" alt="logo" />
@@ -173,121 +200,142 @@ export default function LegoScene() {
       </header>
 
       <main className="App-main">
+        <div className='row mt-5 p-1'>
+          {/* COl with buttons controlling the scene */}
+          <Box orientation='col' className='m-1 mt-1 bg-dark rounded shadow'
+            sx={{ width: '14%', border: '1px solid green', mt: 2 }}
+          >
+            Steuerelemente
+            <Card className='m-1 rounded shadow'>
+              <Button variant="outlined"
+                color="success"
+                className='m-1'
+                onClick={() => {
+                  if (wireframe) {
+                    setWireframe(false)
+                  }
+                  else {
+                    setWireframe(true)
+                  }
+                }}>
+                wireframe
+              </Button>
+              <Button variant="outlined" color="warning" className='m-1'
+                onClick={() => {
+                  // color col with canvas
+                  // let colCanvas = document.getElementById('idColCanvas')
+                  // let className = colCanvas.className
+                  // let newClassName = ''
+                  // newClassName = newClassName.concat(className, ' bg-dark')
+                  // colCanvas.setAttribute('className', newClassName)
 
-        <div className='col m-1 text-bg-dark w-25 h-100 rounded shadow'>
-          Steuerelemente
-          <Card className='col m-1 rounded shadow'>
-            <Button variant="outlined"
-              color="success"
-              className='m-1'
-              onClick={() => {
-                if (wireframe) {
-                  setWireframe(false)
-                }
-                else {
-                  setWireframe(true)
-                }
-              }}>
-              wireframe
-            </Button>
-            <Button variant="outlined" color="warning" className='m-1'
-              onClick={() => {
-                setExplodedBrick(true)
-                // setBricks([])
-              }}>
-              explode scene
-            </Button>
-            <Button variant="outlined"
-              color="success"
-              className='m-1'
-              onClick={() => {
-                if (wireframe) {
-                  setWireframe(false)
-                }
-                else {
-                  setWireframe(true)
-                }
+                  // effect
+                  setExplodedBrick(true)
+                  // setBricks([])
+                }}>
+                explode scene
+              </Button>
+              <Button variant="outlined"
+                color="success"
+                className='m-1'
+                onClick={() => {
+                  if (wireframe) {
+                    setWireframe(false)
+                  }
+                  else {
+                    setWireframe(true)
+                  }
+                }}
+                disabled>
+                save scene
+              </Button>
+              <Button variant="outlined"
+                color="success"
+                className='m-1'
+                onClick={() => {
+                  if (wireframe) {
+                    setWireframe(false)
+                  }
+                  else {
+                    setWireframe(true)
+                  }
+                }}
+                disabled>
+                load scene
+              </Button>
+            </Card>
+          </Box>
+
+          {/* COl with the scene */}
+          <Box orientation='col' className='m-1 mt-1 bg-dark rounded shadow'
+            sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
+          >
+            <Canvas shadows camera={{ position: [5, 5, 5], fov: 105 }}
+              style={{
+                width: "75vw",
+                height: "90vh",
+                display: "block"
               }}
-              disabled>
-              save scene
-            </Button>
-            <Button variant="outlined"
-              color="success"
-              className='m-1'
-              onClick={() => {
-                if (wireframe) {
-                  setWireframe(false)
-                }
-                else {
-                  setWireframe(true)
-                }
+              onPointerMissed={() => {
+                setSelected(null);
+                setHovered(null);
               }}
-              disabled>
-              load scene
-            </Button>
-          </Card>
-        </div>
-        {/* <div> </div> */}
-
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 105 }}
-          style={{
-            width: "95vw",
-            height: "95vh",
-            display: "block"
-          }}
-          onPointerMissed={() => {
-            setSelected(null);
-            setHovered(null);
-          }}
-        >
-          <ambientLight intensity={2} />
-          <directionalLight position={[5, 5, 5]} castShadow />
-
-          <Environment preset="sunset" />
-
-          {!bricks &&
-            <Text
-              position={[-3.5, 0, -4]}
-              rotation={[0, 0, 0]}
-              fontSize={1}
-              color="red"
-              anchorX="center"
-              anchorY="middle"
             >
-              No bricks data available
-            </Text>
-          }
+              <ambientLight intensity={2} />
+              <directionalLight position={[5, 5, 5]} castShadow />
 
-          {bricks && !explodedBrick &&
-            <>
-              <Fade3DText text={'bricks data loaded'} />
-              <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
-              <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
-            </>
-          }
-          {bricks && explodedBrick &&
-            <>
-              <Physics
-                gravity={[0, -9.81, 0]}
-                timeStep="vary"
-                paused={false}
-                debug={false}
-                colliders={false}
-                interpolate={true}
-                updateLoop="follow"
-              >
-                <RigidBody>
-                  <ExplodingBrick position={[-5, -1, 1]} color="darkred" noFragments={32} />
-                  <Fade3DText text={'...bricks destroyed as ordered.'} />
-                </RigidBody>
-              </Physics>
-            </>
-          }
+              <Environment preset="sunset" />
 
-          <OrbitControls />
-        </Canvas>
+              {!bricks &&
+                <Text
+                  position={[-3.5, 0, -4]}
+                  rotation={[0, 0, 0]}
+                  fontSize={1}
+                  color="red"
+                  anchorX="center"
+                  anchorY="middle"
+                >
+                  No bricks data available
+                </Text>
+              }
 
-      </main>
+              {!explodedBrick &&
+                <>
+                  <Fade3DText text={'bricks data loaded'} />
+                  <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+                  <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
+                </>
+              }
+              {explodedBrick &&
+                <>
+                  <Physics
+                    gravity={[1, -5, 1]}
+                  // timeStep="vary"
+                  // paused={false}
+                  // debug={false}
+                  // colliders={false}
+                  // interpolate={true}
+                  // updateLoop="follow"
+                  >
+                    <RigidBody>
+                      <ExplodingBrick position={[-5, -1, 2]} color="red" noFragments={64} />
+                      <ExplodingBrick position={[-3, 1, 3]} color="blue" noFragments={8} />
+                      <ExplodingBrick position={[-1, 2, 2]} color="orange" noFragments={32} />
+                      <ExplodingBrick position={[1, 2, 3]} color="black" noFragments={64} />
+                      <ExplodingBrick position={[1, 2, 2]} color="grey" noFragments={8} />
+
+                      {/* <Fade3DText text={'...bricks destroyed as ordered.'} /> */}
+
+                    </RigidBody>
+                  </Physics>
+                </>
+              }
+
+              <OrbitControls />
+            </Canvas>
+          </Box>
+        </div>
+      </main >
 
       <footer id='idFooterAbout' className="App-footer" >
         <Footer visible={null} />

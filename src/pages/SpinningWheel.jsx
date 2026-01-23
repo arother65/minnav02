@@ -100,8 +100,7 @@ export default function SpinningWheel() {
 
          {/* Wheel  */}
          <div className='row mt-1 m-1 w-100'>
-            <Box orientation='col' className='m-1 bg-dark rounded shadow ' sx={{ width: '15%', border: '1px solid green' }}
-            >
+            <Box orientation='col' className='m-1 bg-dark rounded shadow ' sx={{ width: '15%', border: '1px solid green' }}>
                <Tooltip title='press to spin' arrow>
                   <Button className='m-1' variant="contained" color="primary"
                      onClick={() => {
@@ -112,10 +111,7 @@ export default function SpinningWheel() {
                </Tooltip>
                {/* <HtmlOverlay spin={spin} winner={winner} /> */}
             </Box>
-            <Box orientation='col'
-               className='m-1 bg-dark-subtle rounded shadow '
-               sx={{ width: '83%', minHeight: '200px', border: '1px solid red' }}
-            >
+            <Box orientation='col' className='m-1 bg-dark-subtle rounded shadow' sx={{ width: '83%', minHeight: '200px', border: '1px solid red' }}>
                <Canvas camera={{ position: [0, 4, 5], fov: 50 }}>
                   <ambientLight intensity={0.6} />
                   <directionalLight position={[5, 5, 5]} />
@@ -196,7 +192,7 @@ export default function SpinningWheel() {
 
                      {/* gravity ca.: x = unklar; y = horizontal; vertical = z */}
                      <Physics gravity={[0, -10, 10]}>
-{/*                         <PhysicsBall position={[1, 0, -10]} color={'blue'} />
+                        {/*                         <PhysicsBall position={[1, 0, -10]} color={'blue'} />
                         <PhysicsBall position={[1, 0, -20]} color={'lightblue'} />
                         <PhysicsBall position={[1, 0, -20]} color={'darkblue'} /> */}
                         {/* <PhysicsBall position={[-7, 0, -1]} color={'darkpurple'} /> */}
