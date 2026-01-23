@@ -1,9 +1,14 @@
 /**
  * 
- *  Stand: 19.01.2026
+ *  Stand: 23.01.2026
  * 
  */
 
+//
+import { useMemo } from "react";
+// import { useFrame } from "@react-three/fiber" 
+
+import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, RoundedBox } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
@@ -11,9 +16,8 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
-//
-import { useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+// customer components
+import Tyre from '../components/truckparts/Tyre'
 
 
 // Wheel hubs
@@ -216,9 +220,6 @@ function MetalRod({ args, position, rotation, color }) {
    )
 }  // MetalRod()
 
-// wheel with spokes
-// WheelSpokes.jsx
-
 function WheelWithSpokes({
    rimRadius = 0.2,
    rimTube = 0.15,
@@ -273,7 +274,6 @@ function WheelWithSpokes({
       </group>
    )  // return()
 }  // WheelWithSpokes()
-
 
 // Train component
 function Train({ groupPosition, bodyColor }) {
@@ -412,8 +412,32 @@ function Train({ groupPosition, bodyColor }) {
    )
 }  // Train()
 
+/** ------------------------------------------------------------------------ */
+//   Side-project: TruckWHeel)() 
+/** ------------------------------------------------------------------------ */
 
-// Car3D page component
+
+// function TruckWheel() {
+//   return (
+//     <group scale={1.2}>
+//       <Tyre />
+//       <Rim />
+//       <Bolts />
+//     </group>
+//   )
+// }  // TruckWheel()
+
+const rimProfile = [
+   [0.2, 0],
+   [0.28, 0.05],
+   [0.32, 0.15],
+   [0.35, 0.5],
+   [0.32, 0.85],
+   [0.28, 0.95],
+   [0.2, 1]
+].map(([x, y]) => new THREE.Vector2(x, y))
+
+//* Car3D page component
 export default function Car3D() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
@@ -476,6 +500,30 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
+
+               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.35, 4]}>
+                  <latheGeometry args={[rimProfile, 128]} />
+                  <meshStandardMaterial
+                     metalness={1}
+                     roughness={0.25}
+                     envMapIntensity={1.5}
+                     color='red'
+                  />
+               </mesh>
+
+               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[2, 0.35, 2]}>
+                  <latheGeometry args={[rimProfile, 128]} />
+                  <meshStandardMaterial
+                     metalness={1}
+                     roughness={0.25}
+                     envMapIntensity={1.5}
+                     color='grey'
+                  />
+               </mesh>
+
+               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[4, 0.45, 5]}>
+                  <Tyre />
+               </mesh>
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
