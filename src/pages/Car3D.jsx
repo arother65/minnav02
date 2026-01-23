@@ -17,7 +17,7 @@ import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 // customer components
-import Tyre from '../components/truckparts/Tyre'
+import { Tyre, TruckTyre, WheelBolts } from '../components/truckparts/Tyre'
 
 
 // Wheel hubs
@@ -608,6 +608,9 @@ export default function Car3D() {
                   <planeGeometry args={[20, 20]} />
                   <meshStandardMaterial color="black" />
                </mesh>
+
+               {/* Bolts  */}
+               <WheelBolts />
 
                <OrbitControls />
             </Canvas>
