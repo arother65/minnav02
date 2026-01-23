@@ -501,15 +501,7 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
-               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.35, 4]}>
-                  <latheGeometry args={[rimProfile, 128]} />
-                  <meshStandardMaterial
-                     metalness={1}
-                     roughness={0.25}
-                     envMapIntensity={1.5}
-                     color='red'
-                  />
-               </mesh>
+
 
                <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[2, 0.35, 2]}>
                   <latheGeometry args={[rimProfile, 128]} />
@@ -521,14 +513,35 @@ export default function Car3D() {
                   />
                </mesh>
 
-               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[4, 0.45, 5]}>
+               {/* <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[4, 0.45, 5]}>
                   <Tyre />
+               </mesh> */}
+
+               {/* rim */}
+               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.38, 4]}>
+                  <latheGeometry args={[rimProfile, 128]} />
+                  <meshStandardMaterial
+                     metalness={1}
+                     roughness={0.25}
+                     envMapIntensity={1.5}
+                     color='red'
+                  />
+               </mesh>
+               {/* inner tyre */}
+               <mesh rotation={[0.15, 1.5, 0]} position={[2.3, 0.38, 4]}>
+                  <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                  <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+               </mesh>
+               {/* outer tyre */}
+               <mesh rotation={[0.15, 1.5, 0]} position={[2.7, 0.38, 4]}>
+                  <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                  <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
                </mesh>
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                   <planeGeometry args={[20, 20]} />
-                  <meshStandardMaterial color="olive" />
+                  <meshStandardMaterial color="black" />
                </mesh>
 
                <OrbitControls />
