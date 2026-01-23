@@ -428,14 +428,22 @@ function Train({ groupPosition, bodyColor }) {
 // }  // TruckWheel()
 
 const rimProfile = [
-   [0.2, 0],
+   [0.1, 0],
    [0.28, 0.05],
    [0.32, 0.15],
    [0.35, 0.5],
    [0.32, 0.85],
    [0.28, 0.95],
-   [0.2, 1]
+   [0.1, 1]
 ].map(([x, y]) => new THREE.Vector2(x, y))
+
+const rimProfileSM = [
+   [0.1, 0.25],
+   [0.25, 0.15],
+   [0.25, 0.4],
+   [0.1, 0.25]
+].map(([x, y]) => new THREE.Vector2(x, y))
+
 
 //* Car3D page component
 export default function Car3D() {
@@ -502,14 +510,14 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
 
-
-               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[2, 0.35, 2]}>
-                  <latheGeometry args={[rimProfile, 128]} />
+               {/** rim in metal */}
+               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.35, 5.5]}>
+                  <latheGeometry args={[rimProfileSM, 64]} />
                   <meshStandardMaterial
                      metalness={1}
-                     roughness={0.25}
-                     envMapIntensity={1.5}
-                     color='grey'
+                     roughness={0.35}
+                     envMapIntensity={0.5}
+                     color='lightgrey'
                   />
                </mesh>
 
@@ -517,32 +525,34 @@ export default function Car3D() {
                   <Tyre />
                </mesh> */}
 
-               {/* rim */}
-               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.38, 4]}>
-                  <latheGeometry args={[rimProfile, 128]} />
-                  <meshStandardMaterial
-                     metalness={1}
-                     roughness={0.25}
-                     envMapIntensity={1.5}
-                     color='red'
-                  />
-               </mesh>
-               {/* inner tyre */}
-               <mesh rotation={[0.15, 1.5, 0]} position={[2.3, 0.38, 4]}>
-                  <torusGeometry args={[0.3, 0.2, 40, 75]} />
-                  <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
-               </mesh>
-               {/* outer tyre */}
-               <mesh rotation={[0.15, 1.5, 0]} position={[2.7, 0.38, 4]}>
-                  <torusGeometry args={[0.3, 0.2, 40, 75]} />
-                  <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
-               </mesh>
+               <group position={[-1, 0.01, 1.5]}>
+                  {/* rim */}
+                  <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.38, 4]}>
+                     <latheGeometry args={[rimProfile, 128]} />
+                     <meshStandardMaterial
+                        metalness={1}
+                        roughness={0.25}
+                        envMapIntensity={1.5}
+                        color='red'
+                     />
+                  </mesh>
+                  {/* inner tyre */}
+                  <mesh rotation={[0.15, 1.5, 0]} position={[2.3, 0.38, 4]}>
+                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                     <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+                  </mesh>
+                  {/* outer tyre */}
+                  <mesh rotation={[0.15, 1.5, 0]} position={[2.7, 0.38, 4]}>
+                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                     <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+                  </mesh>
 
-               {/* Ground */}
-               <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                  <planeGeometry args={[20, 20]} />
-                  <meshStandardMaterial color="black" />
-               </mesh>
+                  {/* Ground */}
+                  <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                     <planeGeometry args={[20, 20]} />
+                     <meshStandardMaterial color="black" />
+                  </mesh>
+               </group>
 
                <OrbitControls />
             </Canvas>
