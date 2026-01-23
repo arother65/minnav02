@@ -438,12 +438,20 @@ const rimProfile = [
 ].map(([x, y]) => new THREE.Vector2(x, y))
 
 const rimProfileSM = [
-   [0.1, 0.25],
-   [0.25, 0.15],
-   [0.25, 0.4],
-   [0.1, 0.25]
+   [0.2, 0.15],
+   [0.32, 0.15],
+
+
+   [0.32, 0.6],  //? Aussenradius
+   [0.2, 0.15]
 ].map(([x, y]) => new THREE.Vector2(x, y))
 
+const LEGO = {
+   STUD_SPACING: 1,
+   STUD_RADIUS: 0.24,
+   STUD_HEIGHT: 0.18,
+   BRICK_HEIGHT: 0.96,
+}
 
 //* Car3D page component
 export default function Car3D() {
@@ -509,17 +517,64 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
+               <group>
+                  {/** rim in metal */}
+                  <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.375, 5.5]}>
+                     <latheGeometry args={[rimProfileSM, 64]} />
+                     <meshStandardMaterial
+                        metalness={1}
+                        roughness={0.35}
+                        envMapIntensity={0.5}
+                        color='blue'
+                     />
+                  </mesh>
+                  {/* tyre */}
+                  <mesh rotation={[0.1, 2, 0]} position={[2.6, 0.4, 5.5]}>
+                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                     <meshStandardMaterial color="black" metalness={0.45} roughness={0.5} />
+                  </mesh>
+               </group>
 
-               {/** rim in metal */}
-               <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.35, 5.5]}>
-                  <latheGeometry args={[rimProfileSM, 64]} />
-                  <meshStandardMaterial
-                     metalness={1}
-                     roughness={0.35}
-                     envMapIntensity={0.5}
-                     color='lightgrey'
-                  />
-               </mesh>
+               <group position={[0.5, 0.05, -2]}>
+                  {/** rim in metal */}
+                  <mesh rotation={[Math.PI / 2, 0.5, 1.55]} position={[3.25, 0.375, 5.5]}>
+                     <latheGeometry args={[rimProfileSM, 64]} />
+                     <meshStandardMaterial
+                        metalness={1}
+                        roughness={0.35}
+                        envMapIntensity={0.5}
+                        color='green'
+                     />
+                  </mesh>
+
+                  {/* Studs */}
+                  <instancedMesh
+                     // ref={studRef}
+                     args={[0, 0, 12]}
+                     rotation={[Math.PI / 2, 0, 1.55]}
+                     position={[3, 0.35, 5.5]}
+                  >
+                     <cylinderGeometry
+                        args={[
+                           LEGO.STUD_RADIUS,
+                           LEGO.STUD_RADIUS,
+                           LEGO.STUD_HEIGHT,
+                           16,
+                        ]}
+                     />
+                     <meshStandardMaterial
+                        wireframe={true}
+                        roughness={0.5}
+                        metalness={0} 
+                        color={'red'}/>
+                  </instancedMesh>
+
+                  {/* tyre */}
+                  <mesh rotation={[0.15, 1.5, 0]} position={[2.9, 0.4, 5.5]}>
+                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
+                     <meshStandardMaterial color="black" metalness={0} roughness={0.9} />
+                  </mesh>
+               </group>
 
                {/* <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[4, 0.45, 5]}>
                   <Tyre />
@@ -546,13 +601,13 @@ export default function Car3D() {
                      <torusGeometry args={[0.3, 0.2, 40, 75]} />
                      <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
                   </mesh>
-
-                  {/* Ground */}
-                  <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                     <planeGeometry args={[20, 20]} />
-                     <meshStandardMaterial color="black" />
-                  </mesh>
                </group>
+
+               {/* Ground */}
+               <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                  <planeGeometry args={[20, 20]} />
+                  <meshStandardMaterial color="black" />
+               </mesh>
 
                <OrbitControls />
             </Canvas>
