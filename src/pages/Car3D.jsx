@@ -17,19 +17,18 @@ import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 // customer components
-import { Tyre, TruckTyre, WheelBolts } from '../components/truckparts/Tyre'
+// import WheelBolts from '../components/truckparts/Tyre'  // errs
 
 
 // Wheel hubs
 function WheelHub({ position }) {
    return (
       <group>
-         {/* ? wheel hubs */}
          <mesh position={position} rotation={[0, 0, Math.PI / 2]} castShadow>
             <cylinderGeometry args={[0.15, 0.15, 0.1, 64]} />
             <meshStandardMaterial color={'white'} />
          </mesh>
-      </group>
+      </group >
    )
 }  // WheelHub() 
 
@@ -416,7 +415,6 @@ function Train({ groupPosition, bodyColor }) {
 //   Side-project: TruckWHeel)() 
 /** ------------------------------------------------------------------------ */
 
-
 // function TruckWheel() {
 //   return (
 //     <group scale={1.2}>
@@ -426,6 +424,44 @@ function Train({ groupPosition, bodyColor }) {
 //     </group>
 //   )
 // }  // TruckWheel()
+
+/** ------------------------------------------------------------------------ */
+//   Group with a complete wheel.
+/** ------------------------------------------------------------------------ */
+function WheelWithAxis({ position = [1, 0, 0], rimColor = 'red' }) {
+
+   return (
+      <group position={position}>
+         {/** rim */}
+         <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.375, 5.5]}>
+            <latheGeometry args={[rimProfileSM, 32]} />
+            <meshStandardMaterial
+               metalness={1}
+               roughness={0.35}
+               envMapIntensity={0.5}
+               color={rimColor}
+            />
+         </mesh>
+         {/* tyre */}
+         <mesh position={[2.65, 0.4, 5.5]} rotation={[0.2, 1.55, 0]} >
+            <torusGeometry args={[0.3, 0.2, 40, 32]} />
+            <meshStandardMaterial color={"black"} metalness={0.1} roughness={0.25} />
+         </mesh>
+
+         {/* axis */}
+         <mesh position={[2.5, 0.385, 5.55]} rotation={[1.75, 0, 1.5]}>
+            <cylinderGeometry args={[0.13, 0.13, 1, 32]} />
+            <meshStandardMaterial
+               metalness={1}
+               roughness={0.35}
+               // normalScale={[1, 1]} // directional brushing
+               envMapIntensity={1}
+               color={'grey'} />
+         </mesh>
+      </group>
+   )  // return()
+}  // WheelWithAxis
+
 
 const rimProfile = [
    [0.1, 0],
@@ -517,9 +553,8 @@ export default function Car3D() {
                      <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
                      <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
 
-               {/** rim in metal */}
-               <group position={[1, 0, 0]}>
-                  {/** rim */}
+               {/** wheel with rim and axis in metal */}
+               {/**                <group position={[1, 0, 0]}>
                   <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.375, 5.5]}>
                      <latheGeometry args={[rimProfileSM, 32]} />
                      <meshStandardMaterial
@@ -529,23 +564,25 @@ export default function Car3D() {
                         color='blue'
                      />
                   </mesh>
-                  {/* tyre */}
                   <mesh position={[2.65, 0.4, 5.5]} rotation={[0.2, 1.55, 0]} >
                      <torusGeometry args={[0.3, 0.2, 40, 64]} />
-                     <meshStandardMaterial color="black" metalness={0.45} roughness={0.5} />
+                     <meshStandardMaterial color="black" metalness={0.01} roughness={0.5} />
                   </mesh>
-
-                  {/* axis */}
-                  <mesh position={[4, 0.35, 5.4]} rotation={[1.75, 0, 1.5]}>
-                     <cylinderGeometry args={[0.065, 0.065, 2, 64]} />
-                     <meshStandardMaterial 
+                  <mesh position={[2.5, 0.385, 5.55]} rotation={[1.75, 0, 1.5]}>
+                     <cylinderGeometry args={[0.095, 0.095, 1, 32]} />
+                     <meshStandardMaterial
                         metalness={1}
                         roughness={0.35}
                         normalScale={[1, 1]} // directional brushing
                         envMapIntensity={1}
                         color={'grey'} />
                   </mesh>
-               </group>
+               </group> */}
+
+               <WheelWithAxis position={[1, 2, 0]} rimColor='white' />
+               <WheelWithAxis position={[2, 2.5, 0]} rimColor='blue' />
+               <WheelWithAxis position={[2, 1.5, 0]} rimColor='orange' />
+               <WheelWithAxis position={[1, 1, 0]} rimColor='yellow' />
 
                {/** wheel with one tyre on rim  */}
                <group position={[0.5, 0.05, -2]}>
@@ -614,9 +651,9 @@ export default function Car3D() {
                </group>
 
                {/* Bolts  */}
-               <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
+               {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
                   <WheelBolts />
-               </instancedMesh>
+               </instancedMesh> */}
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>

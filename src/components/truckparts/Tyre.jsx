@@ -211,7 +211,7 @@ function ISOBolt({ size = "M22" }) {
 }
 
 //
-export function WheelBolts({ size = "M22", count = 10, radius = 0.28 }) {
+export default function WheelBolts({ size = "M22", count = 10, radius = 0.28 }) {
 
    return (
 
