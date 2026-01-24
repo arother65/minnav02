@@ -462,11 +462,11 @@ function WheelWithAxis({ position = [1, 0, 0], rimColor = 'red' }) {
    )  // return()
 }  // WheelWithAxis
 
-function WheelWithSmallSpokes({ position = [0, 0, 0], rimColor = 'red' }) {
+function WheelWithSmallSpokes({ position = [0, 0, 0], rotation, rimColor = 'red' }) {
 
    {/** wheel with one tyre on rim  */ }
    return (
-      <group position={position}>
+      <group position={position} rotation={rotation}>
          {/** rim in metal */}
          <mesh rotation={[Math.PI / 2, 0, 1.65]} position={[3.25, 0.375, 5.5]}>
             <latheGeometry args={[rimProfileSM, 64]} />
@@ -502,6 +502,34 @@ function WheelWithSmallSpokes({ position = [0, 0, 0], rimColor = 'red' }) {
    )
 }  // WheelWithSmallSpokes()
 
+function DoubleTyre({ position = [0, 0, 0] }) {
+
+   {/** group with rim and two tyres */ }
+   return (
+      <group position={position}>
+         {/* rim */}
+         <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.38, 4]}>
+            <latheGeometry args={[rimProfile, 128]} />
+            <meshStandardMaterial
+               metalness={1}
+               roughness={0.25}
+               envMapIntensity={1.5}
+               color='red'
+            />
+         </mesh>
+         {/* inner tyre */}
+         <mesh rotation={[0.15, 1.5, 0]} position={[2.3, 0.38, 4]}>
+            <torusGeometry args={[0.3, 0.2, 40, 75]} />
+            <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+         </mesh>
+         {/* outer tyre */}
+         <mesh rotation={[0.15, 1.5, 0]} position={[2.7, 0.38, 4]}>
+            <torusGeometry args={[0.3, 0.2, 40, 75]} />
+            <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
+         </mesh>
+      </group>
+   )
+}  // DoubleTyre()
 
 const rimProfile = [
    [0.1, 0],
@@ -572,7 +600,7 @@ export default function Car3D() {
 
                {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
 
-               <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
+               <Car groupPosition={[0, 0.95, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
                {/* <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />  */}
 
                {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
@@ -619,39 +647,23 @@ export default function Car3D() {
                   </mesh>
                </group> */}
 
+               {/** hard tyres, glossy */}
                <WheelWithAxis position={[1, 2, 0]} rimColor='white' />
                <WheelWithAxis position={[2, 2.5, 0]} rimColor='blue' />
                <WheelWithAxis position={[2, 1.5, 0]} rimColor='orange' />
                <WheelWithAxis position={[1, 1, 0]} rimColor='yellow' />
 
+               {/** soft tyres, matt look */}
+               <WheelWithSmallSpokes position={[0, 0, 0]} rimColor={'yellow'}/>   {/** driver's side */} 
+               <WheelWithSmallSpokes position={[1.65, 0.75, -0.75]} rotation= {[0, 0, 3.15]} rimColor={'yellow'}/>  {/** passenger's side */} 
+               <WheelWithSmallSpokes position={[1, 0.75, -0.75]} rotation= {[0, 0, 3.15]} rimColor={'orange'}/>
+ 
+               <WheelWithSmallSpokes position={[1, 0, 0]} rimColor={'orange'}/>
+               <WheelWithSmallSpokes position={[2, 0, 0]} rimColor={'red'}/>
 
-               <WheelWithSmallSpokes position={[0, 0, 0]} rimColor={'yellow'} />
-               <WheelWithSmallSpokes position={[1, 0, 0]} rimColor={'orange'} />
-               <WheelWithSmallSpokes position={[2, 0, 0]} rimColor={'red'} />
-
-               {/** group with ohne rim and two tyres */}
-               <group position={[-1, 0.01, 1.5]}>
-                  {/* rim */}
-                  <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.38, 4]}>
-                     <latheGeometry args={[rimProfile, 128]} />
-                     <meshStandardMaterial
-                        metalness={1}
-                        roughness={0.25}
-                        envMapIntensity={1.5}
-                        color='red'
-                     />
-                  </mesh>
-                  {/* inner tyre */}
-                  <mesh rotation={[0.15, 1.5, 0]} position={[2.3, 0.38, 4]}>
-                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
-                     <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
-                  </mesh>
-                  {/* outer tyre */}
-                  <mesh rotation={[0.15, 1.5, 0]} position={[2.7, 0.38, 4]}>
-                     <torusGeometry args={[0.3, 0.2, 40, 75]} />
-                     <meshStandardMaterial color="#555" metalness={0.7} roughness={0.2} />
-                  </mesh>
-               </group>
+               {/** group with rim and two tyres */}
+               <DoubleTyre position={[-1.25, 0, 0.99]} />
+               <DoubleTyre position={[-1.05, 0, -2.05]} />
 
                {/* Bolts  */}
                {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
