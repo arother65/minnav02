@@ -18,7 +18,11 @@ import HomeIcon from '@mui/icons-material/Home'
 
 // customer components
 // import WheelBolts from '../components/truckparts/Tyre'  // errs
-
+import CardBoardBox from '../components/CardBoardBox'
+import WoodenBox from '../components/WoodenBox'
+// import AirflowArc from '../components/truckparts/Arcs'
+import GothicWindow from '../components/GothicWindow'
+import Sheet from '../components/GothicWindow'
 
 // Wheel hubs
 function WheelHub({ position }) {
@@ -211,8 +215,8 @@ function MetalRod({ args, position, rotation, color }) {
             <meshStandardMaterial
                color={color}
                metalness={1}
-               roughness={0.55}
-               envMapIntensity={0.5}
+               roughness={0.45}
+               envMapIntensity={0.75}
             />
          </RoundedBox>
       </mesh>
@@ -606,14 +610,17 @@ export default function Car3D() {
                {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
 
                {/* load on the truck; args: width, height, depth */}
-               <MetalRod position={[-0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'orange'} />
-               <MetalRod position={[0.25, 1.1, -0.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
-               <MetalRod position={[0, 1.51, -0.5]} args={[0.25, 0.5, 3]} color={'red'} />
+               <MetalRod position={[-0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'orange'} />
+               <MetalRod position={[0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
+               <MetalRod position={[0, 1.5, -1.5]} args={[0.25, 0.5, 3]} color={'red'} />
 
                {/* top layer of rods on truck */}
-               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, .5]} rotation={[0, -1.5, 0]} color={'blue'} />
-               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.15]} rotation={[0, -1.5, 0]} color={'lightblue'} />
-               <MetalRod args={[0.25, 0.05, 3]} position={[0, 1.73, -.75]} rotation={[0, -1.5, 0]} color={'darkblue'} />
+               <MetalRod position={[0, 0.15, 0.5]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'blue'} />
+               <MetalRod position={[0, 0.15, -0.15]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'lightblue'} />
+               <MetalRod position={[0, 0.15, -0.75]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'darkblue'} />
+
+               <MetalRod position={[2.5, 1.45, -3]} args={[0.15, 0.55, 4]} color={'lightgrey'} />
+
 
                {/* rods besides the truck; args: width, height, depth */}
                {/* <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
@@ -654,21 +661,35 @@ export default function Car3D() {
                <WheelWithAxis position={[1, 1, 0]} rimColor='yellow' />
 
                {/** soft tyres, matt look */}
-               <WheelWithSmallSpokes position={[0, 0, 0]} rimColor={'yellow'}/>   {/** driver's side */} 
-               <WheelWithSmallSpokes position={[1.65, 0.75, -0.75]} rotation= {[0, 0, 3.15]} rimColor={'yellow'}/>  {/** passenger's side */} 
-               <WheelWithSmallSpokes position={[1, 0.75, -0.75]} rotation= {[0, 0, 3.15]} rimColor={'orange'}/>
- 
-               <WheelWithSmallSpokes position={[1, 0, 0]} rimColor={'orange'}/>
-               <WheelWithSmallSpokes position={[2, 0, 0]} rimColor={'red'}/>
+               <WheelWithSmallSpokes position={[0, 0, 0]} rimColor={'yellow'} />   {/** driver's side */}
+               <WheelWithSmallSpokes position={[1.65, 0.75, -0.75]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
+               <WheelWithSmallSpokes position={[1, 0.75, -0.75]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
 
-               {/** group with rim and two tyres */}
+               {/** passender's side: wheels with spokes */}
+               <WheelWithSmallSpokes position={[1, 0, 0]} rimColor={'orange'} />
+               <WheelWithSmallSpokes position={[2, 0, 0]} rimColor={'red'} />
+
+               {/** driver's side: group with rim and two tyres*/}
                <DoubleTyre position={[-1.25, 0, 0.99]} />
                <DoubleTyre position={[-1.05, 0, -2.05]} />
+
+               {/** passender's side: group with rim and two tyres */}
+               <DoubleTyre position={[-4.25, 0, -2.025]} />
+               <DoubleTyre position={[-4.25, 0, 2.025]} />
+
+               <CardBoardBox position={[4.25, 0.25, 2]} size={[0.5, 0.5, 0.5]} />
+               <CardBoardBox position={[4.25, 0.25, 3.5]} size={[0.5, 0.5, 0.5]} />
+
+               <WoodenBox position={[6.25, 0.75, 2]} size={[1, 1.5, 1]} />
 
                {/* Bolts  */}
                {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
                   <WheelBolts />
                </instancedMesh> */}
+
+               {/* <AirflowArc /> */}
+               <GothicWindow position={[-5, 0.05, 3]} color={'red'}/>
+               <Sheet position={[-4, 0.05, 5]} color={'green'}/>
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
