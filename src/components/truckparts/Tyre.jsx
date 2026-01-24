@@ -174,29 +174,39 @@ function ISOBolt({ size = "M22" }) {
    }
 
    return (
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-         <group rotation={[Math.PI / 2, 0, 0]}>
-            <mesh position={[0, 0, 0]}>
-               <ChamferedHexHead
-                  hex={bolt.hex / 2}
-                  height={bolt.headHeight}
-               />
-            </mesh>
-            <mesh position={[0, 0, 0]}>
-               <BoltShaft
-                  radius={bolt.shaft / 2}
-                  length={bolt.length}
-               />
-            </mesh>
-         </group>
+      <group rotation={[Math.PI / 2, 0, 0]}>
+         <mesh position={[0, 0, 0]}>
+            <ChamferedHexHead
+               hex={bolt.hex / 2}
+               height={bolt.headHeight}
+            />
+            <meshStandardMaterial
+               metalness={METAL_PRESETS.chrome.metalness}
+               roughness={METAL_PRESETS.chrome.roughness}
+               color="blue"  // #b8b8b8
+               envMapIntensity={1.2}
+            />
+         </mesh>
+         <mesh position={[0, 0, 0]}>
+            <BoltShaft
+               radius={bolt.shaft / 2}
+               length={bolt.length}
+            />
+            <meshStandardMaterial
+               metalness={METAL_PRESETS.chrome.metalness}
+               roughness={METAL_PRESETS.chrome.roughness}
+               color="blue"  // #b8b8b8
+               envMapIntensity={1.2}
+            />
+         </mesh>
+      </group>
 
-         <meshStandardMaterial
-            metalness={METAL_PRESETS.chrome.metalness}
-            roughness={METAL_PRESETS.chrome.roughness}
-            color="red"  // #b8b8b8
-            envMapIntensity={1.2}
-         />
-      </mesh>
+      // <meshStandardMaterial
+      //    metalness={METAL_PRESETS.chrome.metalness}
+      //    roughness={METAL_PRESETS.chrome.roughness}
+      //    color="blue"  // #b8b8b8
+      //    envMapIntensity={1.2}
+      // />
    )
 }
 
@@ -204,34 +214,21 @@ function ISOBolt({ size = "M22" }) {
 export function WheelBolts({ size = "M22", count = 10, radius = 0.28 }) {
 
    return (
-      // <Instances limit={count}>
 
       Array.from({ length: count }).map((_, i) => (
 
-         //             <Instance
-         //                key={i}
-         //                position={[
-         //                   Math.cos((i / count) * Math.PI * 2) * radius,
-         //                   0,
-         //                   Math.sin((i / count) * Math.PI * 2) * radius
-         //                ]}
-         //             />
-         //  <ISOBolt size={size} />
-
-         // <group key={i} position={[3 + (i * 0.15), 0.5, 5]}>
-         <group key={i}
-            rotation={[Math.PI / 2, 0, 0]}
-            position={
-               [Math.cos((i / count) * Math.PI * 2) * radius,
-                  0,
-               Math.sin((i / count) * Math.PI * 2) * radius]
-            }
-         >
-            <ISOBolt size="M22" />
-         </group>
+         <instancedMesh>
+            <group key={i}
+               rotation={[Math.PI / 2, 0, 0]}
+               position={
+                  [Math.cos((i / count) * Math.PI * 2) * radius,
+                     0,
+                  Math.sin((i / count) * Math.PI * 2) * radius]
+               }>
+               <ISOBolt size="M22" />
+            </group>
+         </instancedMesh>
       ))
-
-      // </Instances>
    )
 }
 
