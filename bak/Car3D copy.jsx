@@ -18,15 +18,15 @@ import HomeIcon from '@mui/icons-material/Home'
 
 // customer components
 // import WheelBolts from '../components/truckparts/Tyre'  // errs
-import CardBoardBox from '../components/CardBoardBox'
-import WoodenBox from '../components/WoodenBox'
+import CardBoardBox from '../src/components/CardBoardBox'
+import WoodenBox from '../src/components/WoodenBox'
 
 // import AirflowArc from '../components/truckparts/Arcs'
 // import GothicWindow from '../components/GothicWindow'
 // import Sheet from '../components/GothicWindow'
 // import RoseWindow from '../components/GothicWindow'
-import { NatoCamoPlane } from '../components/NatoCamoPattern'
-import { CamoBox } from '../components/CamoBox'
+import { NatoCamoPlane } from '../src/components/NatoCamoPattern'
+import { CamoBox } from '../src/components/CamoBox'
 import { blue, orange, purple, red } from "@mui/material/colors"
 
 
@@ -98,10 +98,9 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             {/* test using RoundedBox */}
             {chassisType === 'rounded' &&
                <RoundedBox
-                  args={[1, 1, 2]}   // width, height, depth
-                  position={[0, 0, 1.5]}
+                  args={[1, 1, 5.05]}   // width, height, depth
                   radius={0.35}         // corner radius
-                  smoothness={32}        // segments
+                  smoothness={64}        // segments
                >
                   <meshStandardMaterial color={bodyColor}
                      metalness={1}
@@ -110,19 +109,6 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                   />
                </RoundedBox>
             }
-
-            {/** Frame / rear chassis */}
-            <MetalRod position={[1, 0.05, -0.85]} rotation={[0, 0, 0]} args={[0.25, 0.1, 3.25]} color={'red'} />
-            {/** connecting rods non-lateral */}
-            <MetalRod position={[0, 0, 0.55]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-            <MetalRod position={[0, 0, 0]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-
-            <MetalRod position={[0, 0, -1]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-            <MetalRod position={[0, 0, -2.25]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-
-            {/** Frame / rear chassis, passenger's side */}
-            <MetalRod position={[-1, 0.05, -0.85]} rotation={[0, 0, 0]} args={[0.25, 0.1, 3]} color={'red'} />
-
          </mesh>
 
          {/* Cabin */}
@@ -157,6 +143,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                transparent
                opacity={0.75} />
          </mesh>
+
 
          {/** mount for green sunshield */}
          <mesh position={[0, 1.15, 1.90]} rotation={[1.5, 0, 0]}>
@@ -193,18 +180,26 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                opacity={0.5} />
          </mesh>
 
+
          {/* Wheels */}
          <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
 
          {/* <Wheel position={[0.65, -0.25, 1.5]} />  front, driver's side */}
          <WheelWithSpokes wheelPosition={[0.55, -0.25, 1.55]} />
-         <Wheel position={[-0.65, -0.25, -3.5]} />  {/* back/rear */}
+
+         <Wheel position={[-0.65, -0.25, -1.5]} />  {/* back/rear */}
 
          {/* <Wheel position={[0.65, -0.25, -1.5]}  /> */}
-         <WheelRear position={[0.75, -0.25, -3.5]} />
+         <WheelRear position={[0.75, -0.25, -1.5]} />
+
+         {/* WheelHubs */}
+         {/* <WheelHub position={[-0.74, -0.25, 1.5]} /> */}
+         {/* <WheelHub position={[0.74, -0.25, 1.5]} /> */}
+         {/* <WheelHub position={[-0.74, -0.25, -1.5]} /> */}
+         {/* <WheelHub position={[0.74, -0.25, -1.5]} /> */}
 
          {/* fuel tanks, driver's side */}
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 3, 0.85]} receiveShadow castShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.85]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="white"
                metalness={1}
@@ -212,7 +207,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                envMapIntensity={0.5}
             />
          </mesh>
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 3, 0.25]} receiveShadow castShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 0.1, 0.25]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="lightblue"
                metalness={1}
@@ -222,23 +217,23 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* fuel tanks, passenger's side */}
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 3, 0.85]} receiveShadow castShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.85]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
-         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 3, 0.25]} receiveShadow castShadow>
+         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.65, 0.1, 0.25]} receiveShadow castShadow>
             <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
 
          {/* Headlight passenger's side */}
-         <mesh value={1} position={[-0.35, 0.1, 2.5]} rotation={[0, 0, 0]}>
+         <mesh value={1} position={[-0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
             <ringGeometry args={[0.05, 0.1, 64, 64]} />
             <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
          </mesh>
 
          {/* Headlight driver's side */}
-         <mesh value={1} position={[0.35, 0.1, 2.5]} rotation={[0, 0, 0]}>
+         <mesh value={1} position={[0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
             <ringGeometry args={[0.05, 0.1, 64, 64]} />
             <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
          </mesh>
@@ -250,7 +245,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* exhaust pipe */}
-         <mesh position={[0.3, 3, 1.015]} receiveShadow castShadow>
+         <mesh position={[0.3, 0.75, 1.015]} receiveShadow castShadow>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
             <meshStandardMaterial color={'white'}
@@ -270,7 +265,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                envMapIntensity={1} />
          </mesh>
          {/* Number plate */}
-         <CamoBox position={[0, 0, 2.55]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
+            <CamoBox position={[0, 0, 2.55]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
 
       </group >
    )
@@ -680,33 +675,111 @@ export default function Car3D() {
                {/* load on the truck; args: width, height, depth */}
                <MetalRod position={[-0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'orange'} />
                <MetalRod position={[0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
+               <MetalRod position={[0, 1.5, -1.5]} args={[0.25, 0.5, 3]} color={'red'} />
 
+               {/* top layer of rods on truck */}
+               <MetalRod position={[0, 0.15, 0.5]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'blue'} />
+               <MetalRod position={[0, 0.15, -0.15]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'lightblue'} />
+               <MetalRod position={[0, 0.15, -0.75]} args={[0.25, 0.05, 3]} rotation={[0, -1.5, 0]} color={'darkblue'} />
+
+               <MetalRod position={[2.5, 1.45, -3]} args={[0.15, 0.55, 4]} color={'lightgrey'} />
+
+
+               {/* rods besides the truck; args: width, height, depth */}
+               {/* <MetalRod args={[0.25, 0.05, 3]} position={[2, 0.25, 1]} color={'lightgrey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[2.5, 0.25, 1]} color={'grey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[3, 0.25, 1]} color={'darkgrey'} />
+                     <MetalRod args={[0.25, 0.05, 3]} position={[3.5, 0.25, 1]} color={'white'} />  */}
+
+               {/** wheel with rim and axis in metal */}
+               {/**                <group position={[1, 0, 0]}>
+                  <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.375, 5.5]}>
+                     <latheGeometry args={[rimProfileSM, 32]} />
+                     <meshStandardMaterial
+                        metalness={1}
+                        roughness={0.35}
+                        envMapIntensity={0.5}
+                        color='blue'
+                     />
+                  </mesh>
+                  <mesh position={[2.65, 0.4, 5.5]} rotation={[0.2, 1.55, 0]} >
+                     <torusGeometry args={[0.3, 0.2, 40, 64]} />
+                     <meshStandardMaterial color="black" metalness={0.01} roughness={0.5} />
+                  </mesh>
+                  <mesh position={[2.5, 0.385, 5.55]} rotation={[1.75, 0, 1.5]}>
+                     <cylinderGeometry args={[0.095, 0.095, 1, 32]} />
+                     <meshStandardMaterial
+                        metalness={1}
+                        roughness={0.35}
+                        normalScale={[1, 1]} // directional brushing
+                        envMapIntensity={1}
+                        color={'grey'} />
+                  </mesh>
+               </group> */}
 
                {/** hard tyres, glossy */}
-               <WheelWithAxis position={[2, 2, -5]} rimColor='blue' />
+               <WheelWithAxis position={[1, 2, 0]} rimColor='white' />
+               <WheelWithAxis position={[2, 2.5, 0]} rimColor='blue' />
+               <WheelWithAxis position={[2, 1.5, 0]} rimColor='orange' />
+               <WheelWithAxis position={[1, 1, 0]} rimColor='yellow' />
 
                {/** soft tyres, matt look */}
-               <WheelWithSmallSpokes position={[0, 0, -6]} rimColor={'yellow'} />   {/** driver's side */}
-               <WheelWithSmallSpokes position={[1.65, 0.75, -6.5]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
-               <WheelWithSmallSpokes position={[1, 0.75, -7.5]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
+               <WheelWithSmallSpokes position={[0, 0, 0]} rimColor={'yellow'} />   {/** driver's side */}
+               <WheelWithSmallSpokes position={[1.65, 0.75, -0.75]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
+               <WheelWithSmallSpokes position={[1, 0.75, -0.75]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
 
                {/** passender's side: wheels with spokes */}
-               <WheelWithSmallSpokes position={[1, 0, -7]} rimColor={'orange'} />
-               <WheelWithSmallSpokes position={[2, 0, -7]} rimColor={'red'} />
+               <WheelWithSmallSpokes position={[1, 0, 0]} rimColor={'orange'} />
+               <WheelWithSmallSpokes position={[2, 0, 0]} rimColor={'red'} />
 
                {/** driver's side: group with rim and two tyres*/}
-               <DoubleTyre position={[-1.25, 0, -6]} />
-               <DoubleTyre position={[-1.05, 0, -6.5]} />
+               <DoubleTyre position={[-1.25, 0, 0.99]} />
+               <DoubleTyre position={[-1.05, 0, -2.05]} />
 
                {/** passender's side: group with rim and two tyres */}
-               <DoubleTyre position={[-4.25, 0, -5.0]} />
-               <DoubleTyre position={[-4.25, 0, -5.5]} />
+               <DoubleTyre position={[-4.25, 0, -2.025]} />
+               <DoubleTyre position={[-4.25, 0, 2.025]} />
+
+               {/* <CardBoardBox position={[4.25, 0.25, 2]} size={[0.5, 0.5, 0.5]} /> */}
+               {/* <CardBoardBox position={[4.25, 0.25, 3.5]} size={[0.5, 0.5, 0.5]}/> */}
+               {/* <WoodenBox position={[6.25, 0.75, 2]} size={[1, 1.5, 1]} /> */}
+               {/* <CamoBox position={[2.25, 0.75, 7]} size={[1, 1, 1]} /> */}
 
                {/** Box with nato camo pattern */}
-               <CamoBox position={[4.25, 0.5, 1]} size={[1, 1, 1]} />
+               <CamoBox position={[4.25, 0.5, 7]} size={[1, 1, 1]} />
 
-               <NatoCamoPlane position={[3, 0.1, 0]} args={[2, 2, 2, 2]} />
-               <NatoCamoPlane position={[-4, 0.1, 0]} args={[5, 5, 2, 2]} />
+               {/** Box with custom colors */}
+               {/* <CamoBox position={[4.25, 0.75, 7]} size={[0.25, 0.25, 0.25]} ivColors={['red', 'orange', 'yellow']} /> */}
+               {/* <CamoBox position={[3.25, 0.75, 1]} size={[2, 2, 2]} ivColors={['hotpink', 'red', 'white']} /> */}
+               {/* <CamoBox position={[2.25, 0.75, 7]} size={[0.5, 0.5, 0.5]} ivColors={['blue', 'darkblue', 'grey']} /> */}
+
+               <CamoBox position={[1, 0.75, -3]} size={[0.5, 0.5, 0.5]} ivColors={[red[200], red[600], red[900]]} />
+
+               <CamoBox position={[-1, 0.75, -4]} size={[0.5, 0.5, 0.5]} ivColors={[blue[200], blue[500], blue[900]]} />
+
+               {/* <CamoBox position={[0, 0.8, 6.095]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} /> */}
+
+               <CamoBox position={[-2, 0.8, 8]} size={[0.5, 0.25, 0.005]} ivColors={[purple[200], purple[600], purple[900]]} />
+
+               {/* Bolts  */}
+               {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
+                  <WheelBolts />
+               </instancedMesh> */}
+
+               {/* <AirflowArc /> */}
+               {/* <GothicWindow position={[-5, 0.05, 3]} color={'red'}/> */}
+               {/* <Sheet position={[-4, 0.05, 5]} color={'green'}/> */}
+
+               {/* Cathedral glow from behind */}
+               {/* <pointLight
+                  position={[0, 0, -2]}
+                  intensity={3}
+                  color="#6fa8ff"
+               /> */}
+               {/* <RoseWindow position={[-4, 0.35, 4]} radius={2.2} spokes={16} /> */}
+
+               <NatoCamoPlane position={[3, 0.1, 7]} args={[2, 2, 2, 2]} />
+               <NatoCamoPlane position={[-4, 0.1, 5.5]} args={[5, 5, 2, 2]} />
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
