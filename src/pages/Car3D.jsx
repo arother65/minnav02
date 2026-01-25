@@ -23,8 +23,10 @@ import WoodenBox from '../components/WoodenBox'
 // import AirflowArc from '../components/truckparts/Arcs'
 // import GothicWindow from '../components/GothicWindow'
 // import Sheet from '../components/GothicWindow'
-import RoseWindow from '../components/GothicWindow'
-import NatoCamoPlane from '../components/NatoCamoPattern'
+// import RoseWindow from '../components/GothicWindow'
+import { NatoCamoPlane } from '../components/NatoCamoPattern'
+import { CamoBox } from '../components/CamoBox'
+import { red } from "@mui/material/colors";
 
 
 // Wheel hubs
@@ -680,10 +682,17 @@ export default function Car3D() {
                <DoubleTyre position={[-4.25, 0, -2.025]} />
                <DoubleTyre position={[-4.25, 0, 2.025]} />
 
-               <CardBoardBox position={[4.25, 0.25, 2]} size={[0.5, 0.5, 0.5]} />
-               <CardBoardBox position={[4.25, 0.25, 3.5]} size={[0.5, 0.5, 0.5]} />
+               {/* <CardBoardBox position={[4.25, 0.25, 2]} size={[0.5, 0.5, 0.5]} /> */}
+               {/* <CardBoardBox position={[4.25, 0.25, 3.5]} size={[0.5, 0.5, 0.5]}/> */}
+               {/* <WoodenBox position={[6.25, 0.75, 2]} size={[1, 1.5, 1]} /> */}
+               {/* <CamoBox position={[2.25, 0.75, 7]} size={[1, 1, 1]} /> */}
 
-               <WoodenBox position={[6.25, 0.75, 2]} size={[1, 1.5, 1]} />
+               {/** Box with nato camo pattern */}
+               <CamoBox position={[4.25, 0.75, 7]} size={[1, 1, 1]} />
+               
+               {/** Box with custom colors */}
+               <CamoBox position={[4.25, 0.75, 7]} size={[1, 1, 1]} ivColors={['red', 'orange', 'yellow']} />
+               <CamoBox position={[3.25, 0.75, 7]} size={[1, 1, 1]} ivColors={['hotpink', 'red', 'white']} />
 
                {/* Bolts  */}
                {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
@@ -695,16 +704,15 @@ export default function Car3D() {
                {/* <Sheet position={[-4, 0.05, 5]} color={'green'}/> */}
 
                {/* Cathedral glow from behind */}
-               <pointLight
+               {/* <pointLight
                   position={[0, 0, -2]}
                   intensity={3}
                   color="#6fa8ff"
-               />
+               /> */}
                {/* <RoseWindow position={[-4, 0.35, 4]} radius={2.2} spokes={16} /> */}
 
-               <NatoCamoPlane position={[3, 0.1, 5.5]}/>
-               <NatoCamoPlane position={[-3, 0.1, 5.5]}/>
-
+               <NatoCamoPlane position={[3, 0.15, 7]} args={[2, 2, 2, 2]} />
+               <NatoCamoPlane position={[-4, 0.15, 5.5]} args={[5, 5, 2, 2]} />
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>

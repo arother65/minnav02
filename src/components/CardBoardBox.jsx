@@ -11,8 +11,8 @@ import * as THREE from 'three'
 //* main component
 export default function CardBoardBox({ size = [2, 1.5, 2], position }) {
 
-   const texture = useTexture('/textures/cardboard.png')
-// D:\Dokumente\ar_workspace\reactproj\react-test\bak\minnav\public\textures
+   // create texture here
+   let texture = useTexture('/textures/cardboard.png')
 
    texture.wrapS = texture.wrapT = THREE.RepeatWrapping
    texture.repeat.set(1, 1)

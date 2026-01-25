@@ -9,26 +9,30 @@
 // Black #1c1c1c
 // Background Green #6b7f2a
 
-import * as THREE from "three";
-import { useMemo } from "react";
-// import { createNatoCamoTexture } from "./natoCamoTexture";
+import * as THREE from "three"
+import { useMemo } from "react"
 
 //
-function createNatoCamoTexture(size = 1024, blobs = 80) {
+export function createNatoCamoTexture(ivColors=[], size = 1024, blobs = 80) {
 
    const canvas = document.createElement("canvas");
    canvas.width = canvas.height = size;
    const ctx = canvas.getContext("2d", {});  // creates "context"
+   let colors = []
 
    // Base color
-   ctx.fillStyle = "#6b7f2a";
+   ctx.fillStyle = "#6b7f2a";  // light green 
    ctx.fillRect(0, 0, size, size);
 
-   const colors = [
-      "#4b5320", // dark green
-      "#5b3a29", // brown
-      "#1c1c1c", // black
-   ];
+   if (ivColors.length !== 0) {
+      colors = ivColors
+   } else {
+      colors = [
+         "#4b5320", // dark green
+         "#5b3a29", // brown
+         "#1c1c1c"  // black
+      ]
+   }
 
    function blob(color) {
       ctx.fillStyle = color;
@@ -47,13 +51,12 @@ function createNatoCamoTexture(size = 1024, blobs = 80) {
             y + Math.sin(angle) * radius
          );
       }
-
       ctx.closePath();
       ctx.fill();
-   }
+   }  // blob()
 
    for (let i = 0; i < blobs; i++) {
-      blob(colors[Math.floor(Math.random() * colors.length)]);
+      blob(colors[Math.floor(Math.random() * colors.length)])  // build context / ctx
    }
 
    const texture = new THREE.CanvasTexture(canvas);
@@ -66,22 +69,21 @@ function createNatoCamoTexture(size = 1024, blobs = 80) {
 }  // createNatoCamoTexture()
 
 //
-export default function NatoCamoPlane({ position=[0, 0.35, 0] }) {
+export function NatoCamoPlane({ position = [0, 0.35, 0], args = [2, 2, 1, 1] }) {
 
-  const camoTexture = useMemo(() => createNatoCamoTexture(), []);
+   const camoTexture = useMemo(() => createNatoCamoTexture(), []);
 
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={position}>
+   return (
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={position}>
+         <planeGeometry args={args} />
 
-      <planeGeometry args={[0.5, 0.5, 1, 1]} />
-
-      <meshStandardMaterial
-        map={camoTexture}
-        roughness={0.9}
-        metalness={0.0}
-      />
-    </mesh>
-  );
+         <meshStandardMaterial
+            map={camoTexture}
+            roughness={0.9}
+            metalness={0.0}
+         />
+      </mesh>
+   );
 }  // NatoCamoPlane()
 
 
