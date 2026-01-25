@@ -21,8 +21,11 @@ import HomeIcon from '@mui/icons-material/Home'
 import CardBoardBox from '../components/CardBoardBox'
 import WoodenBox from '../components/WoodenBox'
 // import AirflowArc from '../components/truckparts/Arcs'
-import GothicWindow from '../components/GothicWindow'
-import Sheet from '../components/GothicWindow'
+// import GothicWindow from '../components/GothicWindow'
+// import Sheet from '../components/GothicWindow'
+import RoseWindow from '../components/GothicWindow'
+import NatoCamoPlane from '../components/NatoCamoPattern'
+
 
 // Wheel hubs
 function WheelHub({ position }) {
@@ -688,8 +691,20 @@ export default function Car3D() {
                </instancedMesh> */}
 
                {/* <AirflowArc /> */}
-               <GothicWindow position={[-5, 0.05, 3]} color={'red'}/>
-               <Sheet position={[-4, 0.05, 5]} color={'green'}/>
+               {/* <GothicWindow position={[-5, 0.05, 3]} color={'red'}/> */}
+               {/* <Sheet position={[-4, 0.05, 5]} color={'green'}/> */}
+
+               {/* Cathedral glow from behind */}
+               <pointLight
+                  position={[0, 0, -2]}
+                  intensity={3}
+                  color="#6fa8ff"
+               />
+               {/* <RoseWindow position={[-4, 0.35, 4]} radius={2.2} spokes={16} /> */}
+
+               <NatoCamoPlane position={[3, 0.1, 5.5]}/>
+               <NatoCamoPlane position={[-3, 0.1, 5.5]}/>
+
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
