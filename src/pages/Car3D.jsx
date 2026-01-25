@@ -77,10 +77,10 @@ function WheelRear({ position }) {
 function Car({ groupPosition, bodyColor, chassisType }) {
 
    return (
-      <group position={groupPosition}>
+      <group position={groupPosition} rotation={[0, 0, 0]}>
 
          {/* Chassis */}
-         <mesh rotation={[0, 0, 0]} castShadow receiveShadow >
+         <mesh castShadow receiveShadow >
             <directionalLight
                position={[0, 5, 0]}
                intensity={8}
@@ -111,17 +111,39 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                </RoundedBox>
             }
 
-            {/** Frame / rear chassis */}
-            <MetalRod position={[1, 0.05, -0.85]} rotation={[0, 0, 0]} args={[0.25, 0.1, 3.25]} color={'red'} />
-            {/** connecting rods non-lateral */}
-            <MetalRod position={[0, 0, 0.55]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-            <MetalRod position={[0, 0, 0]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
+            {/** Frame / rear chassis, driver's side */}
+            <MetalRod position={[0.7, 0, -0.85]} rotation={[0, 0, 0]} args={[0.15, 0.1, 3]} color={'red'} />
 
-            <MetalRod position={[0, 0, -1]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
-            <MetalRod position={[0, 0, -2.25]} rotation={[0, 1.575, 0]} args={[0.25, 0.1, 1.5]} color={'grey'} />
+            {/** connecting rods non-lateral */}
+            <MetalRod position={[0, 0, 0.55]} rotation={[0, 1.575, 0]} args={[0.15, 0.1, 1.5]} color={'grey'} />
+            <MetalRod position={[0, 0, 0]} rotation={[0, 1.575, 0]} args={[0.15, 0.1, 1.5]} color={'grey'} />
+
+            <MetalRod position={[0, 0, -1]} rotation={[0, 1.575, 0]} args={[0.15, 0.1, 1.5]} color={'grey'} />
+            <MetalRod position={[0, 0, -2.25]} rotation={[0, 1.575, 0]} args={[0.15, 0.1, 1.5]} color={'grey'} />
 
             {/** Frame / rear chassis, passenger's side */}
-            <MetalRod position={[-1, 0.05, -0.85]} rotation={[0, 0, 0]} args={[0.25, 0.1, 3]} color={'red'} />
+            <MetalRod position={[-0.7, 0, -0.85]} rotation={[0, 0, 0]} args={[0.15, 0.1, 3]} color={'red'} />
+
+            {/** chassis, rear frame, cargo area */}
+            <RoundedBox
+               args={[2.25, 0.1, 3.5]}   // width, height, depth
+               position={[0, 0.15, -1.1]}
+               radius={0.05}         // corner radius
+               smoothness={8}        // segments
+            >
+               <meshStandardMaterial color={bodyColor} metalness={1} roughness={0.55} envMapIntensity={0.45} />
+            </RoundedBox>
+
+            {/** side walls */}
+            <RoundedBox
+               args={[1, 0.05, 3.5]}   // width, height, depth
+               position={[1, 0.5, -1.1]}
+               rotation={[0, 0, 1.55]}
+               radius={0.025}         // corner radius
+               smoothness={8}        // segments
+            >
+               <meshStandardMaterial color={'grey'} metalness={1} envMapIntensity={0.45} />
+            </RoundedBox>
 
          </mesh>
 
@@ -198,10 +220,11 @@ function Car({ groupPosition, bodyColor, chassisType }) {
 
          {/* <Wheel position={[0.65, -0.25, 1.5]} />  front, driver's side */}
          <WheelWithSpokes wheelPosition={[0.55, -0.25, 1.55]} />
-         <Wheel position={[-0.65, -0.25, -3.5]} />  {/* back/rear */}
+
+         <Wheel position={[-0.65, -0.25, -6]} />  {/* back/rear */}
 
          {/* <Wheel position={[0.65, -0.25, -1.5]}  /> */}
-         <WheelRear position={[0.75, -0.25, -3.5]} />
+         <WheelRear position={[0.75, -0.25, -7]} />
 
          {/* fuel tanks, driver's side */}
          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.65, 3, 0.85]} receiveShadow castShadow>
@@ -244,8 +267,8 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* backlight driver's side */}
-         <mesh value={1} position={[0.35, 0.1, -2.55]} rotation={[0, 0, 0]}>
-            <ringGeometry args={[0.05, 0.1, 64, 64]} />
+         <mesh value={1} position={[0.35, 0.1, -3]} rotation={[0, 0, 0]}>
+            <ringGeometry args={[0.1, 0.15, 32, 32]} />
             <meshStandardMaterial color="red" />
          </mesh>
 
@@ -683,12 +706,12 @@ export default function Car3D() {
 
 
                {/** hard tyres, glossy */}
-               <WheelWithAxis position={[2, 2, -5]} rimColor='blue' />
+               <WheelWithAxis position={[2, 1, -7]} rimColor='blue' />
 
                {/** soft tyres, matt look */}
-               <WheelWithSmallSpokes position={[0, 0, -6]} rimColor={'yellow'} />   {/** driver's side */}
-               <WheelWithSmallSpokes position={[1.65, 0.75, -6.5]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
-               <WheelWithSmallSpokes position={[1, 0.75, -7.5]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
+               <WheelWithSmallSpokes position={[0, 2, -7]} rimColor={'yellow'} />   {/** driver's side */}
+               <WheelWithSmallSpokes position={[1.65, 2, -7]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
+               <WheelWithSmallSpokes position={[1, 2, -7]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
 
                {/** passender's side: wheels with spokes */}
                <WheelWithSmallSpokes position={[1, 0, -7]} rimColor={'orange'} />
@@ -703,9 +726,11 @@ export default function Car3D() {
                <DoubleTyre position={[-4.25, 0, -5.5]} />
 
                {/** Box with nato camo pattern */}
-               <CamoBox position={[4.25, 0.5, 1]} size={[1, 1, 1]} />
+               <CamoBox position={[0, 1.55, 3.5]} size={[0.75, 0.75, 1]} />
+               <CamoBox position={[0, 1.75, 2.4]} size={[1, 1, 1]} />
+               <CamoBox position={[0, 1.3, 1.5]} size={[0.5, 0.5, 0.5]} />
 
-               <NatoCamoPlane position={[3, 0.1, 0]} args={[2, 2, 2, 2]} />
+               <NatoCamoPlane position={[3, 0.1, 0]}  args={[2, 2, 2, 2]} />
                <NatoCamoPlane position={[-4, 0.1, 0]} args={[5, 5, 2, 2]} />
 
                {/* Ground */}
