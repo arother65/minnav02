@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, RoundedBox } from "@react-three/drei"
+import { OrbitControls, RoundedBox, RoundedBoxGeometry } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
@@ -27,7 +27,7 @@ import WoodenBox from '../components/WoodenBox'
 // import RoseWindow from '../components/GothicWindow'
 import { NatoCamoPlane } from '../components/NatoCamoPattern'
 import { CamoBox } from '../components/CamoBox'
-import { blue, orange, red } from "@mui/material/colors" 
+import { blue, orange, purple, red } from "@mui/material/colors"
 
 
 // Wheel hubs
@@ -112,16 +112,79 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* Cabin */}
-         <mesh position={[0, 0.579, 1.5]}>
-            <boxGeometry args={[-1, 0.65, 0.75]} />
-            <meshStandardMaterial color="darkred" />
+         <mesh position={[0, 0.75, 1.5]} castShadow receiveShadow>
+            <boxGeometry args={[1, 0.65, 0.75]} />
+            <meshStandardMaterial color="darkred"
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.45} />
          </mesh>
 
-         {/* Cabin level 1 */}
-         <mesh position={[0, 0.85, 1.75]}>
-            <boxGeometry args={[-1, 0.03, 0.5]} />
-            <meshStandardMaterial color="green" />
+         {/** bulbs on the cabin's roof top  */}
+         <mesh position={[0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
+            { /** width, height, depth, segments, radius */}
+            <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
+
+            <meshStandardMaterial color="orange"
+               metalness={0}
+               roughness={0.5}
+               envMapIntensity={0.45}
+               transparent
+               opacity={0.75} />
          </mesh>
+         <mesh position={[-0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
+            { /** width, height, depth, segments, radius */}
+            <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
+
+            <meshStandardMaterial color="orange"
+               metalness={0}
+               roughness={0.5}
+               envMapIntensity={0.45}
+               transparent
+               opacity={0.75} />
+         </mesh>
+
+
+         {/** front windscreen */}
+         <mesh position={[0, 1.15, 1.90]} rotation={[1.5, 0, 0]}>
+            { /** width, height, depth, segments, radius */}
+            <RoundedBoxGeometry args={[0.75, 0.125, 0.2, 16, 0.5]} />
+            {/* <RoundedBox
+               args={[0.1, 0.1, 0.1]}
+               radius={0.5}
+               smoothness={6}
+            /> */}
+
+            <meshStandardMaterial color="white"
+               metalness={0}
+               roughness={0.55}
+               envMapIntensity={0.45}
+               transparent
+               opacity={0.95} />
+         </mesh>
+
+         {/* Cabin sunshield on roof of the cabin */}
+         <mesh position={[0, 1.05, 2]} rotation={[0.25, 0, 0]}>
+            <boxGeometry args={[1, 0.025, 0.25]} />
+            <meshStandardMaterial color="green"
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.45}
+               transparent
+               opacity={0.5} />
+         </mesh>
+
+         {/* Cabin front wind screen */}
+         <mesh position={[0, 0.85, 1.9]} rotation={[1.5, 0, 0]}>
+            <boxGeometry args={[0.65, 0.02, 0.25]} />
+            <meshStandardMaterial color="white"
+               metalness={1}
+               roughness={0.55}
+               envMapIntensity={0.45}
+               transparent
+               opacity={0.5} />
+         </mesh>
+
 
          {/* Wheels */}
          <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
@@ -171,13 +234,13 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          {/* Headlight passenger's side */}
          <mesh value={1} position={[-0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
             <ringGeometry args={[0.05, 0.1, 64, 64]} />
-            <meshStandardMaterial color="darkgrey" />
+            <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
          </mesh>
 
          {/* Headlight driver's side */}
          <mesh value={1} position={[0.35, 0.1, 2.54]} rotation={[0, 0, 0]}>
             <ringGeometry args={[0.05, 0.1, 64, 64]} />
-            <meshStandardMaterial color="darkgrey" />
+            <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
          </mesh>
 
          {/* backlight driver's side */}
@@ -187,7 +250,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* exhaust pipe */}
-         <mesh position={[0.35, 0.75, 1.015]} receiveShadow castShadow>
+         <mesh position={[0.3, 0.75, 1.015]} receiveShadow castShadow>
             {/* Cylinder is vertical on Y axis */}
             <cylinderGeometry args={[0.05, 0.05, 1, 64]} />
             <meshStandardMaterial color={'white'}
@@ -197,15 +260,18 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
          {/* front bumper */}
-         <mesh position={[0, -0.15, 2.5]} rotation={[1.75, 0, 1.5]}>
+         <mesh position={[0, -0.15, 2.5]} rotation={[1.15, 0, 1.59]}>
             {/* Cylinder is vertical on Y axis */}
-            <cylinderGeometry args={[0.1, 0.1, 1, 64]} />
+            <cylinderGeometry args={[0.1, 0.1, 1.25, 32]} />
             <meshStandardMaterial color={'orange'}
                metalness={1}
                roughness={0.35}
                normalScale={[1, 1]} // directional brushing
                envMapIntensity={1} />
          </mesh>
+         {/* Number plate */}
+            <CamoBox position={[0, 0, 2.55]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
+
       </group >
    )
 }  // Car()
@@ -413,10 +479,6 @@ function Train({ groupPosition, bodyColor }) {
                roughness={0.55}
                envMapIntensity={0.5} />
          </mesh>
-
-         {/* wheels with spokes */}
-
-
       </group>
    )
 }  // Train()
@@ -690,16 +752,19 @@ export default function Car3D() {
 
                {/** Box with nato camo pattern */}
                <CamoBox position={[4.25, 0.5, 7]} size={[1, 1, 1]} />
-               
+
                {/** Box with custom colors */}
                {/* <CamoBox position={[4.25, 0.75, 7]} size={[0.25, 0.25, 0.25]} ivColors={['red', 'orange', 'yellow']} /> */}
                {/* <CamoBox position={[3.25, 0.75, 1]} size={[2, 2, 2]} ivColors={['hotpink', 'red', 'white']} /> */}
                {/* <CamoBox position={[2.25, 0.75, 7]} size={[0.5, 0.5, 0.5]} ivColors={['blue', 'darkblue', 'grey']} /> */}
 
-               <CamoBox position={[1, 0.75, 7]}  size={[0.5, 0.5, 0.5]} ivColors={[red[200], red[600], red[900]]} />
-               <CamoBox position={[-1, 0.75, 7]}  size={[0.5, 0.5, 0.5]} ivColors={[blue[200], blue[500], blue[900]]} />               
-               
-               <CamoBox position={[0, 0.8, 6.095]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
+               <CamoBox position={[1, 0.75, -3]} size={[0.5, 0.5, 0.5]} ivColors={[red[200], red[600], red[900]]} />
+
+               <CamoBox position={[-1, 0.75, -4]} size={[0.5, 0.5, 0.5]} ivColors={[blue[200], blue[500], blue[900]]} />
+
+               {/* <CamoBox position={[0, 0.8, 6.095]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} /> */}
+
+               <CamoBox position={[-2, 0.8, 8]} size={[0.5, 0.25, 0.005]} ivColors={[purple[200], purple[600], purple[900]]} />
 
                {/* Bolts  */}
                {/* <instancedMesh rotation={[1.5, 0, 0]} position={[2, 0.35, 6.25]}>
