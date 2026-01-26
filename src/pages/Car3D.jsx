@@ -10,7 +10,7 @@ import { useMemo } from "react";
 
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, RoundedBox, RoundedBoxGeometry } from "@react-three/drei"
+import { OrbitControls, RoundedBox, RoundedBoxGeometry, Text } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
@@ -715,30 +715,31 @@ export default function Car3D() {
                {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} />  */}
 
                {/* load on the truck; args: width, height, depth */}
-               <MetalRod position={[-0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'orange'} />
-               <MetalRod position={[0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
+               <MetalRod position={[-0.25, 0.75, -4]} args={[0.55, 0.05, 3]} color={'orange'} />
+               <MetalRod position={[0.25, 0.75, -4]} args={[0.55, 0.05, 3]} color={'yellow'} />
 
                {/** soft tyres, matt look */}
-               <WheelWithSmallSpokes position={[0, 2, -7]} rimColor={'yellow'} />   {/** driver's side */}
-               <WheelWithSmallSpokes position={[1.65, 2, -7]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
-               <WheelWithSmallSpokes position={[1, 2, -7]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
+               <WheelWithSmallSpokes position={[0, 0, -8]} rimColor={'yellow'} />   {/** driver's side */}
+               <WheelWithSmallSpokes position={[1.65, 0.75, -8]} rotation={[0, 0, 3.15]} rimColor={'yellow'} />  {/** passenger's side */}
+               <WheelWithSmallSpokes position={[1, 0.75, -8]} rotation={[0, 0, 3.15]} rimColor={'orange'} />
 
-               {/** passender's side: wheels with spokes */}
-               <WheelWithSmallSpokes position={[1, 0, -7]} rimColor={'orange'} />
-               <WheelWithSmallSpokes position={[2, 0, -7]} rimColor={'red'} />
+               {/** driver's side: wheels with spokes */}
+               <WheelWithSmallSpokes position={[1, 0, -8]} rimColor={red[900]} />
+               <WheelWithSmallSpokes position={[2, 0, -8]} rimColor={blue[200]} />
+               <Text position={[4.5, 1.2, -1.75]} fontSize={0.1}>MUI colors used here, blue[200]</Text>
 
                {/** driver's side: group with rim and two tyres*/}
-               <DoubleTyre position={[-1.25, 0, -6]} />
-               <DoubleTyre position={[-1.05, 0, -6.5]} />
+               <DoubleTyre position={[-1.25, 0, -7]} />
+               <DoubleTyre position={[-1.05, 0, -7.5]} />
 
                {/** passender's side: group with rim and two tyres */}
-               <DoubleTyre position={[-4.25, 0, -5.0]} />
-               <DoubleTyre position={[-4.25, 0, -5.5]} />
+               <DoubleTyre position={[-7.25, 0, -6.75]} />
+               <DoubleTyre position={[-5.25, 0, -7]} />
 
                {/** Box with nato camo pattern */}
-               <CamoBox position={[2, 1, -4]} size={[0.75, 0.75, 1]} />
-               <CamoBox position={[3, 1, -4]} size={[1, 1, 1]} />
-               <CamoBox position={[4, 1, -4]} size={[0.5, 0.5, 0.5]} />
+               <CamoBox position={[2, 1, -5]} size={[0.75, 0.75, 1]} />
+               <CamoBox position={[3, 1, -5]} size={[1, 1, 1]} />
+               <CamoBox position={[4, 1, -5]} size={[0.5, 0.5, 0.5]} />
 
                <LeafSpringMesh position={[0.8, 2, 2.15]} rotation={[0, 1.5, 3.15]} />
                <LeafSpringMesh position={[-0.8, 2, 2.15]} rotation={[0, 1.5, 3.15]} />
