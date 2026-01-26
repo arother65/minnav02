@@ -29,6 +29,7 @@ import { NatoCamoPlane } from '../components/NatoCamoPattern'
 import { CamoBox } from '../components/CamoBox'
 import { blue, orange, purple, red } from "@mui/material/colors"
 
+import LeafSpringMesh from '../components/truckparts/LeafSprings'
 
 // Wheel hubs
 function WheelHub({ position }) {
@@ -523,12 +524,12 @@ function Train({ groupPosition, bodyColor }) {
 /** ------------------------------------------------------------------------ */
 //   Group with a complete wheel.
 /** ------------------------------------------------------------------------ */
-function WheelWithAxis({ position = [1, 0, 0], rimColor = 'red' }) {
+function WheelWithAxis({ position = [1, 0, 0], rotation = [0, 0, 0], rimColor = 'red' }) {
 
    return (
-      <group position={position}>
+      <group position={position} rotation={rotation}>
          {/** rim */}
-         <mesh rotation={[Math.PI / 2, 0, 1.55]} position={[3, 0.375, 5.5]}>
+         <mesh position={[3, 0.375, 5.5]} rotation={[Math.PI / 2, 0, 1.55]}>
             <latheGeometry args={[rimProfileSM, 32]} />
             <meshStandardMaterial
                metalness={1}
@@ -544,7 +545,7 @@ function WheelWithAxis({ position = [1, 0, 0], rimColor = 'red' }) {
          </mesh>
 
          {/* axis */}
-         <mesh position={[2.5, 0.385, 5.55]} rotation={[1.75, 0, 1.5]}>
+         {/* <mesh position={[2.5, 0.385, 5.55]} rotation={[1.75, 0, 1.5]}>
             <cylinderGeometry args={[0.13, 0.13, 1, 32]} />
             <meshStandardMaterial
                metalness={1}
@@ -552,7 +553,7 @@ function WheelWithAxis({ position = [1, 0, 0], rimColor = 'red' }) {
                // normalScale={[1, 1]} // directional brushing
                envMapIntensity={1}
                color={'grey'} />
-         </mesh>
+         </mesh> */}
       </group>
    )  // return()
 }  // WheelWithAxis
@@ -652,6 +653,42 @@ const LEGO = {
    BRICK_HEIGHT: 0.96,
 }
 
+//* Testparams curves
+const arc = 0,   // ~ Höhe des Bogens 
+   length = 1  //Breite des Bogens / Länge des Rohres
+
+const curve = new THREE.QuadraticBezierCurve3(
+   new THREE.Vector3(-length / 2, 0, 0),  // x, y, z
+   new THREE.Vector3(0, arc, 0),  // rotation of the arc
+   new THREE.Vector3(length / 2, 0, 0)
+)
+
+//* new THREE.TubeGeometry(
+//   path,              // THREE.Curve
+//   tubularSegments,   // number
+//   radius,            // number
+//   radialSegments,    // number
+//   closed             // boolean
+// )
+
+//* Testparams extrudeGeometry
+const shape = new THREE.Shape()
+shape.moveTo(0, 0)
+shape.lineTo(0.25, 0.001)
+shape.lineTo(0.25, 0.001)
+// shape.lineTo(0, 0.25)
+// shape.
+shape.closePath()
+
+const shape02 = new THREE.Shape()  //! creates a big pie
+shape02.moveTo(0, 0)
+
+shape02.lineTo(0.1, 0.0005)
+shape02.arc(0, 0, 10, 45)
+shape02.lineTo(0.1, 0.0005)
+
+shape.closePath()
+
 //* Car3D page component
 export default function Car3D() {
 
@@ -691,7 +728,7 @@ export default function Car3D() {
                   display: "block"
                }}>
                <ambientLight intensity={1} />
-               <directionalLight position={[5, 5, 5]} castShadow />
+               <directionalLight position={[2, 3, 5]} castShadow />
 
                {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
 
@@ -705,8 +742,21 @@ export default function Car3D() {
                <MetalRod position={[0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
 
 
-               {/** hard tyres, glossy */}
-               <WheelWithAxis position={[2, 1, -7]} rimColor='blue' />
+               {/** hard tyres, glossy, driver's side */}
+               <WheelWithAxis position={[-1.5, 0, -3.4]} rimColor='blue' />
+               {/* axis, rear */}
+               <mesh position={[0, 0.4, 2.15]} rotation={[1.5, 0, 1.55]}>
+                  <cylinderGeometry args={[0.15, 0.15, 2.75, 16]} />
+                  <meshStandardMaterial
+                     metalness={1}
+                     roughness={0.35}
+                     // normalScale={[1, 1]} // directional brushing
+                     envMapIntensity={1}
+                     color={'darkgrey'} />
+               </mesh>
+               {/** hard tyres, glossy, passenger's side */}
+               <WheelWithAxis position={[1.55, 0.7, -3.4]} rotation={[0, 0, 3.1]} rimColor='blue' />
+
 
                {/** soft tyres, matt look */}
                <WheelWithSmallSpokes position={[0, 2, -7]} rimColor={'yellow'} />   {/** driver's side */}
@@ -730,8 +780,43 @@ export default function Car3D() {
                <CamoBox position={[0, 1.75, 2.4]} size={[1, 1, 1]} />
                <CamoBox position={[0, 1.3, 1.5]} size={[0.5, 0.5, 0.5]} />
 
-               <NatoCamoPlane position={[3, 0.1, 0]}  args={[2, 2, 2, 2]} />
-               <NatoCamoPlane position={[-4, 0.1, 0]} args={[5, 5, 2, 2]} />
+               <LeafSpringMesh position={[0.8, 0.85, 2.15]} rotation={[0, 1.5, 3.15]} />
+               <LeafSpringMesh position={[-0.8, 0.85, 2.15]} rotation={[0, 1.5, 3.15]} />
+
+               {/* Rear axle with leaf spring and shock absorbers */}
+
+               {/** TEST Rohre / tubes */}
+               <mesh key={1} position={[3, 0.35, 2]}  receiveShadow>
+                  <tubeGeometry args={[curve, 32, 0.2, 32, true]} />
+                  <meshStandardMaterial color="#444" metalness={0.85} roughness={0.45} />
+               </mesh>
+               <mesh position={[3, 0.95, 4]} rotation={[0, 0, 1.65]}  receiveShadow>
+                  <tubeGeometry args={[curve, 32, 0.1, 32, true]} />
+                  <meshStandardMaterial color="#444" metalness={0.75} roughness={0.65} />
+               </mesh>
+               <mesh position={[4, 0.95, 4]} rotation={[0, 0, 1.65]} receiveShadow>
+                  <tubeGeometry args={[curve, 32, 0.1, 32, true]} />
+                  <meshStandardMaterial color="#446" metalness={0.75} roughness={0.65} />
+               </mesh>
+
+               {/** TEST Flachblech, Glas */}
+               <mesh position={[0.5, 1.55, 5.5]} rotation={[1.5, 0, 0]} receiveShadow>
+                  <extrudeGeometry args={[shape,
+                     { depth: 0.001, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
+                  />
+                  <meshStandardMaterial color="white" metalness={0.5} roughness={0.25} transparent opacity={0.5}/>
+               </mesh>
+
+               <mesh position={[4, 0.35, 4.5]} rotation={[1, 1.65, 0.25]} receiveShadow>
+                  <extrudeGeometry args={[shape02,
+                     { depth: 0.15, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
+                  />
+                  <meshStandardMaterial color="#446" metalness={0.75} roughness={0.65} />
+               </mesh>
+
+
+               <NatoCamoPlane position={[3, 0.1, 6]} args={[2, 2, 2, 2]} />
+               <NatoCamoPlane position={[-4, 0.1, 7]} args={[5, 5, 2, 2]} />
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
