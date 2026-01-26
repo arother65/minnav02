@@ -112,6 +112,22 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                </RoundedBox>
             }
 
+            {/* front bumper */}
+            <mesh position={[0, -0.15, 2.5]} rotation={[1.15, 0, 1.59]}>
+               {/* Cylinder is vertical on Y axis */}
+               <cylinderGeometry args={[0.1, 0.1, 1.25, 32]} />
+               <meshStandardMaterial color={'orange'}
+                  metalness={1}
+                  roughness={0.35}
+                  normalScale={[1, 1]} // directional brushing
+                  envMapIntensity={1} />
+            </mesh>
+            {/* Number plate */}
+            <CamoBox position={[0, 0, 2.55]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
+         </mesh>
+
+         {/** Frame / rear chassis */}
+         <group>
             {/** Frame / rear chassis, driver's side */}
             <MetalRod position={[0.7, 0, -0.85]} rotation={[0, 0, 0]} args={[0.15, 0.1, 3]} color={'red'} />
 
@@ -145,7 +161,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             >
                <meshStandardMaterial color={'grey'} metalness={1} envMapIntensity={0.45} />
             </RoundedBox>
-         </mesh>
+         </group>
 
          {/* Cabin */}
          <mesh position={[0, 0.75, 1.5]} castShadow receiveShadow>
@@ -166,77 +182,72 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                <ringGeometry args={[0.05, 0.1, 64, 64]} />
                <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
             </mesh>
+            {/** bulbs on the cabin's roof top  */}
+            <mesh position={[0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
+               { /** width, height, depth, segments, radius */}
+               <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
 
+               <meshStandardMaterial color="orange"
+                  metalness={0}
+                  roughness={0.5}
+                  envMapIntensity={0.45}
+                  transparent
+                  opacity={0.75} />
+            </mesh>
+            <mesh position={[-0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
+               { /** width, height, depth, segments, radius */}
+               <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
+
+               <meshStandardMaterial color="orange"
+                  metalness={0}
+                  roughness={0.5}
+                  envMapIntensity={0.45}
+                  transparent
+                  opacity={0.75} />
+            </mesh>
+
+            {/** mount for green sunshield */}
+            <mesh position={[0, 1.15, 1.90]} rotation={[1.5, 0, 0]}>
+               { /** width, height, depth, segments, radius */}
+               <RoundedBoxGeometry args={[0.75, 0.125, 0.2, 16, 0.5]} />
+
+               <meshStandardMaterial color="white"
+                  metalness={0}
+                  roughness={0.55}
+                  envMapIntensity={0.45}
+                  transparent
+                  opacity={0.95} />
+            </mesh>
+            {/* Cabin sunshield on roof of the cabin */}
+            <mesh position={[0, 1.05, 2]} rotation={[0.25, 0, 0]}>
+               <boxGeometry args={[1, 0.025, 0.25]} />
+               <meshStandardMaterial color="green"
+                  metalness={1}
+                  roughness={0.55}
+                  envMapIntensity={0.45}
+                  transparent
+                  opacity={0.5} />
+            </mesh>
+
+            {/* Cabin front wind screen */}
+            <mesh position={[4, 0.85, 1.9]} rotation={[1.5, 0, 0]}>
+               <boxGeometry args={[0.65, 0.02, 0.25]} />
+               <meshStandardMaterial color="white"
+                  metalness={0.5}
+                  roughness={0.55}
+                  envMapIntensity={0.45}
+                  transparent
+                  opacity={0.5} />
+            </mesh>
          </mesh> {/** end Cabin */}
 
-         {/** bulbs on the cabin's roof top  */}
-         <mesh position={[0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
-            { /** width, height, depth, segments, radius */}
-            <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
+         {/* Wheel, front, driver's side */}
+         <WheelWithSpokes wheelPosition={[0.55, -0.15, 1.55]} />
+         {/* Wheel, front, passenger's side */}
+         <WheelWithSpokes wheelPosition={[-1.55, -0.15, 1.55]} />
 
-            <meshStandardMaterial color="orange"
-               metalness={0}
-               roughness={0.5}
-               envMapIntensity={0.45}
-               transparent
-               opacity={0.75} />
-         </mesh>
-         <mesh position={[-0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
-            { /** width, height, depth, segments, radius */}
-            <RoundedBoxGeometry args={[0.15, 0.1, 0.1, 8, 1]} />
-
-            <meshStandardMaterial color="orange"
-               metalness={0}
-               roughness={0.5}
-               envMapIntensity={0.45}
-               transparent
-               opacity={0.75} />
-         </mesh>
-
-         {/** mount for green sunshield */}
-         <mesh position={[0, 1.15, 1.90]} rotation={[1.5, 0, 0]}>
-            { /** width, height, depth, segments, radius */}
-            <RoundedBoxGeometry args={[0.75, 0.125, 0.2, 16, 0.5]} />
-
-            <meshStandardMaterial color="white"
-               metalness={0}
-               roughness={0.55}
-               envMapIntensity={0.45}
-               transparent
-               opacity={0.95} />
-         </mesh>
-
-         {/* Cabin sunshield on roof of the cabin */}
-         <mesh position={[0, 1.05, 2]} rotation={[0.25, 0, 0]}>
-            <boxGeometry args={[1, 0.025, 0.25]} />
-            <meshStandardMaterial color="green"
-               metalness={1}
-               roughness={0.55}
-               envMapIntensity={0.45}
-               transparent
-               opacity={0.5} />
-         </mesh>
-
-         {/* Cabin front wind screen */}
-         <mesh position={[0, 0.85, 1.9]} rotation={[1.5, 0, 0]}>
-            <boxGeometry args={[0.65, 0.02, 0.25]} />
-            <meshStandardMaterial color="white"
-               metalness={0.5}
-               roughness={0.55}
-               envMapIntensity={0.45}
-               transparent
-               opacity={0.5} />
-         </mesh>
-
-         {/* Wheels */}
-         <Wheel position={[-0.65, -0.25, 1.5]} />  {/* front, passenger's side */}
-
-         {/* <Wheel position={[0.65, -0.25, 1.5]} />  front, driver's side */}
-         <WheelWithSpokes wheelPosition={[0.55, -0.25, 1.55]} />
-
+         {/** Wheels, rear */}
          <Wheel position={[-0.65, -0.25, -6]} />  {/* back/rear */}
-
-         {/* <Wheel position={[0.65, -0.25, -1.5]}  /> */}
          <WheelRear position={[0.75, -0.25, -7]} />
 
          {/* fuel tanks, driver's side */}
@@ -268,7 +279,6 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </mesh>
 
 
-
          {/* backlight driver's side */}
          <mesh value={1} position={[0.35, 0.1, -3]} rotation={[0, 0, 0]}>
             <ringGeometry args={[0.1, 0.15, 32, 32]} />
@@ -285,18 +295,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                envMapIntensity={0.5} />
          </mesh>
 
-         {/* front bumper */}
-         <mesh position={[0, -0.15, 2.5]} rotation={[1.15, 0, 1.59]}>
-            {/* Cylinder is vertical on Y axis */}
-            <cylinderGeometry args={[0.1, 0.1, 1.25, 32]} />
-            <meshStandardMaterial color={'orange'}
-               metalness={1}
-               roughness={0.35}
-               normalScale={[1, 1]} // directional brushing
-               envMapIntensity={1} />
-         </mesh>
-         {/* Number plate */}
-         <CamoBox position={[0, 0, 2.55]} size={[0.5, 0.25, 0.005]} ivColors={[orange[200], orange[600], orange[900]]} />
+
 
       </group >
    )
@@ -327,8 +326,7 @@ function WheelWithSpokes({
    spokeCount = 40,
    spokeRadius = 0.002,
    spokeLength = 0.2,
-   // rotationSpeed = 0.01,
-   wheelPosition = [5, 0.5, 6.5]
+   wheelPosition = [5, 0.25, 6.5]
 }) {
 
    const spokes = useMemo(() => {
@@ -771,8 +769,9 @@ export default function Car3D() {
                <MetalRod position={[0.25, 0.75, -1.5]} args={[0.55, 0.05, 3]} color={'yellow'} />
 
 
-               {/** hard tyres, glossy, driver's side */}
-               <WheelWithAxis position={[-1.5, 0, -3.4]} rimColor='blue' />
+               {/** hard tyres, glossy, rear driver's side */}
+               <WheelWithAxis position={[-1.5, 0.05, -3.4]} rimColor='blue' />
+
                {/* axis, rear */}
                <mesh position={[0, 0.4, 2.15]} rotation={[1.5, 0, 1.55]}>
                   <cylinderGeometry args={[0.15, 0.15, 2.75, 16]} />
@@ -786,6 +785,8 @@ export default function Car3D() {
                {/** hard tyres, glossy, passenger's side */}
                <WheelWithAxis position={[1.55, 0.7, -3.4]} rotation={[0, 0, 3.1]} rimColor='blue' />
 
+               {/* Wheels, soft, no rim nor spokes */}
+               <Wheel position={[-4, 0.45, 1.5]} />
 
                {/** soft tyres, matt look */}
                <WheelWithSmallSpokes position={[0, 2, -7]} rimColor={'yellow'} />   {/** driver's side */}
@@ -865,9 +866,8 @@ export default function Car3D() {
                   <meshStandardMaterial color="orange" metalness={0.5} roughness={0.25} transparent opacity={0.55} />
                </mesh>
 
-
-               <NatoCamoPlane position={[3, 0.1, 6]} args={[2, 2, 2, 2]} />
-               <NatoCamoPlane position={[-4, 0.1, 7]} args={[5, 5, 2, 2]} />
+               {/* <NatoCamoPlane position={[3, 0.1, 6]} args={[2, 2, 2, 2]} /> */}
+               {/* <NatoCamoPlane position={[-4, 0.1, 7]} args={[5, 5, 2, 2]} /> */}
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
