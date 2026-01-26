@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+import { blue, orange, purple, red, yellow, green } from "@mui/material/colors"
 
 // customer components
 // import WheelBolts from '../components/truckparts/Tyre'  // errs
@@ -27,8 +28,9 @@ import WoodenBox from '../components/WoodenBox'
 // import RoseWindow from '../components/GothicWindow'
 import { NatoCamoPlane } from '../components/NatoCamoPattern'
 import { CamoBox } from '../components/CamoBox'
-import { blue, orange, purple, red } from "@mui/material/colors"
 
+
+import ComicTree from '../components/ComicTree'
 import LeafSpringMesh from '../components/truckparts/LeafSprings'
 
 // Wheel hubs
@@ -153,9 +155,9 @@ function Car({ groupPosition, bodyColor, chassisType }) {
          </group>
 
          {/* Cabin */}
-         <mesh position={[0, 0.75, 1.5]} castShadow receiveShadow>
+         <mesh position={[0, 0.65, 1.5]} castShadow receiveShadow>
             <boxGeometry args={[1, 0.65, 0.75]} />
-            <meshStandardMaterial color="darkred"
+            <meshStandardMaterial color={red[800]}
                metalness={1}
                roughness={0.55}
                envMapIntensity={0.45} />
@@ -163,13 +165,13 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             {/* Headlight passenger's side */}
             <mesh value={1} position={[-0.35, 0.1, 0.95]} rotation={[0, 0, 0]}>
                <ringGeometry args={[0.05, 0.1, 64, 64]} />
-               <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
+               <meshStandardMaterial color="grey" transparent opacity={0.75} />
             </mesh>
 
             {/* Headlight driver's side */}
             <mesh value={1} position={[0.35, 0.1, 0.95]} rotation={[0, 0, 0]}>
                <ringGeometry args={[0.05, 0.1, 64, 64]} />
-               <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
+               <meshStandardMaterial color="grey" transparent opacity={0.75} />
             </mesh>
             {/** bulbs on the cabin's roof top  */}
             <mesh position={[0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
@@ -319,7 +321,7 @@ function MetalRod({ args, position, rotation, color }) {
    )
 }  // MetalRod()
 
-function WheelWithRim({ groupPosition = [0, 2, 0], groupRotation =[0, 0, 0], rimRadius = 0.25, rimTube = 0.15 }) {
+function WheelWithRim({ groupPosition = [0, 2, 0], groupRotation = [0, 0, 0], rimRadius = 0.25, rimTube = 0.15 }) {
 
    return (
       // <group position={[0.7, -0.35, 0.65]}>
@@ -725,7 +727,7 @@ export default function Car3D() {
 
                {/** driver's side: wheels with spokes */}
                <WheelWithSmallSpokes position={[1, 0, -8]} rimColor={red[900]} />
-               <WheelWithSmallSpokes position={[2, 0, -8]} rimColor={blue[200]} />
+               <WheelWithSmallSpokes position={[2, 0, -8]} rimColor={blue[500]} />
                <Text position={[4.5, 1.2, -1.75]} fontSize={0.1}>MUI colors used here, blue[200]</Text>
 
                {/** driver's side: group with rim and two tyres*/}
@@ -770,14 +772,14 @@ export default function Car3D() {
                   <extrudeGeometry args={[shapeArc,
                      { depth: 0.05, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
                   />
-                  <meshStandardMaterial color="red" metalness={0.75} roughness={0.65} />
+                  <meshStandardMaterial color={red[700]} metalness={0.75} roughness={0.65} />
                </mesh>
 
                <mesh position={[2, 0.35, 5]} rotation={[1, 1.65, 0.25]} receiveShadow>
                   <extrudeGeometry args={[shapeBezierCurve,
                      { depth: 0.05, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
                   />
-                  <meshStandardMaterial color="orange" metalness={0.75} roughness={0.65} />
+                  <meshStandardMaterial color={blue[100]} metalness={0.75} roughness={0.65} />
                </mesh>
 
                {/** Blinker, Fahrerseite */}
@@ -802,6 +804,8 @@ export default function Car3D() {
                <Wheel position={[-0.65, -0.25, -6]} />
                {/* Wheels, soft, no rim nor spokes */}
                <Wheel position={[-4, 0.45, 1.5]} />
+
+               <ComicTree position={[5, 0, 0]}/>
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
