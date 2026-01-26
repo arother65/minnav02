@@ -96,7 +96,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                envMapIntensity={0.45}
             />
 
-            {/* test using RoundedBox */}
+            {/* Chassis using RoundedBox */}
             {chassisType === 'rounded' &&
                <RoundedBox
                   args={[1, 1, 2]}   // width, height, depth
@@ -145,7 +145,6 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             >
                <meshStandardMaterial color={'grey'} metalness={1} envMapIntensity={0.45} />
             </RoundedBox>
-
          </mesh>
 
          {/* Cabin */}
@@ -155,7 +154,20 @@ function Car({ groupPosition, bodyColor, chassisType }) {
                metalness={1}
                roughness={0.55}
                envMapIntensity={0.45} />
-         </mesh>
+
+            {/* Headlight passenger's side */}
+            <mesh value={1} position={[-0.35, 0.1, 0.95]} rotation={[0, 0, 0]}>
+               <ringGeometry args={[0.05, 0.1, 64, 64]} />
+               <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
+            </mesh>
+
+            {/* Headlight driver's side */}
+            <mesh value={1} position={[0.35, 0.1, 0.95]} rotation={[0, 0, 0]}>
+               <ringGeometry args={[0.05, 0.1, 64, 64]} />
+               <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
+            </mesh>
+
+         </mesh> {/** end Cabin */}
 
          {/** bulbs on the cabin's roof top  */}
          <mesh position={[0.5, 1.125, 1.25]} rotation={[1.5, 0, 0]}>
@@ -255,17 +267,7 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             <meshStandardMaterial color="lightblue" />
          </mesh>
 
-         {/* Headlight passenger's side */}
-         <mesh value={1} position={[-0.35, 0.1, 2.5]} rotation={[0, 0, 0]}>
-            <ringGeometry args={[0.05, 0.1, 64, 64]} />
-            <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
-         </mesh>
 
-         {/* Headlight driver's side */}
-         <mesh value={1} position={[0.35, 0.1, 2.5]} rotation={[0, 0, 0]}>
-            <ringGeometry args={[0.05, 0.1, 64, 64]} />
-            <meshStandardMaterial color="darkgrey" transparent opacity={0.75} />
-         </mesh>
 
          {/* backlight driver's side */}
          <mesh value={1} position={[0.35, 0.1, -3]} rotation={[0, 0, 0]}>
@@ -680,14 +682,41 @@ shape.lineTo(0.25, 0.001)
 // shape.
 shape.closePath()
 
-const shape02 = new THREE.Shape()  //! creates a big pie
-shape02.moveTo(0, 0)
+const shapeArc = new THREE.Shape()  //! creates a big pie
+shapeArc.moveTo(0, 0)
 
-shape02.lineTo(0.1, 0.0005)
-shape02.arc(0, 0, 10, 45)
-shape02.lineTo(0.1, 0.0005)
+shapeArc.arc(0, 0, 0.025, 0, 45)
+shapeArc.arc(0, 0, 0.025, 45, 90)
+shapeArc.arc(0, 0, 0.025, 90, 135)
+shapeArc.arc(0, 0, 0.025, 135, 180)
+shapeArc.arc(0, 0, 0.025, 180, 225)
+shapeArc.arc(0, 0, 0.025, 225, 270)
+shapeArc.arc(0, 0, 0.025, 270, 315)
+shapeArc.arc(0, 0, 0.025, 315, 360)
+shapeArc.arc(0, 0, 0.025, 360, 0)
 
-shape.closePath()
+// const hole = new THREE.Path()
+// hole.moveTo(1, 1)
+// hole.lineTo(1, 0.1)
+// hole.lineTo(1, 0.25)
+// hole.lineTo(1, 0.1)
+// hole.closePath()
+// shapeArc.holes.push(hole)
+shapeArc.closePath()
+
+//
+const shapeBezierCurve = new THREE.Shape()  //! creates a big pie
+shapeBezierCurve.moveTo(0, 0)
+// shapeBezierCurve.arcLengthDivisions = 0.15
+shapeBezierCurve.bezierCurveTo(0.5, 0.25, 0.25, 0.25, 0, 0)
+shapeBezierCurve.closePath()
+
+const shapeAbsellipse = new THREE.Shape()  //! creates a big pie
+shapeAbsellipse.moveTo(0, 0)
+shapeAbsellipse.absellipse(0.25, 0.25, 0.1, 0.1, 0, 10, true)
+
+shapeAbsellipse.closePath()
+
 
 //* Car3D page component
 export default function Car3D() {
@@ -732,7 +761,7 @@ export default function Car3D() {
 
                {/* <Car groupPosition={[4.75, 0.5, 0]} bodyColor={'orange'} chassisType={'box'} /> */}
 
-               <Car groupPosition={[0, 0.95, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
+               <Car groupPosition={[0, 0.55, 3.5]} bodyColor={'darkred'} chassisType={'rounded'} />
                {/* <Car groupPosition={[-3.25, 0.55, -5]} bodyColor={'red'} chassisType={'rounded'} />  */}
 
                {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} /> */}
@@ -786,11 +815,11 @@ export default function Car3D() {
                {/* Rear axle with leaf spring and shock absorbers */}
 
                {/** TEST Rohre / tubes */}
-               <mesh key={1} position={[3, 0.35, 2]}  receiveShadow>
+               <mesh key={1} position={[3, 0.35, 2]} receiveShadow>
                   <tubeGeometry args={[curve, 32, 0.2, 32, true]} />
                   <meshStandardMaterial color="#444" metalness={0.85} roughness={0.45} />
                </mesh>
-               <mesh position={[3, 0.95, 4]} rotation={[0, 0, 1.65]}  receiveShadow>
+               <mesh position={[3, 0.95, 4]} rotation={[0, 0, 1.65]} receiveShadow>
                   <tubeGeometry args={[curve, 32, 0.1, 32, true]} />
                   <meshStandardMaterial color="#444" metalness={0.75} roughness={0.65} />
                </mesh>
@@ -804,14 +833,36 @@ export default function Car3D() {
                   <extrudeGeometry args={[shape,
                      { depth: 0.001, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
                   />
-                  <meshStandardMaterial color="white" metalness={0.5} roughness={0.25} transparent opacity={0.5}/>
+                  <meshStandardMaterial color="white" metalness={0.5} roughness={0.25} transparent opacity={0.5} />
                </mesh>
 
-               <mesh position={[4, 0.35, 4.5]} rotation={[1, 1.65, 0.25]} receiveShadow>
-                  <extrudeGeometry args={[shape02,
-                     { depth: 0.15, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
+               <mesh position={[3, 0.35, 5.5]} rotation={[1, 1.65, 0.25]} receiveShadow>
+                  <extrudeGeometry args={[shapeArc,
+                     { depth: 0.05, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
                   />
-                  <meshStandardMaterial color="#446" metalness={0.75} roughness={0.65} />
+                  <meshStandardMaterial color="red" metalness={0.75} roughness={0.65} />
+               </mesh>
+
+               <mesh position={[2, 0.35, 5]} rotation={[1, 1.65, 0.25]} receiveShadow>
+                  <extrudeGeometry args={[shapeBezierCurve,
+                     { depth: 0.05, steps: 12, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 16 }]}
+                  />
+                  <meshStandardMaterial color="orange" metalness={0.75} roughness={0.65} />
+               </mesh>
+
+               {/** Blinker, Fahrerseite */}
+               <mesh position={[0.55, 0.85, 5.85]} rotation={[0, 0, 1.35]} receiveShadow>
+                  <extrudeGeometry args={[shapeAbsellipse,
+                     { depth: 0.05, steps: 12, bevelEnabled: false }]}
+                  />
+                  <meshStandardMaterial color="orange" metalness={0.5} roughness={0.25} transparent opacity={0.55} />
+               </mesh>
+               {/** Blinker, Beifahrerseite */}
+               <mesh position={[-0.55, 0.85, 5.9]} rotation={[0, 3.15, 1.35]} receiveShadow>
+                  <extrudeGeometry args={[shapeAbsellipse,
+                     { depth: 0.05, steps: 12, bevelEnabled: false }]}
+                  />
+                  <meshStandardMaterial color="orange" metalness={0.5} roughness={0.25} transparent opacity={0.55} />
                </mesh>
 
 
