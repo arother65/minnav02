@@ -32,3 +32,16 @@
                      <meshStandardMaterial color="black" metalness={0} roughness={0.9} />
                   </mesh>
                </group>
+
+
+// Wheel component 
+function WheelRear({ position }) {
+   return (
+      <group>
+         <mesh position={position} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.25, 0.25, 0.45, 64]} />
+            <meshStandardMaterial color="black" />
+         </mesh>
+      </group>
+   )
+}  // WheelRear() 
