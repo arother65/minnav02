@@ -32,6 +32,8 @@ import { CamoBox } from '../components/CamoBox'
 
 import ComicTree from '../components/ComicTree'
 import LeafSpringMesh from '../components/truckparts/LeafSprings'
+import RealisticTree from '../components/RealisticTree'
+
 
 // Wheel hubs
 function WheelHub({ position }) {
@@ -806,6 +808,7 @@ export default function Car3D() {
                <Wheel position={[-4, 0.45, 1.5]} />
 
                <ComicTree position={[5, 0, 0]}/>
+               <RealisticTree position={[5, 0, 5]} />
 
                {/* Ground */}
                <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
