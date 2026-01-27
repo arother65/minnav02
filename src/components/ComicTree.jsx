@@ -10,6 +10,7 @@ import { Edges } from "@react-three/drei"
 
 //
 export default function ComicTree({ position }) {
+	
 	return (
 		<group position={position}>
 			{/* 🌲 Trunk */}

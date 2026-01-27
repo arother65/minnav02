@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import { blue, orange, purple, red, yellow, green } from "@mui/material/colors"
+import { blue, brown, orange, purple, red, yellow, green } from "@mui/material/colors"
 
 //* customer components
 // import WheelBolts from '../components/truckparts/Tyre'  // errs
@@ -318,7 +318,6 @@ function MetalRod({ args, position, rotation, color }) {
 }  // MetalRod()
 
 
-
 const rimProfile = [
    [0.1, 0],
    [0.28, 0.05],
@@ -400,7 +399,14 @@ shapeAbsellipse.closePath()
 export default function Car3D() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
-   const camoTexture = useMemo(() => createNatoCamoTexture(), []);
+   // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
+
+   const camoTextureColors = [orange[500], brown[600], orange[900]]
+   const camoTexture = useMemo(() => createNatoCamoTexture(camoTextureColors), [])
+
+   const camoTextureColors01 = ['#bdb76b', '#b8860b', '#a52a2a']
+   // #bdb76b darkkhaki; #b8860b darkgoldenrod; #a52a2a brown
+   const camoTexture01 = useMemo(() => createNatoCamoTexture(camoTextureColors01), [])
 
    return (
       <>
@@ -510,6 +516,10 @@ export default function Car3D() {
 
                <ComicTree position={[8, 0, -5]} />
                <RealisticTree position={[7, 0, -6]} />
+               <RealisticTree position={[7, 0, 7]} map={camoTexture} baseColor={red[900]} />
+               <RealisticTree position={[4, 0, 6]} map={camoTexture} baseColor={blue[500]} />
+               
+               <RealisticTree position={[3, 0, 8.5]} map={camoTexture01} baseColor={purple[900]} />
 
                {/* <MichelinMan /> */}
                {/* <MichelinManInstanced />  */}
@@ -521,10 +531,10 @@ export default function Car3D() {
                   receiveShadow>
                   <planeGeometry args={[20, 20]} />
                   <meshStandardMaterial
-                     color="darkgreen"
-                     // roughness={0.95}
-                     // metalness={0.0}
-                     map={camoTexture}
+                     color="black"
+                     roughness={0.95}
+                     metalness={0.0}
+                  // map={camoTexture} // #4b5320
                   />
                </mesh>
                <OrbitControls />

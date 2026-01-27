@@ -30,13 +30,13 @@ export default function Home({ skeletonOn, setSkeletonOn }) {
 
    // Initialize Firebase
    const firebaseConfig = {
-      apiKey: "AIzaSyBw9EUx2WbKgml8EM8Go2IJsmLX08PKN2k",
-      authDomain: "prj-minnav-2c0be.firebaseapp.com",
-      projectId: "prj-minnav-2c0be",
-      storageBucket: "prj-minnav-2c0be.firebasestorage.app",
-      messagingSenderId: "195830109126",
-      appId: "1:195830109126:web:d34ce25e4fcaac68d058c7"
-   }
+      apiKey: "AIzaSyDwCbSNyqMzXiyc3kGrtIaJkepIAX053cI",
+      authDomain: "prj-r3f.firebaseapp.com",
+      projectId: "prj-r3f",
+      storageBucket: "prj-r3f.firebasestorage.app",
+      messagingSenderId: "512907026571",
+      appId: "1:512907026571:web:663e13496a9a6a85a1748e"
+   };
    const app = initializeApp(firebaseConfig)
 
    // TODO: Add SDKs for Firebase products that you want to use

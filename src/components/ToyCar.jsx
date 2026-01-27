@@ -6,8 +6,8 @@
 
 //* Imports
 import * as THREE from 'three'
-import { RoundedBox, RoundedBoxGeometry, Text } from '@react-three/drei'
-import { blue, orange, purple, red, yellow, green } from "@mui/material/colors"
+import { RoundedBox, RoundedBoxGeometry } from '@react-three/drei'
+import { blue, orange, red } from "@mui/material/colors"
 
 //* Imports customer components
 import { CamoBox } from './CamoBox'
@@ -214,7 +214,7 @@ export function ToyCar({ groupPosition, groupRotation = [0, 0, 0], bodyColor, ch
          {/* Cabin */}
          <mesh position={[0, 0.65, 1.5]} receiveShadow>
             <boxGeometry args={[1, 0.65, 0.75]} />
-            <meshStandardMaterial color={red[800]} metalness={1} roughness={0.55} envMapIntensity={0.45} />
+            <meshStandardMaterial color={bodyColor} metalness={1} roughness={0.55} envMapIntensity={0.45} />
 
             {/** Scheibe, frontseite, Glas */}
             <mesh position={[-0.125, 0.07, 0.4]} rotation={[1.5, 0, 0]} receiveShadow>
@@ -280,8 +280,6 @@ export function ToyCar({ groupPosition, groupRotation = [0, 0, 0], bodyColor, ch
                      opacity={0.5} />
                </mesh>
             </group>
-
-
          </mesh> {/** end Cabin */}
 
          {/** Frame / rear chassis */}
@@ -344,7 +342,7 @@ export function ToyCar({ groupPosition, groupRotation = [0, 0, 0], bodyColor, ch
                radius={0.025}         // corner radius
                smoothness={8}        // segments
             >
-               <meshStandardMaterial color={red[300]} metalness={1} roughness={0.45} envMapIntensity={0.15} />
+               <meshStandardMaterial color={bodyColor} metalness={1} roughness={0.45} envMapIntensity={0.15} />
             </RoundedBox>
 
             {/** side wall, passenger's side */}
@@ -355,7 +353,7 @@ export function ToyCar({ groupPosition, groupRotation = [0, 0, 0], bodyColor, ch
                radius={0.025}         // corner radius
                smoothness={8}        // segments
             >
-               <meshStandardMaterial color={red[300]} metalness={1} roughness={0.45} envMapIntensity={0.15} />
+               <meshStandardMaterial color={bodyColor} metalness={1} roughness={0.45} envMapIntensity={0.15} />
             </RoundedBox>
 
             {/** Rear Axle, wheels with axle */}
