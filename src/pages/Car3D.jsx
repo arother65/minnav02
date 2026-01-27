@@ -266,15 +266,15 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             {/* fuel tanks, driver's side */}
             <mesh position={[1, 0, -0.25]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow castShadow>
                <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-               <meshStandardMaterial color="white"
+               <meshStandardMaterial color={blue[500]}
                   metalness={1}
-                  roughness={0.55}
-                  envMapIntensity={0.5}
+                  roughness={0.5}
+                  // envMapIntensity={0.5}
                />
             </mesh>
             <mesh position={[1, 0, -0.85]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow castShadow>
                <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-               <meshStandardMaterial color="lightblue"
+               <meshStandardMaterial color={blue[700]}
                   metalness={1}
                   roughness={0.55}
                   envMapIntensity={0.5}
@@ -283,11 +283,11 @@ function Car({ groupPosition, bodyColor, chassisType }) {
             {/* fuel tanks, passenger's side */}
             <mesh position={[-1, 0, -0.85]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow castShadow>
                <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-               <meshStandardMaterial color="lightblue" />
+               <meshStandardMaterial color={blue[700]} />
             </mesh>
             <mesh position={[-1, 0, -0.25]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow castShadow>
                <cylinderGeometry args={[0.25, 0.25, 0.45, 32]} />
-               <meshStandardMaterial color="lightblue" />
+               <meshStandardMaterial color={blue[700]} />
             </mesh>
 
             {/** side walls */}
