@@ -30,7 +30,10 @@ import { blue, orange, purple, red, yellow, green } from "@mui/material/colors"
 import { CamoBox } from '../components/CamoBox'
 import ComicTree from '../components/ComicTree'
 import RealisticTree from '../components/RealisticTree'
-import { Car } from '../components/ToyCar'
+import { ToyCar as Car } from '../components/ToyCar'
+
+import { createNatoCamoTexture } from '../components/NatoCamoPattern'
+import { useMemo } from "react"
 
 // import Triangle from '../components/Triangle'
 // import { MichelinMan, MichelinManInstanced } from '../components/MichelinMan/MichelinMan'
@@ -314,6 +317,8 @@ function MetalRod({ args, position, rotation, color }) {
    )
 }  // MetalRod()
 
+
+
 const rimProfile = [
    [0.1, 0],
    [0.28, 0.05],
@@ -395,6 +400,7 @@ shapeAbsellipse.closePath()
 export default function Car3D() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
+   const camoTexture = useMemo(() => createNatoCamoTexture(), []);
 
    return (
       <>
@@ -433,6 +439,8 @@ export default function Car3D() {
                <directionalLight position={[2, 3, 5]} castShadow />
 
                <Car groupPosition={[0, 0.65, 1.5]} bodyColor={'darkred'} chassisType={'rounded'} />
+               <Car groupPosition={[-3.35, 0.65, 1.5]} bodyColor={purple[900]} chassisType={'rounded'} />
+               <Car groupPosition={[-6.5, 0.65, 5.5]} groupRotation={[0, 3, 0]} bodyColor={green[900]} chassisType={'rounded'} />
 
                {/* <Train groupPosition={[-4.5, 0.55, 3.5]} bodyColor={'lightblue'} />  */}
 
@@ -509,11 +517,16 @@ export default function Car3D() {
                {/* <Triangle position={[-4, 0.65, 3]}/> */}
 
                {/* Ground */}
-               <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+               <mesh rotation={[-Math.PI / 2, 0, 0]}
+                  receiveShadow>
                   <planeGeometry args={[20, 20]} />
-                  <meshStandardMaterial color="black" />
+                  <meshStandardMaterial
+                     color="darkgreen"
+                     // roughness={0.95}
+                     // metalness={0.0}
+                     map={camoTexture}
+                  />
                </mesh>
-
                <OrbitControls />
             </Canvas>
          </main>

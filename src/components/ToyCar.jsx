@@ -116,10 +116,10 @@ function WheelWithRim({ groupPosition = [0, 2, 0], groupRotation = [0, 0, 0], ri
 }  // WheelWithRim()
 
 //* Car component 
-export  function Car({ groupPosition, bodyColor, chassisType }) {
+export function ToyCar({ groupPosition, groupRotation = [0, 0, 0], bodyColor, chassisType }) {
 
    return (
-      <group position={groupPosition} rotation={[0, 0, 0]}>
+      <group position={groupPosition} rotation={groupRotation}>
 
          {/* Chassis, front, cabin */}
          <mesh castShadow receiveShadow >

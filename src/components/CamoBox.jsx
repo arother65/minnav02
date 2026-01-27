@@ -20,7 +20,7 @@ export function CamoBox({ size = [2, 1.5, 2], position = [1, 1, 1], ivColors = [
  const camoTexture = useMemo(() => createNatoCamoTexture(ivColors), []);
 
    return (
-      <mesh position={position} castShadow receiveShadow>
+      <mesh position={position} receiveShadow>
          <boxGeometry args={size} />
 
          <meshStandardMaterial
