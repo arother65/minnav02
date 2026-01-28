@@ -14,7 +14,7 @@
 // import { useMemo } from "react"
 
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Text } from "@react-three/drei"
+import { OrbitControls, RoundedBoxGeometry, Text } from "@react-three/drei"
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
@@ -144,14 +144,24 @@ export default function PartsTestground() {
                      <mesh position={[0.15, 0.145, 0.15]} rotation={[0, 1.5, 0]} >
                         <torusGeometry args={[0.075, 0.025, 32, 32]} />
                         <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
-                     </mesh>                                          
+                     </mesh>
                      <mesh position={[0.15, 0.145, -0.15]} rotation={[0, 1.5, 0]} >
                         <torusGeometry args={[0.075, 0.025, 32, 32]} />
                         <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
-                     </mesh>                     
+                     </mesh>
                      <mesh position={[0.15, 0.15, -0.43]} rotation={[0, 1.5, 0]} >
                         <torusGeometry args={[0.075, 0.025, 32, 32]} />
                         <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                     </mesh>
+
+                     <mesh position={[0, 0.5, -0.25]} rotation={[1.6, 0, 0]}>
+                        { /** width, height, depth, segments, radius */}
+                        <RoundedBoxGeometry args={[0.4, 0.2, 0.025, 16, 1]} />
+
+                        <meshStandardMaterial color="red"
+                           metalness={1}
+                           roughness={0.45}
+                           envMapIntensity={1} />
                      </mesh>
 
                      {/* <TBeam3 position={[-1.5, 0.25, 2]}

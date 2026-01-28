@@ -5,10 +5,11 @@
  */
 
 //* Imports
-import { RoundedBoxGeometry, useTexture } from '@react-three/drei'
+import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { blue, brown, orange, purple, red, yellow, green } from "@mui/material/colors"
 import { Environment } from "@react-three/drei"
+import { RoundedBoxGeometry, Text } from "@react-three/drei"
 
 //* Globals
 // const effects = { color: 'lightsteelblue', metalness: 0.95, roughness: 0.15 }
