@@ -24,6 +24,8 @@ import Dice from './pages/Dice'
 import Carousel3D from './pages/Carousel3D'
 import SpinningWheel from './pages/SpinningWheel'
 import Car3D from './pages/Car3D'
+import PartsTestground from './pages/PartsTestground'
+
 import Puzzle3D from './pages/Puzzle3D'
 
 // import TrackedVehicle from './pages/TrackedVehicle'
@@ -39,12 +41,8 @@ import NotFound404 from './pages/404'
 //
 export default function AppRouter() {
 
-  //  const [visible, setVisible] = useState(true)
   const [skeletonOn, setSkeletonOn] = useState(true)  // for Skeleton-components
-
-  const domRouterOptions = {
-
-  }  //
+  const domRouterOptions = { }  //
 
   // instantiating a router-object; routes: RouteObject[], opts?: DOMRouterOpts
   // createBrowserRouter(routes: RouteObject[], opts?: DOMRouterOpts): Router
@@ -62,6 +60,8 @@ export default function AppRouter() {
         <Route path="/Carousel3D" element={<Carousel3D />} />
         <Route path="/SpinWheel" element={<SpinningWheel />} />
         <Route path="/Car3D" element={<Car3D />} />
+        <Route path="/PartsTestground" element={<PartsTestground />} />
+
         {/* <Route path="/trackedVehicle" element={<TrackedVehicle />} />  */}
 
         <Route path="/ChessScene" element={<ChessScene />} />
@@ -78,7 +78,6 @@ export default function AppRouter() {
     domRouterOptions
   )  // createBrowserRouter()
 
-  //
   return (
     <>
       <RouterProvider router={loRoutes} />

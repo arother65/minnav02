@@ -5,7 +5,7 @@
  */
 
 //* Imports
-import { useTexture } from '@react-three/drei'
+import { RoundedBoxGeometry, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { blue, brown, orange, purple, red, yellow, green } from "@mui/material/colors"
 import { Environment } from "@react-three/drei"
@@ -22,19 +22,19 @@ export default function TBeam({
    return (
       <group position={position}>
          {/* Top flange */}
-         <mesh position={[0, 0.15, 0]} rotation={[0, 0, 1.55]}>
+         <mesh position={[0, 0.15, 0]} rotation={[0, 0, 1.55]} receiveShadow>
             <boxGeometry args={[0.05, 0.5, 1]} />
             <meshStandardMaterial {...effects} />
          </mesh>
 
          {/* Vertical stem */}
-         <mesh position={[0, 0, 0]}>
+         <mesh position={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[0.045, 0.3, 1]} />
             <meshStandardMaterial {...effects} />
          </mesh>
 
          {/* Lower flange */}
-         <mesh position={[0, -0.15, 0]} rotation={[0, 0, 1.55]}>
+         <mesh position={[0, -0.15, 0]} rotation={[0, 0, 1.55]} receiveShadow>
             <boxGeometry args={[0.05, 0.5, 1]} />
             <meshStandardMaterial {...effects} />
          </mesh>
@@ -80,14 +80,14 @@ export function TBeamRusted({ position = [0, 0, 0], effects = { color: brown[400
    )
 }  // TBeamRusted()
 
-export function TBeamRusted2({ position = [0, 0, 0], effects = { color: blue[500], metalness: 0.85, roughness: 0.45 } }) {
+export function TBeamRusted2({ position = [0, 0, 0], effects = { color: orange[900], metalness: 0.85, roughness: 0.45 } }) {
 
    // create texture here
    const textures = useTexture({
       // map: "/textures/grimy-metal-albedo.png",
       normalMap: "/textures/rust/speckled-rust_normal.png",
       roughnessMap: "/textures/rust/speckled-rust_roughness.png",
-      metalnessMap: "/textures/rust/speckled-rust_albedo.png",
+      // metalnessMap: "/textures/rust/speckled-rust_albedo.png",
       // aoMap: "/textures/rust/speckled-rust_ao.png", // optional
    })
    // Make textures tile nicely
@@ -125,3 +125,36 @@ export function TBeamRusted2({ position = [0, 0, 0], effects = { color: blue[500
       </group>
    )
 }  // TBeamRusted2()
+
+export function TBeam3({
+   position = [0, 0, 0],
+   length = 1,
+   // effects = { color: blue[500], metalness: 0.95, roughness: 0.25 } 
+   effects
+}) 
+   
+   {
+
+   return (
+      <group position={position}>
+         {/* Top flange */}
+         <mesh position={[0, 0.22, 0]} rotation={[0, 0, 1.6]} receiveShadow>
+            <RoundedBoxGeometry args={[0.01, 0.05, length]} />
+            <meshStandardMaterial {...effects} />
+         </mesh>
+
+         {/* Vertical stem */}
+         <mesh position={[0, 0.125, 0]} receiveShadow>
+            <RoundedBoxGeometry args={[0.045, 0.2, length]} />
+            <meshStandardMaterial {...effects} />
+         </mesh>
+
+         {/* Lower flange */}
+         <mesh position={[0, 0, 0]} rotation={[0, 0, 1.55]} receiveShadow>
+            <RoundedBoxGeometry args={[0.05, 0.5, length]} />
+            <meshStandardMaterial {...effects} />
+         </mesh>
+         {/* <Environment preset="warehouse" /> */}
+      </group>
+   )
+}  // TBeam3()

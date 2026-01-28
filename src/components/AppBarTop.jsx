@@ -61,6 +61,7 @@ export default function AppBarTop() {
 
   // "Modal" build with a Card-compoenent. Uses animation and a backdrop 
   function AnimatedModal() {
+    
     return (
       <Backdrop open={loading} sx={{ zIndex: 500 }} onClick={() => { setLoading(false) }}>
         <Card >
@@ -236,6 +237,14 @@ export default function AppBarTop() {
               fnNavigate('/car3d')
             }}>
             simple car 3D
+          </MenuItem>
+
+          <MenuItem
+            sx={menuItemSx}
+            onClick={() => {
+              fnNavigate('/PartsTestground')
+            }}>
+            Part's Testground
           </MenuItem>
 
           <MenuItem

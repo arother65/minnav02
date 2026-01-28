@@ -34,8 +34,7 @@ import { ToyCar as Car } from '../components/ToyCar'
 
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 // import V8Engine from '../components/V8Engine/V8Engine'
-import TBeam, { TBeamRusted, TBeamRusted2 } from '../components/truckparts/TBeam'
-
+import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckparts/TBeam'
 
 // import { useMemo } from "react"
 
@@ -524,11 +523,13 @@ export default function Car3D() {
                <RealisticTree position={[4, 0, 6]} map={camoTexture} baseColor={blue[900]} />
 
                <SmallTree position={[3, 0, 8.5]} map={camoTexture01} baseColor={yellow[900]} />
-               <Hedge position={[2,0,3]} map={camoTexture01} baseColor={green[900]} />
+               <Hedge position={[2.75,0,7]} map={camoTexture01} baseColor={green[900]} />
 
-               <TBeam position={[0, 0.5, 6]} />
-               <TBeamRusted position={[1, 0.5, 6]}/>
-               <TBeamRusted2 position={[2, 0.5, 6]} />
+               <TBeam position={[-0.5, 0.25, 6]} />
+               <TBeamRusted position={[-1.25, 0.25, 6]}/>
+               <TBeamRusted2 position={[-2, 0.25, 6]} />
+
+               <TBeam3 position={[-3, 0.25, 6]}/>
 
                {/* <V8Engine position={[2,1,5]}/> */}
 
