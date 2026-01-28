@@ -29,11 +29,15 @@ import { blue, brown, orange, purple, red, yellow, green } from "@mui/material/c
 // import { NatoCamoPlane } from '../components/NatoCamoPattern'
 import { CamoBox } from '../components/CamoBox'
 import ComicTree from '../components/ComicTree'
-import RealisticTree from '../components/RealisticTree'
+import RealisticTree, { SmallTree, Hedge } from '../components/RealisticTree'
 import { ToyCar as Car } from '../components/ToyCar'
 
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import { useMemo } from "react"
+// import V8Engine from '../components/V8Engine/V8Engine'
+import TBeam, { TBeamRusted, TBeamRusted2 } from '../components/truckparts/TBeam'
+
+
+// import { useMemo } from "react"
 
 // import Triangle from '../components/Triangle'
 // import { MichelinMan, MichelinManInstanced } from '../components/MichelinMan/MichelinMan'
@@ -399,14 +403,14 @@ shapeAbsellipse.closePath()
 export default function Car3D() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
-   // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
 
+   // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
    const camoTextureColors = [orange[500], brown[600], orange[900]]
-   const camoTexture = useMemo(() => createNatoCamoTexture(camoTextureColors), [])
+   const camoTexture = createNatoCamoTexture(camoTextureColors)
 
    const camoTextureColors01 = ['#bdb76b', '#b8860b', '#a52a2a']
    // #bdb76b darkkhaki; #b8860b darkgoldenrod; #a52a2a brown
-   const camoTexture01 = useMemo(() => createNatoCamoTexture(camoTextureColors01), [])
+   const camoTexture01 = createNatoCamoTexture(camoTextureColors01)
 
    return (
       <>
@@ -516,10 +520,17 @@ export default function Car3D() {
 
                <ComicTree position={[8, 0, -5]} />
                <RealisticTree position={[7, 0, -6]} />
-               <RealisticTree position={[7, 0, 7]} map={camoTexture} baseColor={red[900]} />
-               <RealisticTree position={[4, 0, 6]} map={camoTexture} baseColor={blue[500]} />
-               
-               <RealisticTree position={[3, 0, 8.5]} map={camoTexture01} baseColor={purple[900]} />
+               <RealisticTree position={[7, 0, 7]} map={camoTexture} baseColor={brown[400]} />
+               <RealisticTree position={[4, 0, 6]} map={camoTexture} baseColor={blue[900]} />
+
+               <SmallTree position={[3, 0, 8.5]} map={camoTexture01} baseColor={yellow[900]} />
+               <Hedge position={[2,0,3]} map={camoTexture01} baseColor={green[900]} />
+
+               <TBeam position={[0, 0.5, 6]} />
+               <TBeamRusted position={[1, 0.5, 6]}/>
+               <TBeamRusted2 position={[2, 0.5, 6]} />
+
+               {/* <V8Engine position={[2,1,5]}/> */}
 
                {/* <MichelinMan /> */}
                {/* <MichelinManInstanced />  */}
