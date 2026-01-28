@@ -28,6 +28,9 @@ import { CamoBox } from '../components/CamoBox'
 // import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckparts/TBeam'
 import MetalRack from '../components/MetalRack'
+import Fence from '../components/Fence'
+import GridFence3D from '../components/Fence'
+
 
 // import Triangle from '../components/Triangle'
 
@@ -119,20 +122,39 @@ export default function PartsTestground() {
                      <TBeamRusted2 position={[-2, 0.25, 6]} /> */}
 
                      {/* effects = { color: blue[500], metalness: 0.95, roughness: 0.25 }  */}
-                     <TBeam3 position={[0, 0.25, 0]}
+                     {/* <TBeam3 position={[0, 0.25, 0]}
                         effects={{ color: blue[100], metalness: 0.95, roughness: 0.45 }}
-                     />
+                     /> */}
 
                      <TBeam3 position={[-1, 0.25, 1]}
                         // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
-                        effects={{ color: 'white', metalness: 0.95, roughness: 0.35 }}
-                     />
-                     <TBeam3 position={[-1, 0.75, 1]}
-                        // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
-                        effects={{ color: 'white', metalness: 0.95, roughness: 0.35 }}
+                        effects={{ color: 'red', metalness: 0.95, roughness: 0.45 }}
                      />
 
-                     <TBeam3 position={[-1.5, 0.25, 2]}
+                     <TBeam3 position={[0, 0.25, 0]}
+                        // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
+                        effects={{ color: 'orange', metalness: 0.95, roughness: 0.45 }}
+                     />
+
+                     {/* tyre */}
+                     <mesh position={[0.15, 0.15, 0.43]} rotation={[0, 1.5, 0]} >
+                        <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                        <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                     </mesh>
+                     <mesh position={[0.15, 0.145, 0.15]} rotation={[0, 1.5, 0]} >
+                        <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                        <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                     </mesh>                                          
+                     <mesh position={[0.15, 0.145, -0.15]} rotation={[0, 1.5, 0]} >
+                        <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                        <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                     </mesh>                     
+                     <mesh position={[0.15, 0.15, -0.43]} rotation={[0, 1.5, 0]} >
+                        <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                        <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                     </mesh>
+
+                     {/* <TBeam3 position={[-1.5, 0.25, 2]}
                         length={0.25}
                         effects={{ color: red[500], metalness: 0.95, roughness: 0.35 }}
                      />
@@ -157,9 +179,11 @@ export default function PartsTestground() {
                      <TBeam3 position={[-2.5, 0.75, 4]}
                         length={0.01}
                         effects={{ color: orange[100], metalness: 0.95, roughness: 0.35 }}
-                     />
+                     /> */}
 
-                     <MetalRack position={[1, 0, 3]} color={blue[100]}/>
+                     {/* <MetalRack position={[1, 0, 3]} color={blue[100]}/>
+                     <Fence position={[0, 0, 7]} color={blue[500]}/>
+                     <GridFence3D position={[1, 0, 3]} color='red' /> */}
 
                      {/* <Triangle position={[-4, 0.65, 3]}/> */}
 

@@ -4,7 +4,7 @@
  * 
  */
 
-
+//*
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, Box, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
@@ -15,15 +15,16 @@ import { Canvas } from "@react-three/fiber"
 import { useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, Text } from "@react-three/drei"
 import logo from '../logo.svg'
-import Footer from '../components/Footer'
 
-// customer components for this page
+
+//* customer components for this page
+import Footer from '../components/Footer'
 import { InstancedLegoBricks } from "../components/InstancedLegoBricks"
 
 import importedBricks from '../components/lego/bricksData.json'
 import { Physics, RigidBody } from '@react-three/rapier'
 
-//
+//*
 export default function LegoScene() {
 
   // navigation 

@@ -15,7 +15,7 @@ export default function MetalRack({
    width = 2,
    depth = 0.6,
    height = 2.5,
-   shelves = 4,
+   shelves = 2,
    poleThickness = 0.05,
    color = red[500]
 }) {

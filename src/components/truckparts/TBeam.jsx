@@ -138,14 +138,19 @@ export function TBeam3({
    return (
       <group position={position}>
          {/* Top flange */}
-         <mesh position={[0, 0.22, 0]} rotation={[0, 0, 1.6]} receiveShadow>
-            <RoundedBoxGeometry args={[0.01, 0.05, length]} />
+         <mesh position={[0, 0.15, -0.3]} rotation={[0, 0, 1.6]} receiveShadow>
+            <RoundedBoxGeometry args={[0.005, 0.01, 0.25]} />
             <meshStandardMaterial {...effects} />
          </mesh>
 
          {/* Vertical stem */}
-         <mesh position={[0, 0.125, 0]} receiveShadow>
-            <RoundedBoxGeometry args={[0.045, 0.2, length]} />
+         <mesh position={[0, 0.125, 0.15]} receiveShadow>
+            <RoundedBoxGeometry args={[0.045, 0.3, 0.7]} />
+            <meshStandardMaterial {...effects} />
+         </mesh>
+
+         <mesh position={[0, 0.25, 0.15 ]} rotation={[0, 0, 1.6]} receiveShadow>
+            <RoundedBoxGeometry args={[0.005, 0.01, 0.75]} />
             <meshStandardMaterial {...effects} />
          </mesh>
 
