@@ -9,11 +9,9 @@ import { useMemo } from "react"
 
 
 //*
-//                    Durchmesser, Anzahl Windungen, ?, ?
-function HelixCurve({ radius = 0.15, turns = 4, height = 1, offset = 0 }) {
+function HelixCurve({ radius = 0.15, turns = 8, height = 5, offset = 0 }) {
 
    return useMemo(() => {
-
       class Helix extends THREE.Curve {
          getPoint(t) {
             const angle = t * Math.PI * 2 * turns + offset
@@ -27,10 +25,9 @@ function HelixCurve({ radius = 0.15, turns = 4, height = 1, offset = 0 }) {
 }  // HelixCurve()
 
 //*
-export default function TwistedCable({ position=[0, 0, 0], rotation=[0, 0, 0], color='lightsteelblue' }) {
-   
-   const strands = 1  //? DURCHMESSER zwischen den einzelnen Windungen
-   const height = 0.75  // LÄNGE der zu erzeugenden Feder
+export default function TwistedCable({position=[0, 0, 0], rotation=[0, 0, 0], color='lightsteelblue'}) {
+   const strands = 1
+   const height = 1
 
    return (
       <group position={position} rotation={rotation}>
@@ -40,8 +37,7 @@ export default function TwistedCable({ position=[0, 0, 0], rotation=[0, 0, 0], c
 
             return (
                <mesh key={i}>
-                  {/**                      | RenderObj, Durchmesser, ?, ? */}     
-                  <tubeGeometry args={[curve, 512, 0.5, 128, false]} />
+                  <tubeGeometry args={[curve, 512, 0.05, 128, false]} />
                   <meshStandardMaterial
                      color={color}
                      roughness={0.5}

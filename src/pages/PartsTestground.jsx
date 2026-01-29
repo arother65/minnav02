@@ -35,6 +35,7 @@ import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckpar
 
 // import CSGTorus from '../components/CSGTorus'
 import TwistedCable from '../components/TwistedCable'
+import Tube from '../components/Tube'
 
 // import Triangle from '../components/Triangle'
 
@@ -43,15 +44,7 @@ import TwistedCable from '../components/TwistedCable'
 //    Local declarations / components
 /** ------------------------------------------------------------------------ */
 
-//* Testparams curves
-const arc = 0,   // ~ Höhe des Bogens 
-   length = 0.5  //Breite des Bogens / Länge des Rohres
-
-const curve = new THREE.QuadraticBezierCurve3(
-   new THREE.Vector3(-length, 0, 0),  // x, y, z
-   new THREE.Vector3(0, arc, 0),  // rotation and bending of the arc
-   new THREE.Vector3(length, 0, 0)
-)
+// const test = THREE.ArcCurve()
 
 //* PartsTestground page component
 export default function PartsTestground() {
@@ -215,22 +208,14 @@ export default function PartsTestground() {
                            envMapIntensity={1} />
                      </mesh>
 
-                     {/** Test GEOMETRIES; <torusGeometry args={[0.075, 0.025, 32, 32, Math.PI]} /> */}
-                     {/* <CSGTorus
-                        position={[2, 1.25, 0]}
-                        rotation={[0, 0, 0]}
-                        holeRadius={0.01}
-                     /> */}
+                     {/** Test GEOMETRIES; <torusGeometry args={[0.075, 0.025, 32, 32, Math.PI]} /> 
+                      * position, rotation
+                      * 
+                     */}
+                     <Tube />
 
-                     <mesh position={[0, 1, 4]} rotation={[0, 0, 0]} receiveShadow>
-                        {/**                         ?, Durchmesser, ?, ? */}
-                        {/* <tubeGeometry args={[curve, 64, 0.005, 64, true]} /> */}
+                     <TwistedCable position={[1, 0.5, 0]} rotation={[1.55, 0, 0]} color={red[500]} />
 
-                        <tubeGeometry args={[curve, 64, 1, 64, true]} />
-                        <meshStandardMaterial color="lightgreen" metalness={0.95} roughness={0.55} />
-                     </mesh>
-
-                     <TwistedCable position={[1, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
                      <TwistedCable position={[2, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
                      <TwistedCable position={[3, 0, 0]} rotation={[0, 0, 0]} />
 
