@@ -24,12 +24,6 @@ const curve = new THREE.QuadraticBezierCurve3(
    new THREE.Vector3(1, 0, 0)  // x= Biegung im Raum; y= Biegung in der Vertikalen; z= Streckung in der Horizontalen
 )
 
-const catmullCurve = new THREE.CatmullRomCurve3([
-   new THREE.Vector3(2, 0, 0),
-   new THREE.Vector3(2, 2, 0),
-   new THREE.Vector3(6, 3, 1)
-])
-
 /**  new THREE.TubeGeometry(
    path,            // THREE.Curve
    tubularSegments, // number
@@ -39,12 +33,12 @@ const catmullCurve = new THREE.CatmullRomCurve3([
    ) */
 
 //
-export default function Tube({ position, rotation }) {
+export default function Tube({ position, rotation, curve, color = purple[100] }) {
 
    return (
       <mesh position={position} rotation={rotation} receiveShadow>
-         <tubeGeometry args={[catmullCurve, 8, 0.15, 8, false]} />
-         <meshStandardMaterial color="grey" metalness={0.75} roughness={0.5} side={THREE.DoubleSide} />
+         <tubeGeometry args={[curve, 8, 0.15, 8, false]} />
+         <meshStandardMaterial color={color} metalness={0.75} roughness={0.5} side={THREE.DoubleSide} />
       </mesh>
    )
 }
