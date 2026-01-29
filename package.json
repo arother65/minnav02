@@ -41,6 +41,7 @@
     "react-toastify": "^11.0.5",
     "source-map-explorer": "^2.5.3",
     "three": "^0.182.0",
+    "three-bvh-csg": "^0.0.17",
     "webpack-dev-server": "^5.2.2"
   },
   "scripts": {

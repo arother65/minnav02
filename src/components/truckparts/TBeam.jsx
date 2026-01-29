@@ -129,6 +129,7 @@ export function TBeamRusted2({ position = [0, 0, 0], effects = { color: orange[9
 
 export function TBeam3({
    position = [0, 0, 0],
+   rotation = [0, 0, 0],
    length = 1,
    // effects = { color: blue[500], metalness: 0.95, roughness: 0.25 } 
    effects
@@ -137,7 +138,7 @@ export function TBeam3({
    {
 
    return (
-      <group position={position}>
+      <group position={position} rotation={rotation}>
          {/* Top flange */}
          <mesh position={[0, 0.15, -0.3]} rotation={[0, 0, 1.6]} receiveShadow>
             <RoundedBoxGeometry args={[0.005, 0.01, 0.25]} />
