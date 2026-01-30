@@ -199,7 +199,7 @@ export default function PartsTestground() {
 
                      {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
 
-                     <Model position={[0, 2, 2]} rotation={[0, 0, 0]}/>
+                     <Model position={[2, 0, 5]} rotation={[0, 0, 0]}/>
 
                      <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
 

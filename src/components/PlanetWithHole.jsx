@@ -83,14 +83,14 @@ function createShapeSM() {
 }  // createShapeSM()
 
 //* loads and retuns a model
-export function Model() {
+export function Model({position=[0, 0, 0], rotation=[0, 0, 0]}) {
 
    const treeModel = useGLTF('/models/Pine Trees.glb')
    //   console.log(treeModel)
 
    //  useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
 
-   return <primitive object={treeModel.scene} scale={1} />
+   return <primitive object={treeModel.scene} position={position} rotation={rotation} scale={1} />
 }  // Model()
 
 //*
