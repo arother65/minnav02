@@ -38,7 +38,7 @@ export default function Tube({ position, rotation, curve, color = purple[100] })
    return (
       <mesh position={position} rotation={rotation} receiveShadow>
          <tubeGeometry args={[curve, 8, 0.15, 8, false]} />
-         <meshStandardMaterial color={color} metalness={0.75} roughness={0.5} side={THREE.DoubleSide} />
+         <meshStandardMaterial color={color} metalness={0.5} roughness={0.5} side={THREE.DoubleSide} />
       </mesh>
    )
 }

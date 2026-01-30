@@ -38,7 +38,9 @@ import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckpar
 import MetalSpring from '../components/MetalSpring'
 import Tube from '../components/Tube'
 
-import CreateExtrudeGeometry from '../components/InstancedGeometry'
+import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
+import PlanetWithHole from '../components/PlanetWithHole'
+
 
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
@@ -57,7 +59,18 @@ import { Physics } from '@react-three/rapier'
 const catmullCurve = new THREE.CatmullRomCurve3([
    new THREE.Vector3(2, 0, 0),  // Horizontale
    new THREE.Vector3(2, 2, 0),  //
-   new THREE.Vector3(6, 3, 1)   //
+   new THREE.Vector3(6, 3, 1),   //
+])
+
+// CatmullRomCurve3( points?: THREE.Vector3[] | undefined, 
+//                   closed?: boolean, 
+//                   curveType?: THREE.CurveType, 
+//                   tension?: number): THREE.CatmullRomCurve3
+const catmullCurveTest = new THREE.CatmullRomCurve3([
+   new THREE.Vector3(0, 0, 0),  // Punkte eines Abschnittes
+   new THREE.Vector3(1, 1, 0),  //
+   new THREE.Vector3(2, 0.35, 0),   //
+   new THREE.Vector3(3, -0.55, 0)
 ])
 
 //* Local declarations
@@ -181,9 +194,14 @@ export default function PartsTestground() {
                      <ambientLight intensity={0.75} />
                      <directionalLight position={[5, 5, 5]} castShadow />
 
-                     <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text>
+                     {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
 
-                     <CreateExtrudeGeometry />
+                     <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
+
+                     <CreateExtrudeGeometry noObjects={10} />
+                     <CreateExtrudeGeometry02 noObjects={10} />
+
+                     <PlanetWithHole position={[0, 4, 5]} rotation={[0, 0, 0]}/>
 
                      {/** Scheibe, frontseite, Glas */}
                      <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
@@ -326,8 +344,10 @@ export default function PartsTestground() {
                       * position, rotation
                       * 
                      */}
-                     <Tube position={[2, 0.5, -6]} curve={catmullCurve} color={red[200]} />
                      <Tube position={[3, 0.5, -6]} curve={catmullCurve} color={red[400]} />
+
+
+
 
                      <MetalSpring position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
                      <MetalSpring position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
