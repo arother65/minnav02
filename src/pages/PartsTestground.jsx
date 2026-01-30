@@ -40,10 +40,13 @@ import Tube from '../components/Tube'
 
 import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
 import PlanetWithHole from '../components/PlanetWithHole'
+import { Model } from '../components/PlanetWithHole'
+
 
 
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
+
 
 import { Suspension } from '../components/truckparts/TriangleControlArm'
 import { Physics } from '@react-three/rapier'
@@ -185,25 +188,30 @@ export default function PartsTestground() {
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
                   sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
-                  <Canvas shadows camera={{ position: [4, 4, 4], fov: 45 }}
+                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 55 }}
                      style={{
-                        width: "88vw",
+                        width: "85vw",
                         height: "88vh",
                         display: "block"
                      }}>
-                     <ambientLight intensity={0.75} />
-                     <directionalLight position={[5, 5, 5]} castShadow />
+                     <ambientLight intensity={0.95} />
+                     <directionalLight position={[0, 5, 5]} castShadow />
 
                      {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
+
+                     <Model position={[0, 2, 2]} rotation={[0, 0, 0]}/>
 
                      <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
 
                      <CreateExtrudeGeometry noObjects={10} />
                      <CreateExtrudeGeometry02 noObjects={10} />
 
-                     <PlanetWithHole position={[0, 0.55, 5]} rotation={[0, 0, 0]} />
-                     <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[0, 0, 0]} texture='wood' />
-                     <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[0, 0, 0]} texture='rust' />
+                     <PlanetWithHole position={[-1, 0.55, 4]} rotation={[-0.5, 0, 0]} />
+                     <PlanetWithHole position={[-2.25, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[red[200], red[700], red[900]]} />
+                     <PlanetWithHole position={[-3.5, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[green[200], green[700], green[900]]} />
+
+                     <PlanetWithHole position={[-1.25, 0.55, -5]} rotation={[0, 0, 0]} texture='wood' />
+                     <PlanetWithHole position={[-2.5, 0.55, -5]} rotation={[0, 0, 0]} texture='rust' />
 
                      {/** Scheibe, frontseite, Glas */}
                      <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
