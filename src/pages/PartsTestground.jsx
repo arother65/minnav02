@@ -29,13 +29,23 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 // import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckparts/TBeam'
 
+
 // import MetalRack from '../components/MetalRack'
 // import Fence from '../components/Fence'
 // import GridFence3D from '../components/Fence'
 
 // import CSGTorus from '../components/CSGTorus'
-import TwistedCable from '../components/TwistedCable'
+import MetalSpring from '../components/MetalSpring'
 import Tube from '../components/Tube'
+
+import CreateExtrudeGeometry from '../components/InstancedGeometry'
+
+import ShockAbsorber from '../components/truckparts/ShockAbsorber'
+import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
+
+import { Suspension } from '../components/truckparts/TriangleControlArm'
+import { Physics } from '@react-three/rapier'
+
 
 // import Triangle from '../components/Triangle'
 
@@ -50,27 +60,50 @@ const catmullCurve = new THREE.CatmullRomCurve3([
    new THREE.Vector3(6, 3, 1)   //
 ])
 
-// const test = THREE.ArcCurve()
+//* Local declarations
+const shape = new THREE.Shape()
+shape.moveTo(0, 0)
+shape.lineTo(0.005, 0.005)
+shape.lineTo(0.005, 0.005)
 
-function MetalRod({ args, position, rotation, color }) {
+shape.lineTo(0.015, 0.005)
+shape.lineTo(0.015, 0.005)
+
+// shape.lineTo(0.25, 0.1)
+shape.closePath()
+
+//*
+const shape02 = new THREE.Shape()
+shape02.moveTo(0, 0)
+shape02.lineTo(0.005, 0.005)
+shape02.lineTo(0.005, 0.005)
+
+// shape02.lineTo(0.025, 0.005)
+// shape02.lineTo(0.025, 0.005)
+
+shape02.bezierCurveTo(0.01, 0.01, 0.01, 0.01)
+// shape02.bezierCurveTo(0.02, 0.02, 0.02, 0.02)
+
+shape02.closePath()
+
+function MetalRod({ args, position, rotation, color = 'white' }) {
    return (
       <mesh position={position} rotation={rotation}>
          <RoundedBox
             args={args}   // width, height, depth
             radius={0.15}         // corner radius
-            smoothness={64}        // segments
+            smoothness={32}        // segments
          >
             <meshStandardMaterial
                color={color}
-               metalness={1}
-               roughness={0.45}
+               metalness={0.95}
+               roughness={0.55}
                envMapIntensity={0.75}
             />
          </RoundedBox>
       </mesh>
    )
 }  // MetalRod()
-
 
 
 //* PartsTestground page component
@@ -149,6 +182,54 @@ export default function PartsTestground() {
                      <directionalLight position={[5, 5, 5]} castShadow />
 
                      <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text>
+
+                     <CreateExtrudeGeometry />
+
+
+
+                     {/** Scheibe, frontseite, Glas */}
+                     <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
+                        <extrudeGeometry args={[
+                           shape,
+                           { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                        ]} />
+                        <meshStandardMaterial color={purple[400]} metalness={0.5} roughness={0.15} transparent opacity={0.85} />
+                     </mesh>
+
+                     {/** Front */}
+                     <mesh position={[0, 0.35, 1]} rotation={[1.605, 0, -0.35]} receiveShadow>
+                        <extrudeGeometry args={[
+                           shape,
+                           { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                        ]} />
+                        <meshStandardMaterial color={purple[300]} metalness={0.95} roughness={0.55} />
+                     </mesh>
+
+                     {/** Rear */}
+                     <mesh position={[0, 0.35, -0.75]} rotation={[1.6, 0, 2.75]} receiveShadow>
+                        <extrudeGeometry args={[
+                           shape,
+                           { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                        ]} />
+                        <meshStandardMaterial color={red[500]} metalness={0.95} roughness={0.55} side={2} />
+                     </mesh>
+
+                     {/** Test */}
+                     <mesh position={[0, 0.15, 1.75]} rotation={[0, 0, 0.8]} receiveShadow>
+                        <extrudeGeometry args={[
+                           shape02,
+                           { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                        ]} />
+                        <meshStandardMaterial color={green[400]} metalness={0.95} roughness={0.75} side={2} />
+                     </mesh>
+                     <mesh position={[0.5, 0.15, 1.75]} rotation={[0, 0, 0.8]} receiveShadow>
+                        <extrudeGeometry args={[
+                           shape02,
+                           { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                        ]} />
+                        <meshStandardMaterial color={orange[400]} metalness={0.95} roughness={0.75} side={2} />
+                     </mesh>
+
 
                      {/* <TBeam position={[-0.5, 0.25, 6]} />
                      <TBeamRusted position={[-1.25, 0.25, 6]} />
@@ -235,8 +316,13 @@ export default function PartsTestground() {
                            envMapIntensity={1} />
                      </mesh>
 
-                     {/** undefinierbar, aber eine interessante Form */}
-                     <MetalRod args={[0.25, 0.25, 0.15]} position={[0, 0.3, 0.5]} color={yellow[500]} />
+                     {/** undefinierbar, aber eine interessante Form, front grill */}
+                     <MetalRod args={[0.25, 0.25, 0.15]} position={[0, 0.3, 0.5]}
+                        rotation={[0, 0, 0]}
+                        color={''} />
+                     <MetalRod args={[0.2, 0.15, 0.35]} position={[0, 0.65, -0.22]}
+                        rotation={[1.55, 0, 0]}
+                        color={''} />
 
                      {/** Test GEOMETRIES; <torusGeometry args={[0.075, 0.025, 32, 32, Math.PI]} /> 
                       * position, rotation
@@ -245,55 +331,47 @@ export default function PartsTestground() {
                      <Tube position={[2, 0.5, -6]} curve={catmullCurve} color={red[200]} />
                      <Tube position={[3, 0.5, -6]} curve={catmullCurve} color={red[400]} />
 
-                     <TwistedCable position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
-                     <TwistedCable position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
+                     <MetalSpring position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
+                     <MetalSpring position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
 
-                     <group position={[0, 0, 0]} rotation={[0, 0, 0]}>
-                        <TwistedCable position={[0.45, 0.025, 0]} rotation={[0, 0, 0]} />
-                        {/** mount, lower */}
-                        <mesh position={[0.45, 0.015, 0]} receiveShadow>
-                           {/* Cylinder is vertical on Y axis */}
-                           <cylinderGeometry args={[0.02, 0.04, 0.05, 64]} />
-                           <meshStandardMaterial color={grey[900]}
-                              metalness={0.25}
-                              roughness={0.65}
-                              envMapIntensity={0.75} />
+                     {/** Shockabsorber */}
+                     <ShockAbsorber position={[0, -0.1, 0.5]} rotation={[0, 0, 0.55]} />
+
+                     {/* <TriangleControlArm color="blue" /> */}
+                     {/* <TriangleWithHoles position={[-2, 2, 0]} /> */}
+
+                     {/** front wishbones */}
+                     <DIYControlArm position={[0.35, 0.15, 1.5]} rotation={[0, 1.5, 0]} />
+                     <DIYControlArm position={[-0.35, 0.15, 0]} rotation={[0, -1.5, 0]} />
+
+                     {/** undefinierbare objekte, erzeugt mit MetalRod */}
+                     {/* <group position={[0, 0, -4]} receiveShadow>
+                        <mesh position={[0.6, 0.25, 0]} receiveShadow>
+                           <sphereGeometry args={[0.1, 32, 32]} />
+                           <meshStandardMaterial color={red[500]} />
                         </mesh>
-                        {/** mount, upper */}
-                        <mesh position={[0.45, 0.175, 0]} rotation={[3.05, 0, 0]} receiveShadow>
-                           {/* Cylinder is vertical on Y axis */}
-                           <cylinderGeometry args={[0.02, 0.04, 0.05, 64]} />
-                           <meshStandardMaterial color={grey[900]}
-                              metalness={0.25}
-                              roughness={0.65}
-                              envMapIntensity={0.75} />
+                        <MetalRod args={[0.35, 0.15, 0]}
+                           position={[0.5, 0.25, 0]}
+                           rotation={[0, 0, 0]}
+                           color={yellow[100]}
+                        />
+                        <mesh position={[0.4, 0.25, 0]} receiveShadow>
+                           <sphereGeometry args={[0.1, 32, 32]} />
+                           <meshStandardMaterial color={orange[500]} />
                         </mesh>
-                        {/** shock absorber */}
-                        <mesh position={[0.45, 0.1, 0]} rotation={[0, 0, 0]} receiveShadow>
-                           <cylinderGeometry args={[0.015, 0.015, 0.125, 32]} />
-                           <meshStandardMaterial
-                              metalness={0.95}
-                              roughness={0.45}
-                              // normalScale={[1, 1]} // directional brushing
-                              envMapIntensity={0.95}
-                              color={'white'} />
-                        </mesh>
-                        <mesh position={[0.45, 0.05, 0]} rotation={[0, 0, 0]} receiveShadow>
-                           <cylinderGeometry args={[0.02, 0.02, 0.05, 32]} />
-                           <meshStandardMaterial
-                              metalness={0.95}
-                              roughness={0.35}
-                              // normalScale={[1, 1]} // directional brushing
-                              envMapIntensity={0.95}
-                              color={grey[900]} />
-                        </mesh>
-                     </group>
+                     </group> */}
 
                      <MetalRod args={[0.5, 0.2, 0.05]}
-                        position={[0.75, 0.3, -5]}
-                        rotation={[0.1, 0, 0]}
-                        color={yellow[100]}
+                        position={[1, 0.3, 1]}
+                        rotation={[0, 0, 0]}
+                        color={yellow[500]}
                      />
+
+                     {/* <BallJointSimple /> */}
+
+                     {/* <Physics gravity={[0, -9.81, 0]} debug>
+                        <Suspension />
+                     </Physics> */}
 
                      {/* <MetalRack position={[1, 0, 3]} color={blue[100]}/>
                      <Fence position={[0, 0, 7]} color={blue[500]}/>

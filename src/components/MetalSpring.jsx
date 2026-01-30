@@ -4,9 +4,10 @@
  * 
  */
 
+//* Imports
 import * as THREE from "three"
-// import { useMemo } from "react"
 
+// import { useMemo } from "react"
 
 //*
 //                    Durchmesser, Anzahl Windungen, ?, ?
@@ -44,8 +45,8 @@ class HelixCurve extends THREE.Curve {
 }  // class HelixCurve
 
 
-//*
-export default function TwistedCable({ position = [0, 0, 0], rotation = [0, 0, 0], color = 'lightsteelblue' }) {
+//* Main Component
+export default function MetalSpring({ position = [0, 0, 0], rotation = [0, 0, 0], color = 'lightsteelblue' }) {
 
    const strands = 1  //? DURCHMESSER der einzelnen Windungen
 
@@ -58,7 +59,7 @@ export default function TwistedCable({ position = [0, 0, 0], rotation = [0, 0, 0
             // let lvOffset = (i / strands) * Math.PI * 2, height 
 
             const curve = new HelixCurve({
-               radius: 0.03,  // DURCHMESSER, außen der gesamten Feder
+               radius: 0.025,  // DURCHMESSER, außen der gesamten Feder
                turns: 6,  // ANZAHL der Wicklungen
                height: 0.15,  // LÄNGE der zu erzeugenden Feder
 
