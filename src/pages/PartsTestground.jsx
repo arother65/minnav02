@@ -201,7 +201,9 @@ export default function PartsTestground() {
                      <CreateExtrudeGeometry noObjects={10} />
                      <CreateExtrudeGeometry02 noObjects={10} />
 
-                     <PlanetWithHole position={[0, 4, 5]} rotation={[0, 0, 0]}/>
+                     <PlanetWithHole position={[0, 0.55, 5]} rotation={[0, 0, 0]} />
+                     <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[0, 0, 0]} texture='wood' />
+                     <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[0, 0, 0]} texture='rust' />
 
                      {/** Scheibe, frontseite, Glas */}
                      <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
