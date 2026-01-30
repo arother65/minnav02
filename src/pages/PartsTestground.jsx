@@ -185,8 +185,6 @@ export default function PartsTestground() {
 
                      <CreateExtrudeGeometry />
 
-
-
                      {/** Scheibe, frontseite, Glas */}
                      <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
                         <extrudeGeometry args={[

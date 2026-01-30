@@ -8,6 +8,7 @@
 import { useMemo } from 'react'
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
 import * as THREE from 'three'
+import { Text } from "@react-three/drei"
 
 //*
 function createShape() {
@@ -55,16 +56,13 @@ export default function CreateExtrudeGeometry() {
       [shape02]
    )
 
-   const material = useMemo(
-      () =>
-         new THREE.MeshStandardMaterial({
-            color: getRandomColor(),
-            metalness: 0.95,
-            roughness: 0.45,
-            side: THREE.DoubleSide,
-         }),
-      []
-   )
+   const material = useMemo(() =>
+      new THREE.MeshStandardMaterial({
+         color: getRandomColor(),
+         metalness: 0.95,
+         roughness: 0.45,
+         side: THREE.DoubleSide,
+      }), [])
 
    return (
       Array.from({ length: 5 }).map((_, index) => (
@@ -76,7 +74,7 @@ export default function CreateExtrudeGeometry() {
             rotation={[0, 0, 0.8]}
             receiveShadow
          >
-
+            <Text position={[0, 0.35, 0]} color={material.color} fontSize={0.25}>{index}</Text>
          </mesh>
       ))
    )  // return()
