@@ -64,18 +64,27 @@ function createShapeSM() {
    shape.moveTo(0.5, 0.5)
 
    shape.lineTo(1, 0.15)
-   shape.lineTo(0.15, 0.15)
+   shape.lineTo(0.1, 0.15)
 
-   // Circular holes, definitions
+   // Circular holes, definitions (holes.absarc)
    const holes = [
       { x: 0.5, y: 0.4, r: 0.025 },
       { x: 0.5, y: 0.3, r: 0.025 },
       { x: 0.5, y: 0.2, r: 0.025 },
    ]
 
+   // const holes = [
+   // { x: 1, y: 1, xr: 0.015, yr: 0.015 },
+   // { x: 0.5, y: 0.3, r: 0.025 },
+   // { x: 0.5, y: 0.2, r: 0.025 },
+   // ]  // hols for hole.ellipse'
+
    holes.forEach(({ x, y, r }) => {
       const hole = new THREE.Path()
       hole.absarc(x, y, r, 0, Math.PI * 2, false)
+
+      // hole.ellipse(x, y, xr, yr, 1, 2)
+
       shape.holes.push(hole)
    })
 
@@ -118,6 +127,8 @@ export function CreateSingleTree({ position = [0, 0, 0], rotation = [0, 0, 0], s
 export function CreateGrass({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const grassModel = useGLTF('/models/Grass.glb')
+   grassModel.materials.Grass.meatlness = 0
+   grassModel.materials.Grass.roughness = 0.8
 
    // return <Clone object={treeModel.scene} {...props} />
    return <Clone object={grassModel.scene} position={position} rotation={rotation} scale={scale} />
@@ -127,9 +138,9 @@ export function CreateGrass({ position = [0, 0, 0], rotation = [0, 0, 0], scale 
 export function CreateStreet({ position = [0, 0, 0], rotation = [0, 0, 0] }) {
 
    let texture = useTexture('/textures/highway/highway-lanes_albedo.png')
-      // map: '/textures/highway/highway-lanes_albedo.png',
-      // normalMap: '/textures/highway/highway-lanes_ao.png',
-      // metalnessMap: '/textures/highway/highway-lanes_metallic.psd',  // errs 
+   // map: '/textures/highway/highway-lanes_albedo.png',
+   // normalMap: '/textures/highway/highway-lanes_ao.png',
+   // metalnessMap: '/textures/highway/highway-lanes_metallic.psd',  // errs 
 
    texture.colorSpace = THREE.SRGBColorSpace
    texture.wrapS = texture.wrapT = THREE.RepeatWrapping

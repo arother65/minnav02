@@ -203,22 +203,22 @@ export default function PartsTestground() {
                      <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
                      <Model position={[7, 0, 5.25]} rotation={[0, 0, 0]} scale={2.25} />
 
-                     <CreateGrass position={[0, 0.5, 6]} rotation={[0, 0, 0]} scale={2.25} />
+                     <CreateGrass position={[-62, 0.1, 4.25]} rotation={[0, 0, 0]} scale={1} />
+                     <CreateGrass position={[-45, 0.1, 4.75]} rotation={[0, 0, 0]} scale={0.75} />
 
                      <CreateSingleTree position={[3, 0, -5.75]} rotation={[0, 0, 0]} scale={0.55} />
                      <CreateSingleTree position={[6, 0, -5.75]} rotation={[0, 0, 0]} scale={0.45} />
 
-                     <CreateStreet position={[1, 0.05, 4]} rotation = {[-1.5, 0, 0]}/>
+                     <CreateStreet position={[1, 0.05, 4]} rotation={[-1.5, 0, 0]} />
 
-                     <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
+                     <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color='white' />
 
-                     <CreateExtrudeGeometry noObjects={10} />
+                     <CreateExtrudeGeometry noObjects={2} />
                      <CreateExtrudeGeometry02 noObjects={10} />
 
                      <PlanetWithHole position={[-1, 0.55, 4]} rotation={[-0.5, 0, 0]} />
                      <PlanetWithHole position={[-2.25, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[red[200], red[700], red[900]]} />
                      <PlanetWithHole position={[-3.5, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[green[200], green[700], green[900]]} />
-
                      <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='wood' />
                      <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='rust' />
 
@@ -264,17 +264,6 @@ export default function PartsTestground() {
                         ]} />
                         <meshStandardMaterial color={orange[400]} metalness={0.95} roughness={0.75} side={2} />
                      </mesh>
-
-
-                     {/* <TBeam position={[-0.5, 0.25, 6]} />
-                     <TBeamRusted position={[-1.25, 0.25, 6]} />
-                     <TBeamRusted2 position={[-2, 0.25, 6]} /> */}
-
-                     {/* effects = { color: blue[500], metalness: 0.95, roughness: 0.25 }  */}
-                     {/* <TBeam3 position={[0, 0.25, 0]}
-                        effects={{ color: blue[100], metalness: 0.95, roughness: 0.45 }}
-                     /> */}
-
 
                      <TBeam3 position={[0, 0.25, 0]} rotation={[0, 0, 0]}
                         // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
@@ -363,10 +352,7 @@ export default function PartsTestground() {
                       * position, rotation
                       * 
                      */}
-                     <Tube position={[3, 0.5, -6]} curve={catmullCurve} color={red[400]} />
-
-
-
+                     <Tube position={[3, 0.5, 2]} curve={catmullCurve} color={red[400]} />
 
                      <MetalSpring position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
                      <MetalSpring position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />

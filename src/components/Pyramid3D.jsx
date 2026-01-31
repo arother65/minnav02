@@ -150,26 +150,26 @@ export default function Pyramid3D() {
 
 
             {/* Wall components */}
-            <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
             {/* <Wall position={[5, 0, 0]} color='darkblue' ivTexture={'./flags/img1_.jpg'} /> */}
             {/* <Wall position={[5, 0, 0]} color='darkblue' /> */}
 
-            <Wall position={[6, 0, 0]} color='blue' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
-            <Wall position={[7, 0, 0]} color='lightblue' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 0, 0]} color='blue' ivTexture={'./textures/broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 0, 0]} color='lightblue' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 1, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
-            <Wall position={[6, 1, 0]} color='red' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
-            <Wall position={[7, 1, 0]} color='orange' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[5, 1, 0]} color='darkred' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 1, 0]} color='red' ivTexture={'./textures/broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 1, 0]} color='orange' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 2, 0]} color='darkgreen' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
-            <Wall position={[6, 2, 0]} color='green' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
-            <Wall position={[7, 2, 0]} color='lightgreen' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[5, 2, 0]} color='darkgreen' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 2, 0]} color='green' ivTexture={'./textures/broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 2, 0]} color='lightgreen' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[5, 3, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
-            <Wall position={[6, 3, 0]} color='beige' ivTexture={'./broken_brick_wall_diff_2k.jpg'} />
-            <Wall position={[7, 3, 0]} color='darkred' ivTexture={'./damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[5, 3, 0]} color='darkred' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
+            <Wall position={[6, 3, 0]} color='beige' ivTexture={'./textures/broken_brick_wall_diff_2k.jpg'} />
+            <Wall position={[7, 3, 0]} color='darkred' ivTexture={'./textures/damaged_plaster_diff_2k.jpg'} />
 
-            <Wall position={[-10, 0, 2]} color='darkblue' />   {/*ivTexture={'./damaged_plaster_diff_2k.jpg'} /> */}
+            <Wall position={[-10, 0, 2]} color='blue' />   {/*ivTexture={'./damaged_plaster_diff_2k.jpg'} /> */}
             <Wall position={[-10, 1, 2]} color='darkblue' />
 
             <Ground />
