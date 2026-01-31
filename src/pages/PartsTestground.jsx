@@ -16,6 +16,7 @@
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, RoundedBox, RoundedBoxGeometry, Text } from "@react-three/drei"
+import { useGLTF } from '@react-three/drei'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
@@ -42,16 +43,11 @@ import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/In
 import PlanetWithHole from '../components/PlanetWithHole'
 import { Model } from '../components/PlanetWithHole'
 
-
-
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
 
-
-import { Suspension } from '../components/truckparts/TriangleControlArm'
-import { Physics } from '@react-three/rapier'
-
-
+// import { Suspension } from '../components/truckparts/TriangleControlArm'
+// import { Physics } from '@react-three/rapier'
 // import Triangle from '../components/Triangle'
 
 
@@ -127,6 +123,8 @@ export default function PartsTestground() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
+   useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
+
    // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
    // const camoTextureColors = [orange[500], brown[600], orange[900]]
    // const camoTexture = createNatoCamoTexture(camoTextureColors)
@@ -199,7 +197,10 @@ export default function PartsTestground() {
 
                      {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
 
-                     <Model position={[2, 0, 5]} rotation={[0, 0, 0]}/>
+                     <Model position={[5, 0, 4]} rotation={[0, 0, 0]}/>
+                     <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale= {1.25}/>
+                     <Model position={[7, 0, 5]} rotation={[0, 0, 0]} scale= {2.25}/>
+
 
                      <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
 

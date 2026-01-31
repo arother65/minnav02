@@ -7,7 +7,7 @@
 
 //*
 import * as THREE from 'three'
-import { useTexture, useGLTF } from '@react-three/drei'
+import { useTexture, useGLTF, Clone } from '@react-three/drei'
 import { createNatoCamoTexture } from './NatoCamoPattern'
 import { orange } from "@mui/material/colors"
 
@@ -82,15 +82,20 @@ function createShapeSM() {
    return shape
 }  // createShapeSM()
 
-//* loads and retuns a model
-export function Model({position=[0, 0, 0], rotation=[0, 0, 0]}) {
+//* loads and returns a model
+export function Model({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const treeModel = useGLTF('/models/Pine Trees.glb')
-   //   console.log(treeModel)
+
+   treeModel.materials.Wood.metalness = 0
+   treeModel.materials.Wood.roughness = 0.65
+   treeModel.materials.Green.metalness = 0
+   treeModel.materials.Green.roughness = 0.65
 
    //  useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
-
-   return <primitive object={treeModel.scene} position={position} rotation={rotation} scale={1} />
+   
+   // return <Clone object={treeModel.scene} {...props} />
+   return <Clone object={treeModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // Model()
 
 //*
