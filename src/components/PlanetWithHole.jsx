@@ -93,10 +93,76 @@ export function Model({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 })
    treeModel.materials.Green.roughness = 0.65
 
    //  useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
-   
+
    // return <Clone object={treeModel.scene} {...props} />
    return <Clone object={treeModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // Model()
+
+//*
+export function CreateSingleTree({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const treeModel = useGLTF('/models/Tree.glb')
+
+   // treeModel.materials.Wood.metalness = 0
+   // treeModel.materials.Wood.roughness = 0.65
+   // treeModel.materials.Green.metalness = 0
+   // treeModel.materials.Green.roughness = 0.65
+
+   //  useGLTF.preload('/models/Tree.glb')  // usage not clear 
+
+   // return <Clone object={treeModel.scene} {...props} />
+   return <Clone object={treeModel.scene} position={position} rotation={rotation} scale={scale} />
+}  // CreateSingleTree()
+
+//*
+export function CreateGrass({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const grassModel = useGLTF('/models/Grass.glb')
+
+   // return <Clone object={treeModel.scene} {...props} />
+   return <Clone object={grassModel.scene} position={position} rotation={rotation} scale={scale} />
+}  // CreateGrass()
+
+//*
+export function CreateStreet({ position = [0, 0, 0], rotation = [0, 0, 0] }) {
+
+   let texture = useTexture('/textures/highway/highway-lanes_albedo.png')
+      // map: '/textures/highway/highway-lanes_albedo.png',
+      // normalMap: '/textures/highway/highway-lanes_ao.png',
+      // metalnessMap: '/textures/highway/highway-lanes_metallic.psd',  // errs 
+
+   texture.colorSpace = THREE.SRGBColorSpace
+   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+   texture.repeat.set(1, 1)
+
+   /*    , (texture) => {
+         texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+         texture.repeat.set(2, 2)
+      }
+    */
+
+   /* const textures = useTexture({
+     map: '/albedo.jpg',
+     normalMap: '/normal.jpg',
+     roughnessMap: '/roughness.jpg',
+     metalnessMap: '/metalness.jpg',
+   }) */
+
+   //
+   return (
+      <mesh position={position} rotation={rotation} receiveShadow>
+         <planeGeometry args={[1, 1, 10, 10]} />
+         <meshStandardMaterial
+            color="white"
+            roughness={0.65}
+            metalness={0.05}
+            map={texture}
+            side={THREE.DoubleSide}
+         />
+      </mesh>
+   )
+}  // CreateStreet()
+
 
 //*
 export default function PlanetWithHole({
@@ -148,4 +214,4 @@ export default function PlanetWithHole({
          />
       </mesh>
    )
-}
+}  // PlanetWithHole()

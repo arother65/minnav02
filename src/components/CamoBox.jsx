@@ -12,11 +12,6 @@ import { useMemo } from "react"
 //* main component
 export function CamoBox({ size = [2, 1.5, 2], position = [1, 1, 1], ivColors = []}) {
 
-   //* create texture here: errs 
-   // let texture = useTexture(createNatoCamoTexture())
-   // texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-   // texture.repeat.set(1, 1)
-
  const camoTexture = useMemo(() => createNatoCamoTexture(ivColors), []);
 
    return (

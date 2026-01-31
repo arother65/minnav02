@@ -41,7 +41,7 @@ import Tube from '../components/Tube'
 
 import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
 import PlanetWithHole from '../components/PlanetWithHole'
-import { Model } from '../components/PlanetWithHole'
+import { Model, CreateSingleTree, CreateGrass, CreateStreet } from '../components/PlanetWithHole'
 
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
@@ -124,6 +124,8 @@ export default function PartsTestground() {
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
    useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
+   useGLTF.preload('/models/Tree.glb')
+   useGLTF.preload('/models/Grass.glb')
 
    // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
    // const camoTextureColors = [orange[500], brown[600], orange[900]]
@@ -197,10 +199,16 @@ export default function PartsTestground() {
 
                      {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
 
-                     <Model position={[5, 0, 4]} rotation={[0, 0, 0]}/>
-                     <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale= {1.25}/>
-                     <Model position={[7, 0, 5]} rotation={[0, 0, 0]} scale= {2.25}/>
+                     <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
+                     <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
+                     <Model position={[7, 0, 5.25]} rotation={[0, 0, 0]} scale={2.25} />
 
+                     <CreateGrass position={[0, 0.5, 6]} rotation={[0, 0, 0]} scale={2.25} />
+
+                     <CreateSingleTree position={[3, 0, -5.75]} rotation={[0, 0, 0]} scale={0.55} />
+                     <CreateSingleTree position={[6, 0, -5.75]} rotation={[0, 0, 0]} scale={0.45} />
+
+                     <CreateStreet position={[1, 0.05, 4]} rotation = {[-1.5, 0, 0]}/>
 
                      <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color={yellow[500]} />
 
@@ -211,8 +219,8 @@ export default function PartsTestground() {
                      <PlanetWithHole position={[-2.25, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[red[200], red[700], red[900]]} />
                      <PlanetWithHole position={[-3.5, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[green[200], green[700], green[900]]} />
 
-                     <PlanetWithHole position={[-1.25, 0.55, -5]} rotation={[0, 0, 0]} texture='wood' />
-                     <PlanetWithHole position={[-2.5, 0.55, -5]} rotation={[0, 0, 0]} texture='rust' />
+                     <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='wood' />
+                     <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='rust' />
 
                      {/** Scheibe, frontseite, Glas */}
                      <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
