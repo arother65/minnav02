@@ -41,7 +41,7 @@ import Tube from '../components/Tube'
 
 import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
 import PlanetWithHole from '../components/PlanetWithHole'
-import { Model, CreateSingleTree, CreateGrass, CreateStreet } from '../components/PlanetWithHole'
+import { Model, CreateSingleTree, CreateGrass, CreateStreet, CreateTruck } from '../components/PlanetWithHole'
 
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
@@ -199,6 +199,9 @@ export default function PartsTestground() {
 
                      {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
 
+                     <CreateTruck position={[-5, 0.1, 4.5]} rotation={[0, 3.25, 0]} scale={0.15} />
+                     <CreateTruck position={[-4, 0.35, -4.5]} rotation={[0, 3.25, 0]} scale={0.5} />
+
                      <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                      <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
                      <Model position={[7, 0, 5.25]} rotation={[0, 0, 0]} scale={2.25} />
@@ -213,7 +216,7 @@ export default function PartsTestground() {
 
                      <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color='white' />
 
-                     <CreateExtrudeGeometry noObjects={2} />
+                     <CreateExtrudeGeometry noObjects={20} />
                      <CreateExtrudeGeometry02 noObjects={10} />
 
                      <PlanetWithHole position={[-1, 0.55, 4]} rotation={[-0.5, 0, 0]} />

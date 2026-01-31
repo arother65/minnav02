@@ -127,7 +127,7 @@ export function CreateSingleTree({ position = [0, 0, 0], rotation = [0, 0, 0], s
 export function CreateGrass({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const grassModel = useGLTF('/models/Grass.glb')
-   grassModel.materials.Grass.meatlness = 0
+   grassModel.materials.Grass.metalness = 0
    grassModel.materials.Grass.roughness = 0.8
 
    // return <Clone object={treeModel.scene} {...props} />
@@ -174,6 +174,30 @@ export function CreateStreet({ position = [0, 0, 0], rotation = [0, 0, 0] }) {
    )
 }  // CreateStreet()
 
+
+//*
+export function CreateTruck({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const truckModel = useGLTF('/models/Dump truck.glb')
+   // grassModel.materials.Grass.metalness = 0
+   // grassModel.materials.Grass.roughness = 0.8
+
+   truckModel.materials.F44336.metallness = 0.95
+   truckModel.materials.F44336.roughness  = 0.45
+   truckModel.materials.F44336.color = { isColor: true, r: 128, g: 0, b: 0 }  //?
+
+   truckModel.materials.FF5722.metallness = 0.95
+   truckModel.materials.FF5722.roughness  = 0.45
+
+   truckModel.materials.FF9800.metallness = 0.95
+   truckModel.materials.FF9800.roughness  = 0.45
+
+   truckModel.materials.FFEB3B.metallness = 0.95
+   truckModel.materials.FFEB3B.roughness  = 0.45
+
+   // return <Clone object={treeModel.scene} {...props} />
+   return <Clone color={'red'} object={truckModel.scene} position={position} rotation={rotation} scale={scale} />
+}  // CreateTruck()
 
 //*
 export default function PlanetWithHole({
