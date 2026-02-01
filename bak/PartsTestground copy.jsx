@@ -28,7 +28,7 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 /** ------------------------------------------------------------------------ */
 // import { CamoBox } from '../components/CamoBox'
 // import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckparts/TBeam'
+import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../src/components/truckparts/TBeam'
 
 
 // import MetalRack from '../components/MetalRack'
@@ -36,16 +36,16 @@ import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckpar
 // import GridFence3D from '../components/Fence'
 
 // import CSGTorus from '../components/CSGTorus'
-import MetalSpring from '../components/MetalSpring'
-import Tube from '../components/Tube'
+import MetalSpring from '../src/components/MetalSpring'
+import Tube from '../src/components/Tube'
 
-import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
-import PlanetWithHole from '../components/PlanetWithHole'
-import { Model, CreateSingleTree, CreateGrass, CreateStreet, CreateTruck } from '../components/PlanetWithHole'
-import Cannonball, { ShockwaveMetal } from '../components/CannonBall'
+import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../src/components/InstancedGeometry'
+import PlanetWithHole from '../src/components/PlanetWithHole'
+import { Model, CreateSingleTree, CreateGrass, CreateStreet, CreateTruck } from '../src/components/PlanetWithHole'
+import Cannonball from '../src/components/CannonBall'
 
-import ShockAbsorber from '../components/truckparts/ShockAbsorber'
-import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
+import ShockAbsorber from '../src/components/truckparts/ShockAbsorber'
+import { DIYControlArm } from '../src/components/truckparts/TriangleControlArm'
 
 // import { Suspension } from '../components/truckparts/TriangleControlArm'
 // import Triangle from '../components/Triangle'
@@ -163,7 +163,7 @@ function Ground() {
 
    return (
       <mesh ref={ref} receiveShadow>
-         <planeGeometry args={[20, 20]} />
+         <planeGeometry args={[100, 100]} />
          <meshStandardMaterial color="gray" />
       </mesh>
    )
@@ -183,6 +183,8 @@ export default function PartsTestground() {
    // const camoTextureColors01 = ['#bdb76b', '#b8860b', '#a52a2a']
    // #bdb76b darkkhaki; #b8860b darkgoldenrod; #a52a2a brown
    // const camoTexture01 = createNatoCamoTexture(camoTextureColors01)
+
+   const [explosions, setExplosions] = useState([])
 
    return (
       <>
@@ -251,21 +253,20 @@ export default function PartsTestground() {
                         <Cannonball
                            position={[2, 1, 3]}
                            velocity={[0, 0, 0]}
+                           onExplode={() => { setExplosions((e) => [...e, [0, 0, -5]]) }}
                         />
-
-                        <Text position={[2, 1.65, 3]} color={blue[500]} fontSize={0.25}>
-                           Cannonball with Physics, click to explode
+                        <Text position={[2, 1.65, 3]} color={blue[100]} fontSize={0.25}>
+                           Cannonball with Physics
                         </Text>
 
-                        {/* <ShockwaveMetal />, nicht sichtbar nach AKTUALISIEREN / refresh  */}
-                        {/* <ShockwaveMetal
-                           position={[0, 0., 0]}
-                           thickness={0.05}   // razor thin
-                           radius={0.25}
-                           speed={5}
-                           fade={3}
-                           onDone={() => console.log('shockwave finished')}
-                        /> */}
+                        {/* 
+                        {explosions.map((pos, i) => (
+                           <Explosion key={i} position={pos} />
+                        ))} */}
+
+                        <Text position={[0, 2.75, -1.75]} color={blue[900]} fontSize={0.25}>Group loaded from model</Text>
+                        <CreateTruck position={[-5, 0.1, 4.5]} rotation={[0, 3.25, 0]} scale={0.15} />
+                        <CreateTruck position={[-4, 0.35, -4.5]} rotation={[0, 3.25, 0]} scale={0.5} />
 
                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
@@ -277,10 +278,12 @@ export default function PartsTestground() {
                         <CreateSingleTree position={[3, 0, -5.75]} rotation={[0, 0, 0]} scale={0.55} />
                         <CreateSingleTree position={[6, 0, -5.75]} rotation={[0, 0, 0]} scale={0.45} />
 
+                        <CreateStreet position={[1, 0.05, 4]} rotation={[-1.5, 0, 0]} />
+
                         <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color='white' />
 
-                        {/* <CreateExtrudeGeometry noObjects={20} /> */}
-                        {/* <CreateExtrudeGeometry02 noObjects={10} /> */}
+                        <CreateExtrudeGeometry noObjects={20} />
+                        <CreateExtrudeGeometry02 noObjects={10} />
 
                         <PlanetWithHole position={[-1, 0.55, 6]} rotation={[-0.5, 0, 0]} />
                         <PlanetWithHole position={[-2.25, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[red[200], red[700], red[900]]} />
@@ -288,7 +291,136 @@ export default function PartsTestground() {
                         <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='wood' />
                         <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='rust' />
 
-                        {/* <Tube position={[3, 0.5, -3]} curve={catmullCurve} color={red[400]} /> */}
+                        {/** Scheibe, frontseite, Glas */}
+                        <mesh position={[0, 0.35, 0.5]} rotation={[1.605, 0, -0.35]} receiveShadow>
+                           <extrudeGeometry args={[
+                              shape,
+                              { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                           ]} />
+                           <meshStandardMaterial color={purple[400]} metalness={0.5} roughness={0.15} transparent opacity={0.85} />
+                        </mesh>
+
+                        {/** Front */}
+                        <mesh position={[0, 0.35, 1]} rotation={[1.605, 0, -0.35]} receiveShadow>
+                           <extrudeGeometry args={[
+                              shape,
+                              { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                           ]} />
+                           <meshStandardMaterial color={purple[300]} metalness={0.95} roughness={0.55} />
+                        </mesh>
+
+                        {/** Rear */}
+                        <mesh position={[0, 0.35, -0.75]} rotation={[1.6, 0, 2.75]} receiveShadow>
+                           <extrudeGeometry args={[
+                              shape,
+                              { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                           ]} />
+                           <meshStandardMaterial color={red[500]} metalness={0.95} roughness={0.55} side={2} />
+                        </mesh>
+
+                        {/** Test */}
+                        <mesh position={[0, 0.15, 1.75]} rotation={[0, 0, 0.8]} receiveShadow>
+                           <extrudeGeometry args={[
+                              shape02,
+                              { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                           ]} />
+                           <meshStandardMaterial color={green[400]} metalness={0.95} roughness={0.75} side={2} />
+                        </mesh>
+                        <mesh position={[0.5, 0.15, 1.75]} rotation={[0, 0, 0.8]} receiveShadow>
+                           <extrudeGeometry args={[
+                              shape02,
+                              { depth: 0.01, steps: 32, bevelEnabled: true, bevelSize: 0.15, bevelSegments: 8 }
+                           ]} />
+                           <meshStandardMaterial color={orange[400]} metalness={0.95} roughness={0.75} side={2} />
+                        </mesh>
+
+                        <TBeam3 position={[0, 0.25, 0]} rotation={[0, 0, 0]}
+                           // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
+                           effects={{ color: purple[300], metalness: 0.95, roughness: 0.55 }}
+                        />
+                        {/* tyre */}
+                        <mesh position={[0.15, 0.15, 0.43]} rotation={[0, 1.5, 0]} >
+                           <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                           <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                        </mesh>
+                        <mesh position={[0.15, 0.145, 0.15]} rotation={[0, 1.5, 0]} >
+                           <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                           <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                        </mesh>
+                        <mesh position={[0.15, 0.145, -0.15]} rotation={[0, 1.5, 0]} >
+                           <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                           <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                        </mesh>
+                        <mesh position={[0.15, 0.15, -0.43]} rotation={[0, 1.5, 0]} >
+                           <torusGeometry args={[0.075, 0.025, 32, 32]} />
+                           <meshStandardMaterial color={"grey"} metalness={1} roughness={0.65} />
+                        </mesh>
+
+
+                        <TBeam3 position={[-1, 0.25, 0]} rotation={[0, 0, 0]}
+                           // effects = { { color: yellow[500], metalness: 0.95, roughness: 0.25 }}
+                           effects={{ color: red[300], metalness: 0.95, roughness: 0.65 }}
+                        />
+                        {/** nozzle, front */}
+                        <mesh position={[-1, 0.15, 0.25]} receiveShadow>
+                           {/* Cylinder is vertical on Y axis */}
+                           <cylinderGeometry args={[0.1, 0.2, 0.3, 64]} />
+                           <meshStandardMaterial color={red[900]}
+                              metalness={1}
+                              roughness={0.65}
+                              envMapIntensity={0.75} />
+                        </mesh>
+                        {/** nozzle, rear */}
+                        <mesh position={[-1, 0.15, -0.25]} receiveShadow>
+                           {/* Cylinder is vertical on Y axis */}
+                           <cylinderGeometry args={[0.1, 0.2, 0.3, 64]} />
+                           <meshStandardMaterial color={red[900]}
+                              metalness={1}
+                              roughness={0.65}
+                              envMapIntensity={0.75} />
+                        </mesh>
+
+                        {/** noose */}
+                        <mesh position={[-1.015, 0.25, 0.6]} rotation={[1.5, 0, 0.05]} receiveShadow>
+                           {/* Cylinder is vertical on Y axis */}
+                           <cylinderGeometry args={[0.09, 0.2, 0.25, 64]} />
+                           <meshStandardMaterial color={orange[300]}
+                              metalness={0.95}
+                              roughness={0.65}
+                              envMapIntensity={0.75} />
+                        </mesh>
+                        {/** noose tip */}
+                        <mesh position={[-1.0235, 0.255, 0.78]} rotation={[1.55, 0, 0.05]} receiveShadow>
+                           {/* Cylinder is vertical on Y axis */}
+                           <cylinderGeometry args={[0.005, 0.09, 0.125, 64]} />
+                           <meshStandardMaterial color={yellow[300]}
+                              metalness={0.95}
+                              roughness={0.65}
+                              envMapIntensity={0.75} />
+                        </mesh>
+
+                        <mesh position={[0, 0.5, -0.25]} rotation={[1.6, 0, 0]}>
+                           { /** width, height, depth, segments, radius */}
+                           <RoundedBoxGeometry args={[0.4, 0.2, 0.025, 16, 1]} />
+                           <meshStandardMaterial color="red"
+                              metalness={1}
+                              roughness={0.45}
+                              envMapIntensity={1} />
+                        </mesh>
+
+                        {/** undefinierbar, aber eine interessante Form, front grill */}
+                        <MetalRod args={[0.25, 0.25, 0.15]} position={[0, 0.3, 0.5]}
+                           rotation={[0, 0, 0]}
+                           color={''} />
+                        <MetalRod args={[0.2, 0.15, 0.35]} position={[0, 0.65, -0.22]}
+                           rotation={[1.55, 0, 0]}
+                           color={''} />
+
+                        {/** Test GEOMETRIES; <torusGeometry args={[0.075, 0.025, 32, 32, Math.PI]} /> 
+                      * position, rotation
+                      * 
+                     */}
+                        <Tube position={[3, 0.5, -3]} curve={catmullCurve} color={red[400]} />
 
                         <MetalSpring position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
                         <MetalSpring position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
@@ -296,9 +428,29 @@ export default function PartsTestground() {
                         {/** Shockabsorber */}
                         <ShockAbsorber position={[0, -0.1, 0.5]} rotation={[0, 0, 0.55]} />
 
+                        {/* <TriangleControlArm color="blue" /> */}
+                        {/* <TriangleWithHoles position={[-2, 2, 0]} /> */}
+
                         {/** front wishbones */}
                         <DIYControlArm position={[0.35, 0.15, 1.5]} rotation={[0, 1.5, 0]} />
                         <DIYControlArm position={[-0.35, 0.15, 0]} rotation={[0, -1.5, 0]} />
+
+                        {/** undefinierbare objekte, erzeugt mit MetalRod */}
+                        {/* <group position={[0, 0, -4]} receiveShadow>
+                        <mesh position={[0.6, 0.25, 0]} receiveShadow>
+                           <sphereGeometry args={[0.1, 32, 32]} />
+                           <meshStandardMaterial color={red[500]} />
+                        </mesh>
+                        <MetalRod args={[0.35, 0.15, 0]}
+                           position={[0.5, 0.25, 0]}
+                           rotation={[0, 0, 0]}
+                           color={yellow[100]}
+                        />
+                        <mesh position={[0.4, 0.25, 0]} receiveShadow>
+                           <sphereGeometry args={[0.1, 32, 32]} />
+                           <meshStandardMaterial color={orange[500]} />
+                        </mesh>
+                     </group> */}
 
                         {/** some parts / group later */}
                         <group position={[0, 0.25, -10]}>
@@ -330,6 +482,18 @@ export default function PartsTestground() {
                         </group>
 
 
+                        {/* <BallJointSimple /> */}
+
+                        {/* <Physics gravity={[0, -9.81, 0]} debug>
+                        <Suspension />
+                     </Physics> */}
+
+                        {/* <MetalRack position={[1, 0, 3]} color={blue[100]}/>
+                     <Fence position={[0, 0, 7]} color={blue[500]}/>
+                     <GridFence3D position={[1, 0, 3]} color='red' /> */}
+
+                        {/* <Triangle position={[-4, 0.65, 3]}/> */}
+
                         {/* Ground */}
                         {/* <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                            <planeGeometry args={[20, 20]} />
@@ -341,8 +505,8 @@ export default function PartsTestground() {
                            />
                         </mesh> */}
                         <Ground />
-
                      </Physics>
+
                      <OrbitControls />
                   </Canvas>
                </Box>
