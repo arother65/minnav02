@@ -295,6 +295,14 @@ export default function AppBarTop() {
             NodeBox
           </MenuItem>
 
+          <MenuItem
+            sx={menuItemSx}
+            onClick={() => {
+              fnNavigate('/Colliders')
+            }}>
+            Colliders
+          </MenuItem>
+
           {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {

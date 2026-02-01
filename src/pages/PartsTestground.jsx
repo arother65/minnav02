@@ -250,8 +250,8 @@ export default function PartsTestground() {
                      {/** Ball */}
                      <Ball position={[-2, 0.5, 0]} velocity={[1, 0, 0]} color={red[500]}/>
                      <Ball position={[2, 0.5, 0]}  velocity={[-1, 0, 0]} color={red[900]}/>
-                     <Ball position={[-3, 0.5, 0]} velocity={[1, 0, 0]} color={orange[500]}/>
-                     <Ball position={[3, 0.5, 0]}  velocity={[-1, 0, 0]} color={blue[900]}/>
+                     <Ball position={[-3, 0.5, 1]} velocity={[1, 0, 0]} color={orange[500]}/>
+                     <Ball position={[3, 0.5, 1]}  velocity={[-1, 0, 0]} color={blue[900]}/>
 
 
                      {/* <Cannonball /> */}

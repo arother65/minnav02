@@ -34,6 +34,7 @@ import ThreeShapes from './pages/ThreeShapes'
 import LegoTestground from './pages/LegoTestground'
 import Mario3D from './pages/Mario3D'
 import NodeBox from './pages/NodeBox'
+import Colliders from './pages/Colliders'
 
 import About from './pages/About'
 import NotFound404 from './pages/404'
@@ -70,6 +71,7 @@ export default function AppRouter() {
         <Route path="/Mario3D" element={<Mario3D />} />
         <Route path="/Puzzle3D" element={<Puzzle3D />} />
         <Route path="/NodeBox" element={<NodeBox />} />
+        <Route path="/Colliders" element={<Colliders />} />
 
         <Route path="/about" element={<About />} />
 

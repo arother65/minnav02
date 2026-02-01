@@ -1,0 +1,199 @@
+/**
+ * 
+ *  Stand: 01.02.2026
+ * 
+ */
+
+/** ------------------------------------------------------------------------ */
+//    Imports
+/** ------------------------------------------------------------------------ */
+
+// import * as THREE from 'three'
+// import { useState } from "react"
+// import { useMemo } from "react" 
+// import { useFrame } from "@react-three/fiber" 
+
+import { Canvas } from "@react-three/fiber"
+import { OrbitControls, Text } from "@react-three/drei"
+// import { usePlane } from '@react-three/cannon'
+
+import { useNavigate } from 'react-router-dom'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/material'
+import HomeIcon from '@mui/icons-material/Home'
+import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
+import { CuboidCollider } from "@react-three/rapier"
+
+//* 
+import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
+
+/** ------------------------------------------------------------------------ */
+//    Imports for customer components
+/** ------------------------------------------------------------------------ */
+
+
+/** ------------------------------------------------------------------------ */
+//    Local declarations / components
+/** ------------------------------------------------------------------------ */
+function Ground({ onClick }) {
+   return (
+      <RigidBody type="fixed" colliders="cuboid">
+         <mesh
+            position={[0, -1, 0]}
+            receiveShadow
+
+         // onClick={(e) => {
+         //    e.stopPropagation()
+         //    alert('in fn Ground')
+         //    // onClick(e.point)
+         // }}
+         >
+            <boxGeometry args={[10, 1, 10]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+//*
+function ColliderBox({ position }) {
+   return (
+      <RigidBody colliders="cuboid" position={position}>
+         <mesh>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color="orange" />
+         </mesh>
+      </RigidBody>
+   )
+}  // ColliderBox()
+
+//*
+function Ball({ position = [0, 3, 0], color = 'green' }) {
+   return (
+      <RigidBody
+         colliders={false}
+         position={position}
+         mass={1}
+         linearDamping={0}
+         angularDamping={0}
+         ccd
+      >
+         <BallCollider args={[0.5]} restitution={0.9} friction={0.1} />
+
+         <mesh castShadow>
+            <sphereGeometry args={[0.5, 32, 32]} />
+            <meshStandardMaterial color={color} />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+//*
+function Floor() {
+
+   return (
+      <RigidBody type="fixed" colliders={false}>
+         <CuboidCollider
+            args={[5, 0.5, 5]}
+            restitution={0.8}
+            friction={0.2}
+         />
+
+         <mesh position={[0, -1, 0]} receiveShadow>
+            <boxGeometry args={[10, 1, 10]} />
+            <meshStandardMaterial color="lightblue" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+
+//* Colliders page component
+export default function Colliders() {
+
+   const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
+
+   return (
+      <>
+         <header>
+            <AppBar
+               /* className='App-bar' */ // no effect
+               sx={{ backgroundColor: 'rgba(40, 45, 60, 0.75)', position: 'fixed' }}
+            >
+               <Toolbar>
+                  <Tooltip title='Home' arrow sx={{}}>
+                     <IconButton
+                        id="idBtnNavHome"
+                        size="medium"
+                        edge="start"
+                        aria-label="nav to home"
+                        sx={{ mr: 2 }}
+                        onClick={() => { fnNavigate('/') }}
+                     >
+                        <HomeIcon sx={{ color: 'green' }} />
+                     </IconButton>
+                  </Tooltip>
+               </Toolbar>
+            </AppBar>
+         </header>
+
+         <main className="App-main">
+            <div className="row mt-5">
+
+               {/* COl with buttons controlling the scene */}
+               <Box orientation='col' className='m-1 mt-2 bg-dark rounded shadow'
+                  sx={{ width: '14%', border: '1px solid green', mt: 2 }}
+               >
+                  Steuerelemente
+                  <Card className='m-1 rounded shadow'>
+                     <Button variant="outlined"
+                        color="success"
+                        className='m-1'
+                        onClick={() => {
+                        }}>
+                        inactive
+                     </Button>
+                     <Button variant="outlined" color="warning" className='m-1'
+                        onClick={() => {
+                        }}>
+                        inactive
+                     </Button>
+                  </Card>
+               </Box>
+
+               {/* COl with the scene */}
+               <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
+                  sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
+               >
+                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 55 }}
+                     style={{
+                        width: "85vw",
+                        height: "88vh",
+                        display: "block"
+                     }}>
+                     <ambientLight intensity={0.95} />
+                     <directionalLight position={[0, 5, 5]} castShadow />
+
+                     {/* <Physics gravity={[0, -9.81, 0]}> */}
+                     {/* <ColliderBox position={[0, 2, 0]} /> */}
+                     {/* Ground */}
+                     {/* <Ground /> */}
+                     {/* </Physics> */}
+
+                     <Physics gravity={[0, -9.81, 0]} debug>
+                        
+                        <Ball position={[0, 4, 0]} color={red[500]} />
+                        <Ball position={[1, 6, 0]} color={red[800]} />
+                        <Ball position={[-1, 8, 0]} color={orange[600]} />
+
+                        <Ball position={[0, 9, 0.25]} color={green[500]} />
+                        <Floor />
+                     </Physics>
+
+                     <OrbitControls />
+                  </Canvas>
+               </Box>
+            </div>
+         </main>
+      </>
+   )
+}  // PartsTestground()
