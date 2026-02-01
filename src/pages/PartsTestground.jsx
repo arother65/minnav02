@@ -43,6 +43,7 @@ import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/In
 import PlanetWithHole from '../components/PlanetWithHole'
 import { Model, CreateSingleTree, CreateGrass, CreateStreet, CreateTruck } from '../components/PlanetWithHole'
 import Cannonball, { ShockwaveMetal } from '../components/CannonBall'
+import Ball from '../components/Ball'
 
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
@@ -246,6 +247,13 @@ export default function PartsTestground() {
                      <ambientLight intensity={0.95} />
                      <directionalLight position={[0, 5, 5]} castShadow />
 
+                     {/** Ball */}
+                     <Ball position={[-2, 0.5, 0]} velocity={[1, 0, 0]} color={red[500]}/>
+                     <Ball position={[2, 0.5, 0]}  velocity={[-1, 0, 0]} color={red[900]}/>
+                     <Ball position={[-3, 0.5, 0]} velocity={[1, 0, 0]} color={orange[500]}/>
+                     <Ball position={[3, 0.5, 0]}  velocity={[-1, 0, 0]} color={blue[900]}/>
+
+
                      {/* <Cannonball /> */}
                      <Physics gravity={[0, 0, 0]} allowSleep>
                         <Cannonball position={[0, 1, 1]} velocity={[0, 0, 0]} />
@@ -329,6 +337,7 @@ export default function PartsTestground() {
                         <Ground />
 
                      </Physics>
+
                      <OrbitControls />
                   </Canvas>
                </Box>
