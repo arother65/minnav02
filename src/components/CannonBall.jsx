@@ -27,6 +27,7 @@ export function ShockwaveMetal({
       if (!mesh.current) return
 
       mesh.current.scale.x += delta * speed
+      mesh.current.scale.y += delta * speed
       mesh.current.scale.z += delta * speed
 
       if (material.current) {
@@ -35,33 +36,37 @@ export function ShockwaveMetal({
             onDone?.()
          }
       }
-   })
+   })  // useFrame()
 
    return (
-      <mesh
-         ref={mesh}
-         position={position}
-         rotation={[-Math.PI / 2, 0, 0]}
-         scale={0.1}
-      >
-         <torusGeometry
-            args={[
-               radius,      // ring radius
-               thickness,   // tube radius = metal thickness
-               8,           // radial segments (low = sharp edge)
-               64,          // tubular segments
-            ]}
-         />
-         <meshStandardMaterial
-            ref={material}
-            color="#bbbbbb"
-            metalness={0.95}
-            roughness={0.45}
-            transparent
-            opacity={0.95}
-            side={THREE.DoubleSide}
-         />
-      </mesh>
+      <group>
+         <mesh
+            ref={mesh}
+            position={position}
+            rotation={[-Math.PI / 2, 0, 0]}
+            scale={0.1}
+         >
+            <torusGeometry
+               args={[
+                  radius,      // ring radius
+                  thickness,   // tube radius = metal thickness
+                  16,           // radial segments (low = sharp edge)
+                  64,          // tubular segments
+               ]}
+            />
+
+            {/* <torusGeometry args={[0.25, 0.15, 16, 64]}/> */}
+            <meshStandardMaterial
+               ref={material}
+               color="red"
+               metalness={0.95}
+               roughness={0.45}
+               transparent
+               opacity={0.95}
+               side={THREE.DoubleSide}
+            />
+         </mesh>
+      </group>
    )
 }  // ShockwaveMetal()
 
@@ -95,7 +100,7 @@ export default function Cannonball({ position, velocity }) {
          }
          {exploded &&
             <>
-               <ShockwaveMetal />
+               <ShockwaveMetal position={[0, 0, 0]} speed={10} />
             </>
          }
       </mesh>

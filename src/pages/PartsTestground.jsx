@@ -248,24 +248,10 @@ export default function PartsTestground() {
 
                      {/* <Cannonball /> */}
                      <Physics gravity={[0, 0, 0]} allowSleep>
-                        <Cannonball
-                           position={[2, 1, 3]}
-                           velocity={[0, 0, 0]}
-                        />
-
-                        <Text position={[2, 1.65, 3]} color={blue[500]} fontSize={0.25}>
+                        <Cannonball position={[0, 1, 1]} velocity={[0, 0, 0]} />
+                        <Text position={[0, 1.65, 1]} color={blue[500]} fontSize={0.25}>
                            Cannonball with Physics, click to explode
                         </Text>
-
-                        {/* <ShockwaveMetal />, nicht sichtbar nach AKTUALISIEREN / refresh  */}
-                        {/* <ShockwaveMetal
-                           position={[0, 0., 0]}
-                           thickness={0.05}   // razor thin
-                           radius={0.25}
-                           speed={5}
-                           fade={3}
-                           onDone={() => console.log('shockwave finished')}
-                        /> */}
 
                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
