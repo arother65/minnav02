@@ -19,22 +19,22 @@ export function ShockwaveMetal({
    speed = 5,
    fade = 2,
    onDone,
+   color = 'red'
 }) {
    const mesh = useRef()
    const material = useRef()
 
-   useFrame((_, delta) => {
+   useFrame((_, ivdelta) => {
       if (!mesh.current) return
 
-      mesh.current.scale.x += delta * speed
-      mesh.current.scale.y += delta * speed
-      mesh.current.scale.z += delta * speed
+      mesh.current.scale.x += ivdelta * speed
+      mesh.current.scale.y += ivdelta * speed
+      mesh.current.scale.z += ivdelta * speed
 
       if (material.current) {
-         material.current.opacity -= delta * fade
-         if (material.current.opacity <= 0) {
-            onDone?.()
-         }
+         material.current.opacity -= ivdelta * fade
+
+         if (material.current.opacity <= 0) { onDone?.() }
       }
    })  // useFrame()
 
@@ -50,7 +50,7 @@ export function ShockwaveMetal({
                args={[
                   radius,      // ring radius
                   thickness,   // tube radius = metal thickness
-                  16,           // radial segments (low = sharp edge)
+                  32,           // radial segments (low = sharp edge)
                   64,          // tubular segments
                ]}
             />
@@ -58,7 +58,7 @@ export function ShockwaveMetal({
             {/* <torusGeometry args={[0.25, 0.15, 16, 64]}/> */}
             <meshStandardMaterial
                ref={material}
-               color="red"
+               color={color}
                metalness={0.95}
                roughness={0.45}
                transparent
@@ -94,13 +94,15 @@ export default function Cannonball({ position, velocity }) {
       >
          {!exploded &&
             <>
-               <sphereGeometry args={[0.2, 16, 16]} />
-               <meshStandardMaterial color="black" />
+               <sphereGeometry args={[0.25, 16, 16]} />
+               <meshStandardMaterial color={'grey'} />
             </>
          }
          {exploded &&
             <>
-               <ShockwaveMetal position={[0, 0, 0]} speed={10} />
+               <ShockwaveMetal position={[0, 0, 0]}    speed={1} color={'red'}/>
+               <ShockwaveMetal position={[-0.5, -0.25, 0]} speed={1} color={'orange'}/>
+               <ShockwaveMetal position={[0.5, 0.25, 0]}  speed={1} color={'yellow'}/>
             </>
          }
       </mesh>

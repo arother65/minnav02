@@ -12,7 +12,7 @@ import * as THREE from 'three'
 
 import { Physics, RigidBody } from '@react-three/rapier'
 
-// local functions
+//* local functions
 function Fragment({ velocity, color }) {
   const ref = useRef()
 
@@ -66,30 +66,6 @@ function ExplodingCannonBall({ position, color, noFragments }) {
   )
 }  // ExplodingCannonBall()
 
-
-// main component
-export function Explosions() {
-  return (
-    <div className="w-full h-screen">
-      <Canvas camera={{ position: [4, 3, 4], fov: 60 }}>
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 5, 5]} />
-
-        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50} />
-        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120} />
-        <ExplodingCannonBall position={[-15, -1, 0]} color="darkblue" noFragments={10} />
-
-        <OrbitControls />
-      </Canvas>
-    </div>
-  )
-}  // Explosions()
-
-/**
- * 
- * @returns 
- */
-
 function Brick({ position }) {
   return (
     <RigidBody
@@ -105,7 +81,7 @@ function Brick({ position }) {
       </mesh>
     </RigidBody>
   )
-}
+}  // Brick()
 
 function DestructibleWall() {
   const bricks = []
@@ -123,7 +99,7 @@ function DestructibleWall() {
     }
   }
   return <>{bricks}</>
-}
+}  // DestructibleWall()
 
 function CannonBall() {
   const [fired, setFired] = useState(false)
@@ -145,7 +121,7 @@ function CannonBall() {
       </mesh>
     </RigidBody>
   )
-}
+}  // CannonBall()
 
 function Ground() {
   return (
@@ -156,9 +132,27 @@ function Ground() {
       </mesh>
     </RigidBody>
   )
-}
+}  // Ground()
 
-//
+//* main component
+export function Explosions() {
+  return (
+    <div className="w-full h-screen">
+      <Canvas camera={{ position: [4, 3, 4], fov: 60 }}>
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 5, 5]} />
+
+        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50} />
+        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120} />
+        <ExplodingCannonBall position={[-15, -1, 0]} color="darkblue" noFragments={10} />
+
+        <OrbitControls />
+      </Canvas>
+    </div>
+  )
+}  // Explosions()
+
+//*
 export function ExplodingWall() {
 
   return (
