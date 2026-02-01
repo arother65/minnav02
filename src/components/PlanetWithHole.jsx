@@ -9,7 +9,7 @@
 import * as THREE from 'three'
 import { useTexture, useGLTF, Clone } from '@react-three/drei'
 import { createNatoCamoTexture } from './NatoCamoPattern'
-import { orange } from "@mui/material/colors"
+import { blue, orange } from "@mui/material/colors"
 
 //* creates a mid-size square
 function createShapeMD() {
@@ -227,7 +227,7 @@ export default function PlanetWithHole({
          break;
       default:
          if (!textureColors) {
-            texture = createNatoCamoTexture([orange[200], orange[400], orange[600]])
+            texture = createNatoCamoTexture([blue[200], blue[400], blue[600]])
          } else {
             texture = createNatoCamoTexture(textureColors)
          }

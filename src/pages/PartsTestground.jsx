@@ -98,12 +98,12 @@ shape02.bezierCurveTo(0.01, 0.01, 0.01, 0.01)
 
 shape02.closePath()
 
-function MetalRod({ args, position, rotation, color = 'white' }) {
+function MetalRod({ args, radius = 0.15, position, rotation, color = 'white' }) {
    return (
       <mesh position={position} rotation={rotation}>
          <RoundedBox
             args={args}   // width, height, depth
-            radius={0.15}         // corner radius
+            radius={radius}         // corner radius
             smoothness={32}        // segments
          >
             <meshStandardMaterial
@@ -197,8 +197,7 @@ export default function PartsTestground() {
                      <ambientLight intensity={0.95} />
                      <directionalLight position={[0, 5, 5]} castShadow />
 
-                     {/* <Text position={[0, 1, -1]} color={red[400]} fontSize={0.25}>MUI colors appear darker than defined</Text> */}
-
+                     <Text position={[0, 2.75, -1.75]} color={blue[900]} fontSize={0.25}>Group loaded from model</Text>
                      <CreateTruck position={[-5, 0.1, 4.5]} rotation={[0, 3.25, 0]} scale={0.15} />
                      <CreateTruck position={[-4, 0.35, -4.5]} rotation={[0, 3.25, 0]} scale={0.5} />
 
@@ -219,9 +218,9 @@ export default function PartsTestground() {
                      <CreateExtrudeGeometry noObjects={20} />
                      <CreateExtrudeGeometry02 noObjects={10} />
 
-                     <PlanetWithHole position={[-1, 0.55, 4]} rotation={[-0.5, 0, 0]} />
+                     <PlanetWithHole position={[-1, 0.55, 6]} rotation={[-0.5, 0, 0]} />
                      <PlanetWithHole position={[-2.25, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[red[200], red[700], red[900]]} />
-                     <PlanetWithHole position={[-3.5, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[green[200], green[700], green[900]]} />
+                     <PlanetWithHole position={[-3.5, 0.55, 4]} rotation={[-0.75, 0, 0]} textureColors={[orange[200], red[700], yellow[900]]} />
                      <PlanetWithHole position={[-1.25, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='wood' />
                      <PlanetWithHole position={[-2.5, 0.55, 5]} rotation={[-0.5, 0, 0]} texture='rust' />
 
@@ -336,7 +335,6 @@ export default function PartsTestground() {
                      <mesh position={[0, 0.5, -0.25]} rotation={[1.6, 0, 0]}>
                         { /** width, height, depth, segments, radius */}
                         <RoundedBoxGeometry args={[0.4, 0.2, 0.025, 16, 1]} />
-
                         <meshStandardMaterial color="red"
                            metalness={1}
                            roughness={0.45}
@@ -355,7 +353,7 @@ export default function PartsTestground() {
                       * position, rotation
                       * 
                      */}
-                     <Tube position={[3, 0.5, 2]} curve={catmullCurve} color={red[400]} />
+                     <Tube position={[3, 0.5, -3]} curve={catmullCurve} color={red[400]} />
 
                      <MetalSpring position={[0.25, 0, 0]} rotation={[0, 0, 0]} color={red[500]} />
                      <MetalSpring position={[0.35, 0, 0]} rotation={[0, 0, 0]} color={orange[500]} />
@@ -387,11 +385,35 @@ export default function PartsTestground() {
                         </mesh>
                      </group> */}
 
-                     <MetalRod args={[0.5, 0.2, 0.05]}
-                        position={[1, 0.3, 1]}
-                        rotation={[0, 0, 0]}
-                        color={yellow[500]}
-                     />
+                     {/** some parts / group later */}
+                     <group position={[0, 0.25, -10]}>
+                        <MetalRod args={[1, 1.75, 0.15]}
+                           position={[2, 0.85, 7]}
+                           rotation={[0, 0, 1.585]}
+                           color={yellow[200]}
+                        />
+                        <MetalRod args={[1, 1.75, 0.15]}
+                           position={[-0.25, 0.85, 7.05]}
+                           rotation={[0, 0, 1.585]}
+                           color={yellow[200]}
+                        />
+                        <MetalRod args={[1, 0.5, 0.15]}
+                           position={[-1.35, 0.825, 7.05]}
+                           rotation={[0, 0, 1.585]}
+                           color={orange[500]}
+                        />
+                        <MetalRod args={[1, 0.5, 0.15]}
+                           position={[3.15, 0.825, 7]}
+                           rotation={[0, 0, 1.585]}
+                           color={orange[500]}
+                        />
+                        <MetalRod args={[0.05, 0.05, 5.5]}
+                           position={[0.95, 0.3, 7]}
+                           rotation={[0, 1.6, 0]}
+                           color={grey[300]}
+                        />
+                     </group>
+
 
                      {/* <BallJointSimple /> */}
 
