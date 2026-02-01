@@ -287,6 +287,14 @@ export default function AppBarTop() {
             Puzzle3D
           </MenuItem>
 
+          <MenuItem
+            sx={menuItemSx}
+            onClick={() => {
+              fnNavigate('/NodeBox')
+            }}>
+            NodeBox
+          </MenuItem>
+
           {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
