@@ -138,6 +138,17 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
    )
 }
 
+//*
+function CreateMassBalls({ noBalls = 10, color=red[500] }) {
+   
+   return (
+      Array.from({ length: noBalls }).map((_, index) => (
+         <mesh key={index}>
+            <Ball position={[( 0.5 + index / 100), 6 + (index /2), 1 / 2]} color={color} restitution={0.75} />
+         </mesh>
+      ))
+   )
+}  // CreateMassBalls()
 
 //* Colliders page component
 export default function Colliders() {
@@ -220,10 +231,18 @@ export default function Colliders() {
                         <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} />
 
                         <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} />
-                        <Ball position={[1, 9, 0.25]} color={blue[900]} restitution={0.9} />
+                        <Ball position={[0, 8, 0.25]} color={blue[900]} restitution={0.9} />
 
                         <Ball position={[3, 5, 0.25]} color={green[400]} restitution={0.75} />
                         <Ball position={[3.25, 5, 0.25]} color={green[600]} restitution={0.85} />
+
+                        <Ball position={[-0.25, 6, 1]} color={yellow[400]} restitution={0.5} />
+                        <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} />
+
+                        <CreateMassBalls noBalls={1000}/>
+
+                        {/* <Ball position={[-0.5, 6, 1]} color={grey[400]} restitution={0.5} /> */}
+                        {/* <Ball position={[0.5, 6, 1]} color={grey[600]} restitution={0.5} /> */}
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 2, 3]} size={[0.25, 5, 3]} color={blue[200]} />
