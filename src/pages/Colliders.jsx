@@ -109,15 +109,28 @@ function Floor() {
 //*
 function Wall({ position, size }) {
    return (
-      <RigidBody type="fixed" colliders={false}>
+      <RigidBody type="fixed"
+         position={position}
+         rotation={[1.55, 0, 1.55]}
+         colliders={false}
+      >
          <CuboidCollider
-            args={size}
-            position={position}
+            args={[
+               size[0] * 0.5,
+               size[1] * 0.5,
+               size[2] * 0.5,
+            ]}
             restitution={0.9}
-            friction={0.5}
+            friction={0}
          />
-         <mesh position={[0, 1.25, 4.5]} rotation={[1.55, 0, 1.55]} receiveShadow>
-            <boxGeometry args={[1, 6, 1]} />
+         <mesh receiveShadow>
+            <boxGeometry
+               position={position}
+               args={[
+                  size[0] * 1,
+                  size[1] * 1,
+                  size[2] * 1,
+               ]} />
             <meshStandardMaterial color={blue[300]} />
          </mesh>
       </RigidBody>
@@ -208,7 +221,8 @@ export default function Colliders() {
                         <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} />
                         <Ball position={[1, 7, 0.25]} color={blue[900]} restitution={0.5} />
 
-                        <Wall position={[-1, 0, 0]} size={[0.2, 5, 0.2]} />
+                        {/** size wird in WALL für Collider und Geometry verwendet */}
+                        <Wall position={[0, 1, 0]} size={[0.5, 5, 2]} />
 
                         <Floor />
                      </Physics>
