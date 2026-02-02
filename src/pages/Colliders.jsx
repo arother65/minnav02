@@ -10,9 +10,10 @@
 
 // import * as THREE from 'three'
 // import { useState } from "react"
-// import { useMemo } from "react" 
-// import { useFrame } from "@react-three/fiber" 
+import { useMemo } from "react"
 
+// import { useFrame } from "@react-three/fiber" 
+import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Text } from "@react-three/drei"
 // import { usePlane } from '@react-three/cannon'
@@ -85,7 +86,7 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
          </mesh>
       </RigidBody>
    )
-}
+}  // Ball()
 
 //*
 function Floor() {
@@ -139,15 +140,44 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
 }
 
 //*
-function CreateMassBalls({ noBalls = 10, color=red[500] }) {
-   
-   return (
-      Array.from({ length: noBalls }).map((_, index) => (
-         <mesh key={index}>
-            <Ball position={[( 0.5 + index / 100), 6 + (index /2), 1 / 2]} color={color} restitution={0.75} />
-         </mesh>
-      ))
-   )
+function getRandomColor() {
+
+   // returns a randon color of [blue, brown, green, grey, orange, purple, red, yellow], length 8
+   const arr = [blue, brown, green, grey, orange, purple, red, yellow]
+   const randomIndex = Math.floor(Math.random() * arr.length)
+   const randomItem = arr[randomIndex]
+
+   return randomItem[500]
+}  // getRandomColor()
+
+//*
+function CreateMassBalls({ noBalls = 10, color = red[500] }) {
+
+   // useMemo() for better performance with big noBalls
+
+   // <sphereGeometry args={[0.25, 32, 32]} />
+   const geometry = useMemo(() => new THREE.SphereGeometry(0.2, 32, 32), [])
+
+   const material = useMemo(() =>
+      new THREE.MeshStandardMaterial({
+         color: getRandomColor(),
+         metalness: 0,
+         roughness: 0.25
+      }), [])
+
+   //
+   return Array.from({ length: noBalls }).map((_, index) => (
+      <RigidBody
+         key={index}
+         colliders={false}
+         position={[0.5 + index / noBalls, 6 + index / 2, 1]}
+         mass={2}
+      >
+         <BallCollider args={[0.25]} restitution={0.3} friction={0.8} />
+
+         <mesh geometry={geometry} material={material} castShadow />
+      </RigidBody>
+   ))
 }  // CreateMassBalls()
 
 //* Colliders page component
@@ -239,7 +269,8 @@ export default function Colliders() {
                         <Ball position={[-0.25, 6, 1]} color={yellow[400]} restitution={0.5} />
                         <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} />
 
-                        <CreateMassBalls noBalls={1000}/>
+                        {/** ab 5.000 wird es langsam... */}
+                        <CreateMassBalls noBalls={2000} />
 
                         {/* <Ball position={[-0.5, 6, 1]} color={grey[400]} restitution={0.5} /> */}
                         {/* <Ball position={[0.5, 6, 1]} color={grey[600]} restitution={0.5} /> */}
