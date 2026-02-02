@@ -67,7 +67,7 @@ function ColliderBox({ position }) {
 }  // ColliderBox()
 
 //*
-function Ball({ position = [0, 3, 0], color = 'green' }) {
+function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
    return (
       <RigidBody
          colliders={false}
@@ -77,10 +77,10 @@ function Ball({ position = [0, 3, 0], color = 'green' }) {
          angularDamping={0}
          ccd
       >
-         <BallCollider args={[0.5]} restitution={0.9} friction={0.1} />
+         <BallCollider args={[0.5]} restitution={0.75} friction={0.1} />
 
          <mesh castShadow>
-            <sphereGeometry args={[0.5, 32, 32]} />
+            <sphereGeometry args={[0.25, 32, 32]} />
             <meshStandardMaterial color={color} />
          </mesh>
       </RigidBody>
@@ -94,13 +94,31 @@ function Floor() {
       <RigidBody type="fixed" colliders={false}>
          <CuboidCollider
             args={[5, 0.5, 5]}
-            restitution={0.8}
+            restitution={0.95}
             friction={0.2}
          />
 
-         <mesh position={[0, -1, 0]} receiveShadow>
-            <boxGeometry args={[10, 1, 10]} />
+         <mesh position={[0, 0.35, 0]} rotation={[0, 0, 0]} receiveShadow>
+            <boxGeometry args={[10, 0.75, 10]} />
             <meshStandardMaterial color="lightblue" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+//*
+function Wall({ position, size }) {
+   return (
+      <RigidBody type="fixed" colliders={false}>
+         <CuboidCollider
+            args={size}
+            position={position}
+            restitution={0.9}
+            friction={0.5}
+         />
+         <mesh position={[0, 1.25, 4.5]} rotation={[1.55, 0, 1.55]} receiveShadow>
+            <boxGeometry args={[1, 6, 1]} />
+            <meshStandardMaterial color={blue[300]} />
          </mesh>
       </RigidBody>
    )
@@ -164,13 +182,13 @@ export default function Colliders() {
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
                   sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
-                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 55 }}
+                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 75 }}
                      style={{
                         width: "85vw",
                         height: "88vh",
                         display: "block"
                      }}>
-                     <ambientLight intensity={0.95} />
+                     <ambientLight intensity={0.85} />
                      <directionalLight position={[0, 5, 5]} castShadow />
 
                      {/* <Physics gravity={[0, -9.81, 0]}> */}
@@ -179,13 +197,19 @@ export default function Colliders() {
                      {/* <Ground /> */}
                      {/* </Physics> */}
 
-                     <Physics gravity={[0, -9.81, 0]} debug>
-                        
-                        <Ball position={[0, 4, 0]} color={red[500]} />
-                        <Ball position={[1, 6, 0]} color={red[800]} />
-                        <Ball position={[-1, 8, 0]} color={orange[600]} />
+                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 9, 0.25]} color={green[500]} />
+                        <Ball position={[0, 4, 0]} color={red[500]} restitution={0.5} />
+                        <Ball position={[0, 6, 1]} color={red[900]} restitution={1} />
+
+                        <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} />
+                        <Ball position={[0, 6, 0.25]} color={green[500]} restitution={0.1} />
+
+                        <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} />
+                        <Ball position={[1, 7, 0.25]} color={blue[900]} restitution={0.5} />
+
+                        <Wall position={[-1, 0, 0]} size={[0.2, 5, 0.2]} />
+
                         <Floor />
                      </Physics>
 

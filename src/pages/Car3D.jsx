@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { AppBar, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import { blue, brown, orange, purple, red, yellow, green } from "@mui/material/colors"
+import { blue, brown, grey, orange, purple, red, yellow, green } from "@mui/material/colors"
 
 //* customer components
 // import WheelBolts from '../components/truckparts/Tyre'  // errs
@@ -404,7 +404,7 @@ export default function Car3D() {
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
    // const camoTextureColors = ['#ffd700', '#bdb76b', '#b8860b']
-   const camoTextureColors = [orange[500], brown[600], orange[900]]
+   const camoTextureColors = [green[200], brown[900], green[900]]
    const camoTexture = createNatoCamoTexture(camoTextureColors)
 
    const camoTextureColors01 = ['#bdb76b', '#b8860b', '#a52a2a']
@@ -523,13 +523,13 @@ export default function Car3D() {
                <RealisticTree position={[4, 0, 6]} map={camoTexture} baseColor={blue[900]} />
 
                <SmallTree position={[3, 0, 8.5]} map={camoTexture01} baseColor={yellow[900]} />
-               <Hedge position={[2.75,0,7]} map={camoTexture01} baseColor={green[900]} />
+               <Hedge position={[2.75, 0, 7]} map={camoTexture01} baseColor={green[900]} />
 
                <TBeam position={[-0.5, 0.25, 6]} />
-               <TBeamRusted position={[-1.25, 0.25, 6]}/>
+               <TBeamRusted position={[-1.25, 0.25, 6]} />
                <TBeamRusted2 position={[-2, 0.25, 6]} />
 
-               <TBeam3 position={[-3, 0.25, 6]}/>
+               <TBeam3 position={[-3, 0.25, 6]} />
 
                {/* <V8Engine position={[2,1,5]}/> */}
 
@@ -539,14 +539,11 @@ export default function Car3D() {
                {/* <Triangle position={[-4, 0.65, 3]}/> */}
 
                {/* Ground */}
-               <mesh rotation={[-Math.PI / 2, 0, 0]}
-                  receiveShadow>
-                  <planeGeometry args={[20, 20]} />
+               <mesh rotation={[0, 0, 0]} position={[0, -0.25, 0]} receiveShadow>
+                  <boxGeometry args={[25, 0.5, 25]} />
                   <meshStandardMaterial
-                     color="black"
-                     roughness={0.95}
-                     metalness={0.0}
-                  // map={camoTexture} // #4b5320
+                     color={grey[900]}
+                     // map={camoTexture} // #4b5320
                   />
                </mesh>
                <OrbitControls />
