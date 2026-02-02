@@ -56,12 +56,20 @@ function Ground({ onClick }) {
 }
 
 //*
-function ColliderBox({ position }) {
+function ColliderBox({ position = [0, 0, 0] }) {
    return (
-      <RigidBody colliders="cuboid" position={position}>
+      <RigidBody 
+         position={position}
+         mass={10}
+         linearDamping={0}
+         angularDamping={0}
+      >
+
+         {/* <BallCollider args={[0.25]} restitution={0.55} friction={0.95} /> */}
+         <CuboidCollider args={[0.5, 0.5, 0.5]} />
          <mesh>
             <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color="orange" />
+            <meshStandardMaterial metallness={0.9} roughness={0.25} color={orange[600]} />
          </mesh>
       </RigidBody>
    )
@@ -140,7 +148,25 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
 }
 
 //*
-function getRandomColor() {
+function getRandomMuiColor() {
+
+   //   const colors = [
+   //     { name: "blue", value: blue },
+   //     { name: "brown", value: brown },
+   //     { name: "green", value: green },
+   //     { name: "grey", value: grey },
+   //     { name: "orange", value: orange },
+   //     { name: "purple", value: purple },
+   //     { name: "red", value: red },
+   //     { name: "yellow", value: yellow }
+   //   ];
+
+   //   const shades = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+   //   const color = colors[Math.floor(Math.random() * colors.length)];
+   //   const shade = shades[Math.floor(Math.random() * shades.length)];
+
+   //   return color.value[shade]
 
    // returns a randon color of [blue, brown, green, grey, orange, purple, red, yellow], length 8
    const arr = [blue, brown, green, grey, orange, purple, red, yellow]
@@ -148,21 +174,19 @@ function getRandomColor() {
    const randomItem = arr[randomIndex]
 
    return randomItem[500]
-}  // getRandomColor()
+}  // getRandomMuiColor()
 
 //*
-function CreateMassBalls({ noBalls = 10, color = red[500] }) {
+function CreateManyBalls({ noBalls = 10 }) {
 
    // useMemo() for better performance with big noBalls
-
-   // <sphereGeometry args={[0.25, 32, 32]} />
    const geometry = useMemo(() => new THREE.SphereGeometry(0.2, 32, 32), [])
 
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
-         color: getRandomColor(),
-         metalness: 0,
-         roughness: 0.25
+         color: getRandomMuiColor(),
+         metalness: 0.95,
+         roughness: 0.1
       }), [])
 
    //
@@ -170,15 +194,15 @@ function CreateMassBalls({ noBalls = 10, color = red[500] }) {
       <RigidBody
          key={index}
          colliders={false}
-         position={[0.5 + index / noBalls, 6 + index / 2, 1]}
+         position={[-0.25 + index / noBalls, 6 + index / 2, 0]}
          mass={2}
       >
-         <BallCollider args={[0.25]} restitution={0.3} friction={0.8} />
+         <BallCollider args={[0.25]} restitution={0.9} friction={0.5} />
 
          <mesh geometry={geometry} material={material} castShadow />
       </RigidBody>
    ))
-}  // CreateMassBalls()
+}  // CreateManyBalls()
 
 //* Colliders page component
 export default function Colliders() {
@@ -257,30 +281,32 @@ export default function Colliders() {
                         <Ball position={[0, 4, 0]} color={red[500]} restitution={0.5} />
                         <Ball position={[0, 6, 1]} color={red[900]} restitution={0.85} />
 
-                        <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} />
-                        <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} />
+                        {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
+                        {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
 
-                        <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} />
-                        <Ball position={[0, 8, 0.25]} color={blue[900]} restitution={0.9} />
+                        {/* <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} /> */}
+                        {/* <Ball position={[0, 8, 0.25]} color={blue[900]} restitution={0.9} /> */}
 
-                        <Ball position={[3, 5, 0.25]} color={green[400]} restitution={0.75} />
-                        <Ball position={[3.25, 5, 0.25]} color={green[600]} restitution={0.85} />
+                        {/* <Ball position={[3, 5, 0.25]} color={green[400]} restitution={0.75} /> */}
+                        {/* <Ball position={[3.25, 5, 0.25]} color={green[600]} restitution={0.85} /> */}
 
-                        <Ball position={[-0.25, 6, 1]} color={yellow[400]} restitution={0.5} />
-                        <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} />
+                        {/* <Ball position={[-0.25, 6, 1]} color={yellow[400]} restitution={0.5} /> */}
+                        {/* <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} /> */}
 
-                        {/** ab 5.000 wird es langsam... */}
-                        <CreateMassBalls noBalls={2000} />
+                        {/** ab 3.000 wird es langsam... */}
+                        <CreateManyBalls noBalls={150} />
 
-                        {/* <Ball position={[-0.5, 6, 1]} color={grey[400]} restitution={0.5} /> */}
-                        {/* <Ball position={[0.5, 6, 1]} color={grey[600]} restitution={0.5} /> */}
+                        <ColliderBox position={[1, 8, 0]}/>
+                        <ColliderBox position={[2, 3, 0]}/>
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
-                        <Wall position={[1, 2, 3]} size={[0.25, 5, 3]} color={blue[200]} />
-                        <Wall position={[-1, 2, -3]} size={[0.25, 5, 4]} color={blue[400]} />
+                        <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
+                        <Wall position={[-1, 2, -4]} size={[0.25, 5, 4]} color={blue[400]} />
 
-                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} />
-                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[500]} />
+                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[200]} />
+                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[400]} />
+
+                        <Wall position={[3, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 2]} color={green[400]} />
 
                         <Floor />
                      </Physics>
