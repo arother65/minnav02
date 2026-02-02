@@ -72,12 +72,12 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
       <RigidBody
          colliders={false}
          position={position}
-         mass={1}
+         mass={10}
          linearDamping={0}
          angularDamping={0}
          ccd
       >
-         <BallCollider args={[0.5]} restitution={0.75} friction={0.1} />
+         <BallCollider args={[0.25]} restitution={restitution} friction={0.95} />
 
          <mesh castShadow>
             <sphereGeometry args={[0.25, 32, 32]} />
@@ -107,11 +107,11 @@ function Floor() {
 }
 
 //*
-function Wall({ position, size }) {
+function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
    return (
       <RigidBody type="fixed"
          position={position}
-         rotation={[1.55, 0, 1.55]}
+         rotation={rotation}
          colliders={false}
       >
          <CuboidCollider
@@ -126,12 +126,13 @@ function Wall({ position, size }) {
          <mesh receiveShadow>
             <boxGeometry
                position={position}
+               rotation={rotation}
                args={[
                   size[0] * 1,
                   size[1] * 1,
                   size[2] * 1,
                ]} />
-            <meshStandardMaterial color={blue[300]} />
+            <meshStandardMaterial color={color} />
          </mesh>
       </RigidBody>
    )
@@ -195,7 +196,7 @@ export default function Colliders() {
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
                   sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
-                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 75 }}
+                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 95 }}
                      style={{
                         width: "85vw",
                         height: "88vh",
@@ -213,16 +214,23 @@ export default function Colliders() {
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         <Ball position={[0, 4, 0]} color={red[500]} restitution={0.5} />
-                        <Ball position={[0, 6, 1]} color={red[900]} restitution={1} />
+                        <Ball position={[0, 6, 1]} color={red[900]} restitution={0.85} />
 
                         <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} />
-                        <Ball position={[0, 6, 0.25]} color={green[500]} restitution={0.1} />
+                        <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} />
 
                         <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} />
-                        <Ball position={[1, 7, 0.25]} color={blue[900]} restitution={0.5} />
+                        <Ball position={[1, 9, 0.25]} color={blue[900]} restitution={0.9} />
+
+                        <Ball position={[3, 5, 0.25]} color={green[400]} restitution={0.75} />
+                        <Ball position={[3.25, 5, 0.25]} color={green[600]} restitution={0.85} />
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
-                        <Wall position={[0, 1, 0]} size={[0.5, 5, 2]} />
+                        <Wall position={[1, 2, 3]} size={[0.25, 5, 3]} color={blue[200]} />
+                        <Wall position={[-1, 2, -3]} size={[0.25, 5, 4]} color={blue[400]} />
+
+                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} />
+                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[500]} />
 
                         <Floor />
                      </Physics>
