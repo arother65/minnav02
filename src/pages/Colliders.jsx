@@ -23,11 +23,11 @@ import { OrbitControls, Text } from "@react-three/drei"
 // import { usePlane } from '@react-three/cannon'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, CircularProgress, Slider } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
 import { CuboidCollider } from "@react-three/rapier"
-import { useRapier } from "@react-three/rapier"
+// import { useRapier } from "@react-three/rapier"
 
 //* 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
@@ -183,7 +183,7 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
          angularDamping={0}
       // ccd
       >
-         <BallCollider args={[0.05]} restitution={restitution} friction={0.95} />
+         <BallCollider args={[0.15]} restitution={restitution} friction={0.95} />
 
          <mesh castShadow>
             <sphereGeometry args={[0.25, 32, 32]} />
@@ -198,11 +198,11 @@ function Floor() {
    return (
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[5, 0.5, 5]}
+            args={[5, 0.4, 5]}
             restitution={0.95}
             friction={0.2}
          />
-         <mesh position={[0, 0.35, 0]} rotation={[0, 0, 0]} receiveShadow>
+         <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[10, 0.75, 10]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
@@ -254,16 +254,15 @@ function getRandomMuiColor() {
 }  // getRandomMuiColor()
 
 //*
-function CreateManyBalls({ position = [0, 3, 0], noBalls = 10 }) {
+function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, size = 0.35, withCamo = false, onDone }) {
 
    // useMemo() for better performance with big noBalls
-   const geometry = useMemo(() => new THREE.SphereGeometry(0.2, 32, 32), [])
+   const geometry = useMemo(() => new THREE.SphereGeometry(size, 16, 16), [size])
 
-   const camoTexture = useMemo( () => { 
+   const camoTexture = useMemo(() => {
       // return createNatoCamoTexture([getRandomMuiColor(), green[200], grey[500]])
       return createNatoCamoTexture([getRandomMuiColor(), getRandomMuiColor(), getRandomMuiColor()])
    }, [])
-   // console.log(camoTexture, camoTexture?.image) 
 
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
@@ -277,22 +276,41 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10 }) {
    const spawnPositions = useMemo(() =>
       Array.from({ length: noBalls }, (_, index) => [
          position[0] + (index / noBalls),
-         position[1] + index / 2,
+         position[1] + (index / 10),
          position[2] + (index / noBalls)
       ]), [noBalls, position])
 
-   // return Array.from({ length: noBalls }).map((_, index) => (
+   //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
+   let lengthTimeout = 8500
+   if (noBalls >= 1000) {
+      lengthTimeout = 28000
+   }
+   useEffect(() => {
+      const id = setTimeout(() => onDone?.(), lengthTimeout)
+      return () => clearTimeout(id)
+   }, [lengthTimeout, onDone])
+
+   // 
    return spawnPositions.map((position, index) => (
       <RigidBody
          key={index}
          colliders={false}
          position={position}
-         mass={5}
+         mass={10}
       >
-         <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.75} friction={0.25} />
+         <BallCollider args={[
+            geometry.parameters.radius * 0.85,
+            geometry.parameters.radius * 0.85,
+            geometry.parameters.radius * 0.85,
+         ]}
+            restitution={0.75} friction={0.25} />
          <mesh geometry={geometry} material={material} castShadow>
-            {/* <meshStandardMaterial color={getRandomMuiColor()} map={camoTexture}/> */}
-            <meshStandardMaterial map={camoTexture}/>            
+            {!withCamo &&
+               <meshStandardMaterial color={getRandomMuiColor()} />
+            }
+            {withCamo &&
+               <meshStandardMaterial map={camoTexture} />
+            }
          </mesh>
       </RigidBody>
    ))
@@ -303,7 +321,22 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10 }) {
 export default function Colliders() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
+   const [camoUsed, setCamoUsed] = useState(false)  // camo for the Balls created?
+   const [createBalls, setCreateBalls] = useState(false)  // start creating Balls?
+   const [disabled, setDisabled] = useState(false)  // state of the CREATE button 
+   const [enableCircularProgress, setCircularProgress] = useState(false)  // state of CircularProgress
+   const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
+   const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
 
+   const handleChange = (event) => {
+      setSize(event.target.value)
+   }  // handleChange() Slider-Components
+
+   useEffect(() => {
+      console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
+   }, [camoUsed, createBalls])
+
+   // 
    return (
       <>
          <header>
@@ -332,34 +365,91 @@ export default function Colliders() {
             <div className="row mt-5">
 
                {/* COl with buttons controlling the scene */}
-               <Box orientation='col' className='m-1 mt-2 bg-dark rounded shadow'
-                  sx={{ width: '14%', border: '1px solid green', mt: 2 }}
+               <Box orientation='col' className='mt-4 bg-dark rounded shadow'
+                  sx={{ width: '15%', border: '1px solid green', mt: 2 }}
                >
                   Steuerelemente
-                  <Card className='m-1 rounded shadow'>
+                  <Card className='rounded shadow'>
                      <Button variant="outlined"
+                        id='idBtn'
                         color="success"
                         className='m-1'
+                        disabled={disabled}
+                        onClick={() => {
+                           setCreateBalls(true)
+                           setDisabled(true)
+                           setCircularProgress(true)
+                        }}>
+                        Create Balls
+                     </Button>
+                     {enableCircularProgress && <CircularProgress className='m-1' color="success" />}
+                     <div className="row m-3 border border-info rounded">
+                        <h6>Adjust SIZE of balls: </h6>
+                        <Slider
+                           name='idRadius'
+                           aria-label="Slider for radius"
+                           defaultValue={0.15}
+                           valueLabelDisplay="auto"
+                           step={0.05}
+                           min={0.15}
+                           max={1}
+                           onChange={handleChange}
+                           value={size}
+                           disabled={disabled}
+                        />
+                     </div>
+                     <div className="row m-3 border border-info rounded">
+                        <h6>Adjust NUMBER of balls: </h6>
+                        <Slider
+                           name='idNoBalls'
+                           aria-label="Slider for number of balls"
+                           defaultValue={1}
+                           valueLabelDisplay="auto"
+                           step={1}
+                           min={1}
+                           max={500}
+                           onChange={(event)=>{ setNoBalls(event.target.value) }}
+                           value={noBalls}
+                           disabled={disabled}
+                        />
+                     </div>
+                  </Card>
+                  <Card>
+                     <Button variant="outlined" color="warning" className='m-1' disabled
                         onClick={() => {
                         }}>
-                        inactive
+                        disabled
                      </Button>
-                     <Button variant="outlined" color="warning" className='m-1'
-                        onClick={() => {
-                        }}>
-                        inactive
-                     </Button>
+                  </Card>
+
+                  <Card className='rounded shadow'>
+                     <FormGroup>
+                        <FormControlLabel control={
+                           <Switch
+                              onChange={(e) => {
+                                 if (e.target.checked === true) {
+                                    setCamoUsed(true)
+                                 }
+                                 else {
+                                    setCamoUsed(false)
+                                 }
+                              }} />
+                        }
+                           label="With Camo" />
+                        {/* <FormControlLabel required control={<Switch />} label="Required" /> */}
+                        <FormControlLabel disabled control={<Switch />} label="Disabled" />
+                     </FormGroup>
                   </Card>
                </Box>
 
                {/* COl with the scene */}
-               <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
-                  sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
+               <Box orientation='col' className='mt-4 bg-dark-subtle rounded'
+                  sx={{ width: '85%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
                   <Canvas shadows camera={{ position: [1, 8, 2], fov: 95 }}
                      style={{
-                        width: "85vw",
-                        height: "88vh",
+                        width: "86vw",
+                        height: "100vh",
                         display: "block"
                      }}>
                      <ambientLight intensity={0.85} />
@@ -371,7 +461,7 @@ export default function Colliders() {
                      {/* <Ground /> */}
                      {/* </Physics> */}
 
-                     <Physics gravity={[0, -5.81, 0]} > {/** debug> */}
+                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
@@ -387,9 +477,22 @@ export default function Colliders() {
 
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
-                        <CreateManyBalls position={[0, 5, 0]} noBalls={500} />
-                        <CreateManyBalls position={[2, 5, -2]} noBalls={2} />
-                        <CreateManyBalls position={[0, 5, -1]} noBalls={2} />
+
+                        {createBalls &&
+                           <CreateManyBalls position={[0, 8, 1]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                              onDone={() => {
+                                 setCreateBalls(prev => {
+                                    console.log('onDone, previous value:', prev)
+                                    return false
+                                 })
+                                 setDisabled(false)  // setzt den Button zur Erzeugung von Bällen wieder auf aktiv
+                                 setCircularProgress(false)  // CircularProgress neben Button "Create" aus 
+                              }}
+                           />
+                        }
+
+                        {/* <CreateManyBalls position={[2, 5, -2]} noBalls={100} /> */}
+                        {/* <CreateManyBalls position={[0, 5, -1]} noBalls={200} /> */}
 
                         <ColliderBox position={[-1, 8, 0]} />
                         {/* <ColliderBox position={[1, 3, 0]} /> */}
@@ -405,7 +508,7 @@ export default function Colliders() {
 
                         <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[200]} />
                         <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} />
-                        <Wall position={[4, 1.5, 2.05]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} />
+                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} />
                         <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
                         <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[400]} />
