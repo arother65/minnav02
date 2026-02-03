@@ -75,7 +75,7 @@ function ColliderBox({ position = [0, 0, 0] }) {
 
          <mesh >
             <boxGeometry args={[0.75, 1, 0.75]} />
-            <meshStandardMaterial metallness={0.9} roughness={0.25} color={orange[600]} />
+            <meshStandardMaterial metallness={0.9} roughness={0.25} color={getRandomMuiColor()} />
          </mesh>
       </RigidBody>
    )
@@ -112,6 +112,12 @@ function explode(world, origin, force = 15, radius = 4) {
 function Fragment({ velocity, color }) {
    const ref = useRef()
 
+   // const geometry = useMemo(
+   //    () =>
+   //       new THREE.TetrahedronGeometry(0.08, 64),
+   //    []
+   // )
+
    useFrame((_, delta) => {
       ref.current.position.addScaledVector(velocity, delta)
       velocity.y -= 3 * delta // gravity
@@ -121,10 +127,11 @@ function Fragment({ velocity, color }) {
    })
 
    return (
+      // <mesh ref={ref} geometry={geometry} castShadow>
       <mesh ref={ref} castShadow>
-         {/* <sphereGeometry args={[0.08, 8, 8]} />  */}
-         <tetrahedronGeometry args={[0.08]} />
 
+         {/* <sphereGeometry args={[0.08, 8, 8]} />  */}
+         <tetrahedronGeometry args={[0.05]} />
          <meshStandardMaterial color={color} flatShading />
       </mesh>
    )
@@ -133,7 +140,6 @@ function Fragment({ velocity, color }) {
 function ExplodingBox({ position, color }) {
 
    const [exploded, setExploded] = useState(false)
-
    // 
    if (!exploded) {
       return (
@@ -262,17 +268,22 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, color = red[200] 
       }), [])
 
    return Array.from({ length: noBalls }).map((_, index) => (
-      <RigidBody
-         key={index}
-         colliders={false}
-         position={[position[0] + index / noBalls, position[1], position[2] + index / noBalls]}
-         mass={2}
-      >
-         <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.5} friction={0.25} />
-         <mesh geometry={geometry} material={material} castShadow>
-            <meshStandardMaterial color={color} />
-         </mesh>
-      </RigidBody>
+      <>
+         <RigidBody
+            key={index}
+            colliders={false}
+            // position={[0 + (index / noBalls), 0 + index / 2, 0 + (index / noBalls)]}
+            position={[0 + 0.75, 0 + index / 2, 0 + 0.25]}
+
+            mass={2}
+         >
+            <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.5} friction={0.25} />
+            <mesh geometry={geometry} material={material} castShadow>
+               <meshStandardMaterial color={getRandomMuiColor()} />
+            </mesh>
+         </RigidBody>
+         {/* <Text position={[0+index/2, 3, 0]} color={color} fontSize={0.2}>{index}</Text> */}
+      </>
    ))
 
 }  // CreateManyBalls()
@@ -335,7 +346,7 @@ export default function Colliders() {
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
                   sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
-                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 95 }}
+                  <Canvas shadows camera={{ position: [1, 8, 2], fov: 95 }}
                      style={{
                         width: "85vw",
                         height: "88vh",
@@ -350,7 +361,7 @@ export default function Colliders() {
                      {/* <Ground /> */}
                      {/* </Physics> */}
 
-                     <Physics gravity={[0, -9.81, 0]} debug > {/** debug> */}
+                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
@@ -367,22 +378,26 @@ export default function Colliders() {
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
                         {/* <CreateManyBalls position={[0.5, 5, 0.55]} noBalls={50} color={green[100]} /> */}
-                        {/* <CreateManyBalls position={[0, 5, 0]} noBalls={1} color={green[900]} /> */}
+                        <CreateManyBalls position={[0, 5, 0]} noBalls={50} />
 
-                        {/* <ColliderBox position={[-1, 8, 0]} /> */}
+                        <ColliderBox position={[-1, 8, 0]} />
                         {/* <ColliderBox position={[1, 3, 0]} /> */}
 
-                        <ExplodingBox position={[0, 5, 0]} color={blue[500]} />
-                        <ExplodingBox position={[2, 5, 1]} color={green[500]} />
+                        <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} />
+
+                        {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
+                        {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
                         <Wall position={[-1, 2, -4]} size={[0.25, 5, 4]} color={blue[400]} />
 
                         <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[200]} />
-                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[400]} />
+                        <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} />
+                        <Wall position={[4, 1.5, 2.05]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} />
+                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
-                        <Wall position={[3, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 2]} color={green[400]} />
+                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[400]} />
 
                         <Floor />
                      </Physics>
