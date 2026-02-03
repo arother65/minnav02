@@ -9,12 +9,16 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-// import { useState } from "react"
-import { useMemo } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 
-// import { useFrame } from "@react-three/fiber" 
+
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
+
+import { useFrame } from "@react-three/fiber"  // errs 
+import { useAfterPhysicsStep } from "@react-three/rapier"
+
+
 import { OrbitControls, Text } from "@react-three/drei"
 // import { usePlane } from '@react-three/cannon'
 
@@ -23,6 +27,7 @@ import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/ma
 import HomeIcon from '@mui/icons-material/Home'
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
 import { CuboidCollider } from "@react-three/rapier"
+import { useRapier } from "@react-three/rapier"
 
 //* 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
@@ -58,7 +63,7 @@ function Ground({ onClick }) {
 //*
 function ColliderBox({ position = [0, 0, 0] }) {
    return (
-      <RigidBody 
+      <RigidBody
          position={position}
          mass={10}
          linearDamping={0}
@@ -66,14 +71,100 @@ function ColliderBox({ position = [0, 0, 0] }) {
       >
 
          {/* <BallCollider args={[0.25]} restitution={0.55} friction={0.95} /> */}
-         <CuboidCollider args={[0.5, 0.5, 0.5]} />
-         <mesh>
-            <boxGeometry args={[1, 1, 1]} />
+         <CuboidCollider args={[0.25, 0.25, 0.25]} restitution={0.5} friction={0.95} />
+
+         <mesh >
+            <boxGeometry args={[0.75, 1, 0.75]} />
             <meshStandardMaterial metallness={0.9} roughness={0.25} color={orange[600]} />
          </mesh>
       </RigidBody>
    )
 }  // ColliderBox()
+
+//*
+function explode(world, origin, force = 15, radius = 4) {
+
+   world.forEachRigidBody((body) => {
+      if (body.isFixed()) return
+
+      const p = body.translation()
+
+      const dx = p.x - origin.x
+      const dy = p.y - origin.y
+      const dz = p.z - origin.z
+
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+      if (dist === 0 || dist > radius) return
+
+      const strength = (1 - dist / radius) * force * 100
+
+      body.applyImpulse(
+         {
+            x: (dx / dist) * strength,
+            y: (dy / dist) * strength,
+            z: (dz / dist) * strength,
+         },
+         true // wake up body
+      )
+   })
+}
+
+function Fragment({ velocity, color }) {
+   const ref = useRef()
+
+   useFrame((_, delta) => {
+      ref.current.position.addScaledVector(velocity, delta)
+      velocity.y -= 3 * delta // gravity
+
+      ref.current.rotation.x += 6 * delta
+      ref.current.rotation.y += 8 * delta
+   })
+
+   return (
+      <mesh ref={ref} castShadow>
+         {/* <sphereGeometry args={[0.08, 8, 8]} />  */}
+         <tetrahedronGeometry args={[0.08]} />
+
+         <meshStandardMaterial color={color} flatShading />
+      </mesh>
+   )
+}  // Fragment()
+
+function ExplodingBox({ position, color }) {
+
+   const [exploded, setExploded] = useState(false)
+
+   // 
+   if (!exploded) {
+      return (
+         <RigidBody position={position} mass={10} >
+            <CuboidCollider
+               args={[0.5, 0.5, 0.5]}
+               // sensor
+               onCollisionEnter={(e) => {
+                  setExploded(true)
+               }}
+            />
+            <mesh>
+               <boxGeometry args={[1, 1, 1]} />
+               <meshStandardMaterial color={color} />
+            </mesh>
+         </RigidBody>
+      )
+   }  // not exploded
+
+   if (exploded) {
+      return (
+         Array.from({ length: 80 }).map((_, i) => (
+            <Fragment
+               key={i}
+               velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+               color={color}
+            />
+         ))
+      )
+   }  // exploded 
+}  // ExplodingBox()
 
 //*
 function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
@@ -84,9 +175,9 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
          mass={10}
          linearDamping={0}
          angularDamping={0}
-         ccd
+      // ccd
       >
-         <BallCollider args={[0.25]} restitution={restitution} friction={0.95} />
+         <BallCollider args={[0.05]} restitution={restitution} friction={0.95} />
 
          <mesh castShadow>
             <sphereGeometry args={[0.25, 32, 32]} />
@@ -98,15 +189,13 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
 
 //*
 function Floor() {
-
    return (
-      <RigidBody type="fixed" colliders={false}>
+      <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
             args={[5, 0.5, 5]}
             restitution={0.95}
             friction={0.2}
          />
-
          <mesh position={[0, 0.35, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[10, 0.75, 10]} />
             <meshStandardMaterial color="lightblue" />
@@ -150,24 +239,6 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
 //*
 function getRandomMuiColor() {
 
-   //   const colors = [
-   //     { name: "blue", value: blue },
-   //     { name: "brown", value: brown },
-   //     { name: "green", value: green },
-   //     { name: "grey", value: grey },
-   //     { name: "orange", value: orange },
-   //     { name: "purple", value: purple },
-   //     { name: "red", value: red },
-   //     { name: "yellow", value: yellow }
-   //   ];
-
-   //   const shades = [100, 200, 300, 400, 500, 600, 700, 800, 900];
-
-   //   const color = colors[Math.floor(Math.random() * colors.length)];
-   //   const shade = shades[Math.floor(Math.random() * shades.length)];
-
-   //   return color.value[shade]
-
    // returns a randon color of [blue, brown, green, grey, orange, purple, red, yellow], length 8
    const arr = [blue, brown, green, grey, orange, purple, red, yellow]
    const randomIndex = Math.floor(Math.random() * arr.length)
@@ -177,32 +248,35 @@ function getRandomMuiColor() {
 }  // getRandomMuiColor()
 
 //*
-function CreateManyBalls({ noBalls = 10 }) {
+function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, color = red[200] }) {
 
    // useMemo() for better performance with big noBalls
    const geometry = useMemo(() => new THREE.SphereGeometry(0.2, 32, 32), [])
 
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
-         color: getRandomMuiColor(),
+         // color:  new THREE.Color(color),
+         // color: color,
          metalness: 0.95,
          roughness: 0.1
       }), [])
 
-   //
    return Array.from({ length: noBalls }).map((_, index) => (
       <RigidBody
          key={index}
          colliders={false}
-         position={[-0.25 + index / noBalls, 6 + index / 2, 0]}
+         position={[position[0] + index / noBalls, position[1], position[2] + index / noBalls]}
          mass={2}
       >
-         <BallCollider args={[0.25]} restitution={0.9} friction={0.5} />
-
-         <mesh geometry={geometry} material={material} castShadow />
+         <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.5} friction={0.25} />
+         <mesh geometry={geometry} material={material} castShadow>
+            <meshStandardMaterial color={color} />
+         </mesh>
       </RigidBody>
    ))
+
 }  // CreateManyBalls()
+
 
 //* Colliders page component
 export default function Colliders() {
@@ -276,10 +350,7 @@ export default function Colliders() {
                      {/* <Ground /> */}
                      {/* </Physics> */}
 
-                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
-
-                        <Ball position={[0, 4, 0]} color={red[500]} restitution={0.5} />
-                        <Ball position={[0, 6, 1]} color={red[900]} restitution={0.85} />
+                     <Physics gravity={[0, -9.81, 0]} debug > {/** debug> */}
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
@@ -294,10 +365,15 @@ export default function Colliders() {
                         {/* <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} /> */}
 
                         {/** ab 3.000 wird es langsam... */}
-                        <CreateManyBalls noBalls={150} />
+                        {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
+                        {/* <CreateManyBalls position={[0.5, 5, 0.55]} noBalls={50} color={green[100]} /> */}
+                        {/* <CreateManyBalls position={[0, 5, 0]} noBalls={1} color={green[900]} /> */}
 
-                        <ColliderBox position={[1, 8, 0]}/>
-                        <ColliderBox position={[2, 3, 0]}/>
+                        {/* <ColliderBox position={[-1, 8, 0]} /> */}
+                        {/* <ColliderBox position={[1, 3, 0]} /> */}
+
+                        <ExplodingBox position={[0, 5, 0]} color={blue[500]} />
+                        <ExplodingBox position={[2, 5, 1]} color={green[500]} />
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
