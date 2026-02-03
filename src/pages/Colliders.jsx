@@ -35,7 +35,7 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 /** ------------------------------------------------------------------------ */
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
-
+import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -254,38 +254,45 @@ function getRandomMuiColor() {
 }  // getRandomMuiColor()
 
 //*
-function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, color = red[200] }) {
+function CreateManyBalls({ position = [0, 3, 0], noBalls = 10 }) {
 
    // useMemo() for better performance with big noBalls
    const geometry = useMemo(() => new THREE.SphereGeometry(0.2, 32, 32), [])
 
+   const camoTexture = useMemo( () => { 
+      // return createNatoCamoTexture([getRandomMuiColor(), green[200], grey[500]])
+      return createNatoCamoTexture([getRandomMuiColor(), getRandomMuiColor(), getRandomMuiColor()])
+   }, [])
+   // console.log(camoTexture, camoTexture?.image) 
+
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
-         // color:  new THREE.Color(color),
-         // color: color,
+         // color:  new THREE.Color(getRandomMuiColor()),
+         // color: getRandomMuiColor(),
          metalness: 0.95,
          roughness: 0.1
+         // map: camoTexture
       }), [])
 
-   const spawnPositions = useMemo( () =>
-         Array.from({ length: noBalls }, (_, index) => [
-            position[0] + (index / noBalls),
-            position[1] + index / 2,
-            position[2] + (index / noBalls)
-         ]), [noBalls, position] )
+   const spawnPositions = useMemo(() =>
+      Array.from({ length: noBalls }, (_, index) => [
+         position[0] + (index / noBalls),
+         position[1] + index / 2,
+         position[2] + (index / noBalls)
+      ]), [noBalls, position])
 
    // return Array.from({ length: noBalls }).map((_, index) => (
-   return spawnPositions.map((pos, index) => (
+   return spawnPositions.map((position, index) => (
       <RigidBody
          key={index}
          colliders={false}
-         // position={[0 + (index / noBalls), 0 + index / 2, 0 + (index / noBalls)]}
-         position={pos}
+         position={position}
          mass={5}
       >
          <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.75} friction={0.25} />
          <mesh geometry={geometry} material={material} castShadow>
-            <meshStandardMaterial color={getRandomMuiColor()} />
+            {/* <meshStandardMaterial color={getRandomMuiColor()} map={camoTexture}/> */}
+            <meshStandardMaterial map={camoTexture}/>            
          </mesh>
       </RigidBody>
    ))
@@ -380,8 +387,9 @@ export default function Colliders() {
 
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
-                        {/* <CreateManyBalls position={[0.5, 5, 0.55]} noBalls={50} color={green[100]} /> */}
-                        <CreateManyBalls position={[2, 5, -2]} noBalls={5000} />
+                        <CreateManyBalls position={[0, 5, 0]} noBalls={500} />
+                        <CreateManyBalls position={[2, 5, -2]} noBalls={2} />
+                        <CreateManyBalls position={[0, 5, -1]} noBalls={2} />
 
                         <ColliderBox position={[-1, 8, 0]} />
                         {/* <ColliderBox position={[1, 3, 0]} /> */}

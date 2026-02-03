@@ -65,6 +65,7 @@ export function createNatoCamoTexture(ivColors=[], size = 1024, blobs = 80) {
    texture.anisotropy = 8;
    texture.colorSpace = THREE.SRGBColorSpace;
 
+   texture.needsUpdate = true
    return texture;
 }  // createNatoCamoTexture()
 
