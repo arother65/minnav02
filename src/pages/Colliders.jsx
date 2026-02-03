@@ -267,25 +267,28 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, color = red[200] 
          roughness: 0.1
       }), [])
 
-   return Array.from({ length: noBalls }).map((_, index) => (
-      <>
-         <RigidBody
-            key={index}
-            colliders={false}
-            // position={[0 + (index / noBalls), 0 + index / 2, 0 + (index / noBalls)]}
-            position={[0 + 0.75, 0 + index / 2, 0 + 0.25]}
+   const spawnPositions = useMemo( () =>
+         Array.from({ length: noBalls }, (_, index) => [
+            position[0] + (index / noBalls),
+            position[1] + index / 2,
+            position[2] + (index / noBalls)
+         ]), [noBalls, position] )
 
-            mass={2}
-         >
-            <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.5} friction={0.25} />
-            <mesh geometry={geometry} material={material} castShadow>
-               <meshStandardMaterial color={getRandomMuiColor()} />
-            </mesh>
-         </RigidBody>
-         {/* <Text position={[0+index/2, 3, 0]} color={color} fontSize={0.2}>{index}</Text> */}
-      </>
+   // return Array.from({ length: noBalls }).map((_, index) => (
+   return spawnPositions.map((pos, index) => (
+      <RigidBody
+         key={index}
+         colliders={false}
+         // position={[0 + (index / noBalls), 0 + index / 2, 0 + (index / noBalls)]}
+         position={pos}
+         mass={5}
+      >
+         <BallCollider args={[0.15, 0.15, 0.15]} restitution={0.75} friction={0.25} />
+         <mesh geometry={geometry} material={material} castShadow>
+            <meshStandardMaterial color={getRandomMuiColor()} />
+         </mesh>
+      </RigidBody>
    ))
-
 }  // CreateManyBalls()
 
 
@@ -361,7 +364,7 @@ export default function Colliders() {
                      {/* <Ground /> */}
                      {/* </Physics> */}
 
-                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
+                     <Physics gravity={[0, -5.81, 0]} > {/** debug> */}
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
@@ -378,7 +381,7 @@ export default function Colliders() {
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
                         {/* <CreateManyBalls position={[0.5, 5, 0.55]} noBalls={50} color={green[100]} /> */}
-                        <CreateManyBalls position={[0, 5, 0]} noBalls={50} />
+                        <CreateManyBalls position={[2, 5, -2]} noBalls={5000} />
 
                         <ColliderBox position={[-1, 8, 0]} />
                         {/* <ColliderBox position={[1, 3, 0]} /> */}
