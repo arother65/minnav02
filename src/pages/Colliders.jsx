@@ -23,7 +23,7 @@ import { OrbitControls, Text } from "@react-three/drei"
 // import { usePlane } from '@react-three/cannon'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, CircularProgress, Slider } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, CircularProgress, Slider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
 import { CuboidCollider } from "@react-three/rapier"
@@ -58,7 +58,7 @@ function Ground({ onClick }) {
          </mesh>
       </RigidBody>
    )
-}
+}  // Ground()
 
 //*
 function ColliderBox({ position = [0, 0, 0] }) {
@@ -243,6 +243,32 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
 }
 
 //*
+function getMuiColorObj(ivColor) {
+   const arr = [blue, brown, green, grey, orange, purple, red, yellow]
+
+   switch (ivColor) {
+      case 'blue':
+         return arr[0][500]
+      case 'brown':
+         return arr[1][500]
+      case 'green':
+         return arr[2][500]
+      case 'grey':
+         return arr[3][500]
+      case 'orange':
+         return arr[4][500]
+      case 'purple':
+         return arr[5][500]
+      case 'red':
+         return arr[6][500]
+      case 'yellow':
+         return arr[7][500]
+      default:
+         return arr[0][500]  // blue[500]
+   }
+}
+
+//*
 function getRandomMuiColor() {
 
    // returns a randon color of [blue, brown, green, grey, orange, purple, red, yellow], length 8
@@ -254,15 +280,18 @@ function getRandomMuiColor() {
 }  // getRandomMuiColor()
 
 //*
-function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, size = 0.35, withCamo = false, onDone }) {
+function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, withCamo = false, customCamoMix, onDone }) {
 
    // useMemo() for better performance with big noBalls
    const geometry = useMemo(() => new THREE.SphereGeometry(size, 16, 16), [size])
 
    const camoTexture = useMemo(() => {
       // return createNatoCamoTexture([getRandomMuiColor(), green[200], grey[500]])
+      if (customCamoMix.length > 0) {
+         return createNatoCamoTexture([customCamoMix[0], customCamoMix[1], customCamoMix[2]])
+      }
       return createNatoCamoTexture([getRandomMuiColor(), getRandomMuiColor(), getRandomMuiColor()])
-   }, [])
+   }, [customCamoMix])
 
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
@@ -281,9 +310,9 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, size = 0.35, with
       ]), [noBalls, position])
 
    //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
-   let lengthTimeout = 8500
+   let lengthTimeout = 10000
    if (noBalls >= 1000) {
-      lengthTimeout = 28000
+      lengthTimeout = 30000
    }
    useEffect(() => {
       const id = setTimeout(() => onDone?.(), lengthTimeout)
@@ -296,7 +325,7 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, size = 0.35, with
          key={index}
          colliders={false}
          position={position}
-         mass={10}
+         mass={50}
       >
          <BallCollider args={[
             geometry.parameters.radius * 0.85,
@@ -316,6 +345,46 @@ function CreateManyBalls({ position = [0, 3, 0], noBalls = 10, size = 0.35, with
    ))
 }  // CreateManyBalls()
 
+//* making Select-boxes visible or invisible
+function setSelectsVisible() {
+   let eleFrmColor = document.getElementById('idFrmColor01')
+   let classList = eleFrmColor.getAttribute('class')
+   classList = classList.replace('invisible', '')
+   classList = classList.replace('d-none', '')
+   eleFrmColor.setAttribute('class', classList)
+
+   eleFrmColor = document.getElementById('idFrmColor02')
+   classList = eleFrmColor.getAttribute('class')
+   classList = classList.replace('invisible', '')
+   classList = classList.replace('d-none', '')
+   eleFrmColor.setAttribute('class', classList)
+
+   eleFrmColor = document.getElementById('idFrmColor03')
+   classList = eleFrmColor.getAttribute('class')
+   classList = classList.replace('invisible', '')
+   classList = classList.replace('d-none', '')
+   eleFrmColor.setAttribute('class', classList)
+}
+
+function setSelectsInvisible() {
+   let eleFrmColor = document.getElementById('idFrmColor01')
+   let classList = eleFrmColor.getAttribute('class')
+   let newClassList = ''
+   newClassList = newClassList.concat(classList, ' invisible d-none')
+   eleFrmColor.setAttribute('class', newClassList)
+
+   newClassList = ''
+   eleFrmColor = document.getElementById('idFrmColor02')
+   classList = eleFrmColor.getAttribute('class')
+   newClassList = newClassList.concat(classList, ' invisible d-none')
+   eleFrmColor.setAttribute('class', newClassList)
+
+   newClassList = ''
+   eleFrmColor = document.getElementById('idFrmColor03')
+   classList = eleFrmColor.getAttribute('class')
+   newClassList = newClassList.concat(classList, ' invisible d-none')
+   eleFrmColor.setAttribute('class', newClassList)
+}
 
 //* Colliders page component
 export default function Colliders() {
@@ -328,13 +397,27 @@ export default function Colliders() {
    const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
    const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
 
+   // states for color picker 
+   const [color01, setcolor01] = useState()
+   const [color02, setcolor02] = useState()
+   const [color03, setcolor03] = useState()
+   const [customCamoMix, setCustomColorMix] = useState([])
+
+   function mixCustomCamo() {
+      let customCamoMix = []
+      customCamoMix.push(getMuiColorObj(color01))  // später: mit [shade]
+      customCamoMix.push(getMuiColorObj(color02))
+      customCamoMix.push(getMuiColorObj(color03))
+      return (customCamoMix)
+   }  // mixCustomCamo()
+
    const handleChange = (event) => {
       setSize(event.target.value)
    }  // handleChange() Slider-Components
 
    useEffect(() => {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
-   }, [camoUsed, createBalls])
+   }, [camoUsed, createBalls, customCamoMix])
 
    // 
    return (
@@ -366,7 +449,7 @@ export default function Colliders() {
 
                {/* COl with buttons controlling the scene */}
                <Box orientation='col' className='mt-4 bg-dark rounded shadow'
-                  sx={{ width: '15%', border: '1px solid green', mt: 2 }}
+                  sx={{ mt: 2, width: '15%', border: '1px solid green' }}
                >
                   Steuerelemente
                   <Card className='rounded shadow'>
@@ -379,6 +462,12 @@ export default function Colliders() {
                            setCreateBalls(true)
                            setDisabled(true)
                            setCircularProgress(true)
+
+                           // build camo if user mixed one 
+                           let idSwitch = document.getElementById('idSwitchMixCamo')
+                           if (idSwitch.checked === true) {
+                              setCustomColorMix(mixCustomCamo())
+                           }
                         }}>
                         Create Balls
                      </Button>
@@ -408,21 +497,14 @@ export default function Colliders() {
                            step={1}
                            min={1}
                            max={500}
-                           onChange={(event)=>{ setNoBalls(event.target.value) }}
+                           onChange={(event) => { setNoBalls(event.target.value) }}
                            value={noBalls}
                            disabled={disabled}
                         />
                      </div>
                   </Card>
-                  <Card>
-                     <Button variant="outlined" color="warning" className='m-1' disabled
-                        onClick={() => {
-                        }}>
-                        disabled
-                     </Button>
-                  </Card>
-
                   <Card className='rounded shadow'>
+                     {/** SWITCH for using random camo mix */}
                      <FormGroup>
                         <FormControlLabel control={
                            <Switch
@@ -436,15 +518,110 @@ export default function Colliders() {
                               }} />
                         }
                            label="With Camo" />
-                        {/* <FormControlLabel required control={<Switch />} label="Required" /> */}
-                        <FormControlLabel disabled control={<Switch />} label="Disabled" />
                      </FormGroup>
+
+                     {/** SWITCH for custom camo mix */}
+                     <FormGroup >
+                        <FormControlLabel control={
+                           <Switch
+                              id='idSwitchMixCamo'
+                              onChange={(e) => {
+                                 if (e.target.checked === true) {
+                                    // mixCustomCamo()  is done when button is pressed
+                                    // make select's visible 
+                                    setSelectsVisible()
+                                 }
+                                 else {
+                                    // inactivate color select's
+                                    setcolor01(null)
+                                    setcolor02(null)
+                                    setcolor03(null)
+                                    setCustomColorMix([])
+
+                                    // make select's invisible
+                                    setSelectsInvisible()
+                                 }
+                              }} />
+                        }
+                           label="mix camo" />
+                     </FormGroup>
+
+                     {/** choose color01 */}
+                     <FormControl id='idFrmColor01' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        {/* blue, brown, green, grey, orange, purple, red, yellow */}
+                        <InputLabel id="idColor01">Color01</InputLabel>
+                        <Select
+                           labelId="idSelectColor01"
+                           id="idSelectColor01"
+                           value={color01}
+                           onChange={(e) => {
+                              setcolor01(e.target.value)
+                           }}
+                           label="Color01"
+                        >
+                           <MenuItem value={'blue'}>Blue</MenuItem>
+                           <MenuItem value={'brown'}>Brown</MenuItem>
+                           <MenuItem value={'green'}>Green</MenuItem>
+                           <MenuItem value={'grey'}>Grey</MenuItem>
+                           <MenuItem value={'orange'}>Orange</MenuItem>
+                           <MenuItem value={'purple'}>Purple</MenuItem>
+                           <MenuItem value={'red'}>Red</MenuItem>
+                           <MenuItem value={'yellow'}>Yellow</MenuItem>
+                        </Select>
+                     </FormControl>
+
+                     {/** choose color02 */}
+                     <FormControl id='idFrmColor02' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="idColor02">Color02</InputLabel>
+                        <Select
+                           labelId="idSelectColor01"
+                           id="idSelectColor01"
+                           value={color02}
+                           onChange={(e) => {
+                              setcolor02(e.target.value)
+                           }}
+                           label="Color02"
+                        >
+                           <MenuItem value={'blue'}>Blue</MenuItem>
+                           <MenuItem value={'brown'}>Brown</MenuItem>
+                           <MenuItem value={'green'}>Green</MenuItem>
+                           <MenuItem value={'grey'}>Grey</MenuItem>
+                           <MenuItem value={'orange'}>Orange</MenuItem>
+                           <MenuItem value={'purple'}>Purple</MenuItem>
+                           <MenuItem value={'red'}>Red</MenuItem>
+                           <MenuItem value={'yellow'}>Yellow</MenuItem>
+                        </Select>
+                     </FormControl>
+
+                     {/** choose color03 */}
+                     <FormControl id='idFrmColor03' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        {/* blue, brown, green, grey, orange, purple, red, yellow */}
+                        <InputLabel id="idColor03">Color03</InputLabel>
+                        <Select
+                           labelId="idSelectColor03"
+                           id="idSelectColor03"
+                           value={color03}
+                           onChange={(e) => {
+                              setcolor03(e.target.value)
+                           }}
+                           label="Color03"
+                        >
+                           <MenuItem value={'blue'}>Blue</MenuItem>
+                           <MenuItem value={'brown'}>Brown</MenuItem>
+                           <MenuItem value={'green'}>Green</MenuItem>
+                           <MenuItem value={'grey'}>Grey</MenuItem>
+                           <MenuItem value={'orange'}>Orange</MenuItem>
+                           <MenuItem value={'purple'}>Purple</MenuItem>
+                           <MenuItem value={'red'}>Red</MenuItem>
+                           <MenuItem value={'yellow'}>Yellow</MenuItem>
+                        </Select>
+                     </FormControl>
                   </Card>
                </Box>
 
-               {/* COl with the scene */}
+               {/* COl with the scene / canvas*/}
                <Box orientation='col' className='mt-4 bg-dark-subtle rounded'
-                  sx={{ width: '85%', minHeight: '200px', border: '1px solid red', mt: 2 }}
+                  sx={{ mt: 2, width: '85%', minHeight: '200px', border: '1px solid red' }}
                >
                   <Canvas shadows camera={{ position: [1, 8, 2], fov: 95 }}
                      style={{
@@ -479,7 +656,8 @@ export default function Colliders() {
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
 
                         {createBalls &&
-                           <CreateManyBalls position={[0, 8, 1]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                           <CreateManyBalls position={[0, 8, 0]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                              customCamoMix={customCamoMix}
                               onDone={() => {
                                  setCreateBalls(prev => {
                                     console.log('onDone, previous value:', prev)
@@ -523,4 +701,4 @@ export default function Colliders() {
          </main>
       </>
    )
-}  // PartsTestground()
+}  // Colliders()
