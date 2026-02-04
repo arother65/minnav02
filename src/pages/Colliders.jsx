@@ -36,6 +36,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
+import BouncingBalls from '../components/BouncingBalls'
+
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -198,12 +200,12 @@ function Floor() {
    return (
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[5, 0.4, 5]}
-            restitution={0.95}
-            friction={0.2}
+            args={[10, 0.4, 10]}
+            restitution={0.5}
+            friction={0.5}
          />
          <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
-            <boxGeometry args={[10, 0.75, 10]} />
+            <boxGeometry args={[20, 0.75, 20]} />
             <meshStandardMaterial color="lightblue" />
          </mesh>
       </RigidBody>
@@ -669,13 +671,17 @@ export default function Colliders() {
                            />
                         }
 
+                        <BouncingBalls colors={{color1: red[200], color2: blue[200]}}/>
+                        <BouncingBalls colors={{color1: red[400], color2: blue[400]}} />
+                        <BouncingBalls colors={{color1: red[600], color2: blue[600]}} />
+
                         {/* <CreateManyBalls position={[2, 5, -2]} noBalls={100} /> */}
                         {/* <CreateManyBalls position={[0, 5, -1]} noBalls={200} /> */}
 
-                        <ColliderBox position={[-1, 8, 0]} />
+                        {/* <ColliderBox position={[-1, 8, 0]} /> */}
                         {/* <ColliderBox position={[1, 3, 0]} /> */}
 
-                        <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} />
+                        {/* <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} /> */}
 
                         {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
                         {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
