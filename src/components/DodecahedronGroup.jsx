@@ -23,8 +23,8 @@ function Dodecahedron({ time, ...props }) {
         args={[0.95 / 2, 0.95 / 2, 0.95 / 2]}
         // sensor
         onCollisionEnter={() => {
-          // ref.current.applyImpulse({ x: 0.5, y: 0.1, z: 0.1 }, true);
-          ref.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 }, true);
+          // ref.current.applyImpulse({ x: 0.25, y: 0.5, z: 0.1 }, true);
+          ref.current.applyTorqueImpulse({ x: Math.random() * 0.5, y: Math.random() * 0.75, z: Math.random() * 0.15 }, true);
         }}
       />
       <mesh>
@@ -33,8 +33,7 @@ function Dodecahedron({ time, ...props }) {
         <meshStandardMaterial roughness={0.1} color={props.color} />
         <Html distanceFactor={10}>
           <div className="content">
-            hello <br />
-            world
+            {props.text}
           </div>
         </Html>
       </mesh>
@@ -46,24 +45,14 @@ function Dodecahedron({ time, ...props }) {
 export default function DodecahedronGroup() {
   const ref = useRef()
 
-  // useFrame(() => (
-  //   ref.current.rotation.x += 0.015,
-  //   ref.current.position.x -= 0.0,
-
-  //   ref.current.rotation.y += 0.015,
-  //   ref.current.position.y += 0.0
-
-  //   // ref.current.?
-  //   // ref.current.rotation.z += 0.02
-  // )
-  // )
-
   // 
   return (
     <group ref={ref}>
-      <Dodecahedron position={[0, 10, 0]} color={red[900]} />
-      <Dodecahedron position={[0, 2, 0]} color={green[500]} />
-      <Dodecahedron position={[-1, 5, -1]} color={blue[900]} />
+      <Dodecahedron position={[0, 3, 0]} color={red[900]} text={'01'} />
+      <Dodecahedron position={[0, 4, 0]} color={green[500]} text={'02'} />
+      <Dodecahedron position={[-1, 5, 0.25]} color={blue[900]} text={'03'} />
+      <Dodecahedron position={[-2, 5, 0.5]} color={orange[900]} text={'04'} />
+      <Dodecahedron position={[-3, 5, 0.75]} color={yellow[900]} text={'05'} />
     </group>
   )
 }  // DodecahedronGroup
