@@ -36,7 +36,9 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import BouncingBalls from '../components/BouncingBalls'
+import BouncingBalls, { BouncingBalls01 } from '../components/BouncingBalls'
+import Connectors from '../components/Connectors'
+import DodecahedronGroup from '../components/DodecahedronGroup'
 
 
 /** ------------------------------------------------------------------------ */
@@ -198,10 +200,11 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
 //*
 function Floor() {
    return (
+      // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[10, 0.4, 10]}
-            restitution={0.5}
+            args={[20, 0.4, 20]}
+            restitution={0.75}
             friction={0.5}
          />
          <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
@@ -306,9 +309,9 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
 
    const spawnPositions = useMemo(() =>
       Array.from({ length: noBalls }, (_, index) => [
-         position[0] + (index / noBalls),
-         position[1] + (index / 10),
-         position[2] + (index / noBalls)
+         position[0] + (index / 100),
+         position[1] + (index),
+         position[2] + (index / 95)
       ]), [noBalls, position])
 
    //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
@@ -400,9 +403,9 @@ export default function Colliders() {
    const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
 
    // states for color picker 
-   const [color01, setcolor01] = useState()
-   const [color02, setcolor02] = useState()
-   const [color03, setcolor03] = useState()
+   const [color01, setcolor01] = useState('')
+   const [color02, setcolor02] = useState('')
+   const [color03, setcolor03] = useState('')
    const [customCamoMix, setCustomColorMix] = useState([])
 
    function mixCustomCamo() {
@@ -633,6 +636,7 @@ export default function Colliders() {
                      }}>
                      <ambientLight intensity={0.85} />
                      <directionalLight position={[0, 5, 5]} castShadow />
+                     {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
                      {/* <Physics gravity={[0, -9.81, 0]}> */}
                      {/* <ColliderBox position={[0, 2, 0]} /> */}
@@ -657,34 +661,40 @@ export default function Colliders() {
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
 
+
+                        {/* <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} /> */}
+                        {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
+                        {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
+
+                        {/* <Connectors /> */}
+
+                        <DodecahedronGroup />
+
                         {createBalls &&
-                           <CreateManyBalls position={[0, 8, 0]} size={size} noBalls={noBalls} withCamo={camoUsed}
-                              customCamoMix={customCamoMix}
-                              onDone={() => {
-                                 setCreateBalls(prev => {
-                                    console.log('onDone, previous value:', prev)
-                                    return false
-                                 })
-                                 setDisabled(false)  // setzt den Button zur Erzeugung von Bällen wieder auf aktiv
-                                 setCircularProgress(false)  // CircularProgress neben Button "Create" aus 
-                              }}
-                           />
+                           <>
+                              <CreateManyBalls position={[-3, 6, 1]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                                 customCamoMix={customCamoMix}
+                                 onDone={() => {
+                                    setCreateBalls(prev => {
+                                       console.log('onDone, previous value:', prev)
+                                       return false
+                                    })
+                                    setDisabled(false)  // setzt den Button zur Erzeugung von Bällen wieder auf aktiv
+                                    setCircularProgress(false)  // CircularProgress neben Button "Create" aus 
+                                 }}
+                              />
+                           </>
                         }
 
-                        <BouncingBalls colors={{color1: red[200], color2: blue[200]}}/>
+                        {/*                         <BouncingBalls colors={{color1: red[200], color2: blue[200]}}/>
                         <BouncingBalls colors={{color1: red[400], color2: blue[400]}} />
-                        <BouncingBalls colors={{color1: red[600], color2: blue[600]}} />
+                        <BouncingBalls colors={{color1: red[600], color2: blue[600]}} /> */}
 
-                        {/* <CreateManyBalls position={[2, 5, -2]} noBalls={100} /> */}
-                        {/* <CreateManyBalls position={[0, 5, -1]} noBalls={200} /> */}
+                        {/* <BouncingBalls01 /> */}
 
                         {/* <ColliderBox position={[-1, 8, 0]} /> */}
                         {/* <ColliderBox position={[1, 3, 0]} /> */}
 
-                        {/* <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} /> */}
-
-                        {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
-                        {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
@@ -693,9 +703,11 @@ export default function Colliders() {
                         <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[200]} />
                         <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} />
                         <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} />
-                        <Wall position={[4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
+                        <Wall position={[4, 1.5, 0.75]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
-                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[400]} />
+                        <Wall position={[8, 1.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 8]} color={blue[100]} />
+
+                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
 
                         <Floor />
                      </Physics>
