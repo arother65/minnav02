@@ -196,7 +196,7 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
    )
 }  // Ball()
 
-//*
+//*(
 function Floor() {
    // const terrainModel = useGLTF('/models/rocky_terrain_02_2k.gltf')  //
 
@@ -211,16 +211,32 @@ function Floor() {
 
          <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[20, 0.75, 20]} />
-            <meshStandardMaterial color="lightblue" map={CreateFloorTexture()}/>
+            {/* <meshStandardMaterial color="lightblue" map={CreateFloorTexture()}/> */}
+            <meshStandardMaterial color="lightblue" />
          </mesh>
       </RigidBody>
    )
 }
 
 //*
-function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
+function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = false }) {
+   
+   const rigidBodyRef = useRef()
+   const meshRef = useRef()
+
+   useFrame((_, delta) => {
+      if (!rigidBodyRef || !meshRef || !rotate) return
+
+      // groupRef.current.rotation.x += delta * 0.75
+      meshRef.current.rotation.y += delta * 0.95
+
+      rigidBodyRef.current.setNextKinematicRotation(meshRef.current.rotation)
+   })
+
    return (
-      <RigidBody type="fixed"
+      <RigidBody 
+         ref={rigidBodyRef} 
+         type="fixed"
          position={position}
          rotation={rotation}
          colliders={false}
@@ -234,7 +250,7 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color }) {
             restitution={0.9}
             friction={0}
          />
-         <mesh receiveShadow>
+         <mesh ref={meshRef} receiveShadow>
             <boxGeometry
                position={position}
                rotation={rotation}
@@ -438,10 +454,16 @@ function CreateRustyBox({ position, rotation, scale }) {
 
    const groupRef = useRef()
    const rigidBodyRef = useRef()
-   const utilityBox = useGLTF('/models/utility_box_02_2k.gltf')  //
+   const utilityBox = useGLTF('/models/utility_box_02_2k.gltf')
+
+   {/** Verwendung von useFrame() stürzt gelegentlich ab... */}
 
    // useFrame((_, delta) => {
-   //    groupRef.current.rotation.y += delta * 0.3
+   //    if (!rigidBodyRef || !groupRef) return
+
+   //    // groupRef.current.rotation.x += delta * 0.75
+   //    groupRef.current.rotation.y += delta * 0.95
+
    //    rigidBodyRef.current.setNextKinematicRotation(groupRef.current.rotation)
    // })
 
@@ -453,6 +475,11 @@ function CreateRustyBox({ position, rotation, scale }) {
 
          <group ref={groupRef} scale={scale}>
             <primitive object={utilityBox.scene} />
+            <Html distanceFactor={5}>
+               <div className="content">
+                  created with Render using a GLTF file
+               </div>
+            </Html>
          </group>
       </RigidBody>
    )
@@ -475,6 +502,13 @@ function CreateFloorTexture() {
    return texture
 
 }  //  CreateFloorTexture()
+
+function CreateFireHydrant({ position, rotation, scale = 1 }) {
+
+   const fireHydrantModel = useGLTF('/models/fire_hydrant.glb')
+
+   return <primitive object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
+}  // CreateFireHydrant()
 
 //* Colliders page component
 export default function Colliders() {
@@ -512,6 +546,7 @@ export default function Colliders() {
    // preload of GLTF-models
    useGLTF.preload('/models/oz_rim.glb')
    useGLTF.preload('/models/utility_box_02_2k.gltf')
+   useGLTF.preload('/models/fire_hydrant.glb')
 
    // 
    return (
@@ -735,13 +770,11 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Suspense>
-                           <CreateOZRim position={[5, 0.8, -8]} rotation={[-1.55, 0, 0]} scale={5} />
-                        </Suspense>
+                        <CreateRustyBox position={[3, 0.75, -7]} rotation={[0, 0, 0]} scale={1.5} />
 
-                        <CreateRustyBox position={[7, 0.5, -7]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
 
-                        <CreateOZRim position={[0, 2, 0]} rotation={[0, 0, 0]}/>
+                        <CreateFireHydrant position={[0, 0.5, -8]} rotation={[0, 0, 0]} scale={2} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
@@ -801,9 +834,14 @@ export default function Colliders() {
                         <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
                         <Wall position={[-1, 2, -4]} size={[0.25, 5, 4]} color={blue[400]} />
 
-                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[200]} />
-                        <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} />
-                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} />
+                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} 
+                           color={orange[400]} 
+                           rotate = {true}
+                        />
+                        
+                        <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} rotate = {true} />
+                        
+                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]}  rotate = {true}/>
                         <Wall position={[4, 1.5, 0.75]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
                         <Wall position={[8, 1.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 8]} color={blue[100]} />
