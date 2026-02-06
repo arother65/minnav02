@@ -209,11 +209,9 @@ function Floor() {
             friction={0.5}
          />
 
-         {/* <primitive object={terrainModel.scene} /> */}
-
          <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[20, 0.75, 20]} />
-            <meshStandardMaterial color="lightblue" />
+            <meshStandardMaterial color="lightblue" map={CreateFloorTexture()}/>
          </mesh>
       </RigidBody>
    )
@@ -460,13 +458,23 @@ function CreateRustyBox({ position, rotation, scale }) {
    )
 }  // CreateRustyBox()
 
-function CreateRockyTerrain({ position, rotation, scale }) {
+function CreateFloorTexture() {
 
-   const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
+   // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
+   // return <primitive object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
 
-   return <primitive object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
 
-}  // 
+   //* use of a PNG-file as a texture 
+   let texture = useTexture('/models/textures/rocky_terrain_02_diff_2k.jpg')
+
+   texture.colorSpace = THREE.SRGBColorSpace
+   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+   texture.repeat.set(1, 1)
+
+   // return the texture created 
+   return texture
+
+}  //  CreateFloorTexture()
 
 //* Colliders page component
 export default function Colliders() {
@@ -736,7 +744,7 @@ export default function Colliders() {
                         <CreateOZRim position={[0, 2, 0]} rotation={[0, 0, 0]}/>
 
                         {/** füllt unerwünscht den Hintergrund... */}
-                        <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/>
+                        {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
