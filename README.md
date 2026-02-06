@@ -113,5 +113,10 @@ LinkedIn: https://www.linkedin.com/in/andreas-rother-623a0930
 - icons8.de
 <a target="_blank" href="https://icons8.com/icon/95u9Z6qJ2Ipg/joker">Joker</a> Icon von <a target="_blank" href="https://icons8.com">Icons8</a>
 
-## drag&drop
--- ?
+## Models / Textures
+- https://gltf-viewer.donmccurdy.com/
+- PolyHaven: https://polyhaven.com/
+
+- müssen im Verzeichnis \public abgelegt werden
+ 
+

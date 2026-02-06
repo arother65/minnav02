@@ -18,7 +18,7 @@ import { useFrame } from "@react-three/fiber"  // errs
 
 import { OrbitControls } from "@react-three/drei"
 import { Html } from "@react-three/drei"
-import { useGLTF, Clone } from '@react-three/drei'
+import { useGLTF, Clone, useTexture } from '@react-three/drei'
 // import { usePlane } from '@react-three/cannon'
 
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
@@ -198,6 +198,9 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
 
 //*
 function Floor() {
+
+   // const terrainModel = useGLTF('/models/rocky_terrain_02_2k.gltf')  //
+
    return (
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
@@ -206,6 +209,9 @@ function Floor() {
             restitution={0.75}
             friction={0.5}
          />
+
+         {/* <primitive object={terrainModel.scene} /> */}
+
          <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[20, 0.75, 20]} />
             <meshStandardMaterial color="lightblue" />
@@ -399,32 +405,57 @@ function setSelectsInvisible() {
 
 //* crashes since RigidBody is used:
 function CreateOZRim({ position, rotation, scale }) {
-   
-   const rimModel = useGLTF('/models/rusted_wheel_rim.gltf')  //
+
+   // const rimModel = useGLTF('/models/oz_rim.glb')  //
+
+   // return (
+   //    // <RigidBody type="fixed" colliders= {false}
+   //    //    position={position}
+   //    //    rotation={rotation}
+   //    // >
+   //    //    <CuboidCollider
+   //    //       args={[
+   //    //          scale[0] * 0.5,
+   //    //          scale[1] * 0.5,
+   //    //          scale[2] * 0.5,
+   //    //       ]}
+   //    //       restitution={0.9}
+   //    //       friction={0}
+   //    //    />
+   //    //    {/* <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} /> */}
+   //    //    {/* <Clone object={rimModel.scene} scale={scale} /> */}
+
+   //    //    <primitive object={rimModel.scene} scale={scale} />
+   //    // </RigidBody>
+
+   //    <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} />
+   // )
+
+}  // 
+
+function CreateRustyBox({ position, rotation, scale }) {
+
+   const groupRef = useRef()
+   const rigidBodyRef = useRef()
+   const utilityBox = useGLTF('/models/utility_box_02_2k.gltf')  //
+
+   // useFrame((_, delta) => {
+   //    groupRef.current.rotation.y += delta * 0.3
+   //    rigidBodyRef.current.setNextKinematicRotation(groupRef.current.rotation)
+   // })
 
    return (
-      // <RigidBody type="fixed" colliders= {false}
-      //    position={position}
-      //    rotation={rotation}
-      // >
-      //    <CuboidCollider
-      //       args={[
-      //          scale[0] * 0.5,
-      //          scale[1] * 0.5,
-      //          scale[2] * 0.5,
-      //       ]}
-      //       restitution={0.9}
-      //       friction={0}
-      //    />
-      //    {/* <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} /> */}
-      //    {/* <Clone object={rimModel.scene} scale={scale} /> */}
-
-      //    <primitive object={rimModel.scene} scale={scale} />
-      // </RigidBody>
-
-      <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} />
+      <RigidBody ref={rigidBodyRef} type="kinematicPosition" colliders={false}
+         position={position} rotation={rotation}
+      >
+         <CuboidCollider args={[scale * 0.65, scale * 0.65, scale * 0.65]} />
+ 
+         <group ref={groupRef} scale={scale}>
+            <primitive object={utilityBox.scene} />
+         </group>
+      </RigidBody>
    )
-}  // 
+}  // CreateRustyBox()
 
 //* Colliders page component
 export default function Colliders() {
@@ -459,7 +490,9 @@ export default function Colliders() {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
    }, [camoUsed, createBalls, customCamoMix])
 
+   // preload of GLTF-models
    useGLTF.preload('/models/oz_rim.glb')
+   // useGLTF.preload('/models/oz_rim.glb')
 
    // 
    return (
@@ -684,8 +717,10 @@ export default function Colliders() {
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         <Suspense>
-                           <CreateOZRim position={[5, 0.8, -3]} rotation={[-1.55, 0, 0]} scale={5} />
+                           <CreateOZRim position={[5, 0.8, -8]} rotation={[-1.55, 0, 0]} scale={5} />
                         </Suspense>
+
+                        <CreateRustyBox position={[0, 0.5, 0]} rotation={[0, 0, 0]} scale={2} />
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
