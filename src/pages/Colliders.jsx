@@ -220,23 +220,27 @@ function Floor() {
 
 //*
 function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = false }) {
-   
+
    const rigidBodyRef = useRef()
    const meshRef = useRef()
 
    useFrame((_, delta) => {
-      if (!rigidBodyRef || !meshRef || !rotate) return
+      const body = rigidBodyRef.current
 
-      // groupRef.current.rotation.x += delta * 0.75
+      if (!body || !meshRef.current || !rotate) return
+
+      // meshRef.current.rotation.x += delta * 0.75
       meshRef.current.rotation.y += delta * 0.95
+      // meshRef.current.position.x -= 0.005  // dreht die Wall weg vom FLoor...
 
-      rigidBodyRef.current.setNextKinematicRotation(meshRef.current.rotation)
+      // meshRef.current.rotation.z += delta * 0.95
+      body.setNextKinematicRotation(meshRef.current.rotation)
    })
 
    return (
-      <RigidBody 
-         ref={rigidBodyRef} 
-         type="fixed"
+      <RigidBody
+         ref={rigidBodyRef}
+         type="kinematicPosition"  // wegen Verwendung von setNextKinematicRotation()
          position={position}
          rotation={rotation}
          colliders={false}
@@ -303,7 +307,7 @@ function getRandomMuiColor() {
 }  // getRandomMuiColor()
 
 //*
-function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, withCamo = false, customCamoMix, onDone }) {
+function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, withCamo = false, withIndex = false, customCamoMix, onDone, lengthScene }) {
 
    // useMemo() for better performance with big noBalls
    const geometry = useMemo(() => new THREE.SphereGeometry(size, 16, 16), [size])
@@ -333,9 +337,9 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
       ]), [noBalls, position])
 
    //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
-   let lengthTimeout = 10000
+   let lengthTimeout = lengthScene * 1000
    if (noBalls >= 1000) {
-      lengthTimeout = 30000
+      lengthTimeout = 50000
    }
    useEffect(() => {
       const id = setTimeout(() => onDone?.(), lengthTimeout)
@@ -355,21 +359,32 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
             geometry.parameters.radius * 0.5,
             geometry.parameters.radius * 0.5,
          ]}
-            restitution={0.75} friction={0.25} />
+            restitution={0.75} friction={0.25}
+         />
          <mesh geometry={geometry} material={material} castShadow>
             {!withCamo &&
                <>
                   <meshStandardMaterial color={getRandomMuiColor()} />
-                  <Html distanceFactor={10}>
-                     <div className="content">
-                        {index}
-                     </div>
-                  </Html>
-               </>
-            }
+                  {withIndex &&
+                     <Html distanceFactor={10}>
+                        <div className="content">
+                           {index}
+                        </div>
+                     </Html>
+                  }
+               </>}
+
             {withCamo &&
-               <meshStandardMaterial map={camoTexture} />
-            }
+               <>
+                  <meshStandardMaterial map={camoTexture} />
+                  {withIndex &&
+                     <Html distanceFactor={10}>
+                        <div className="content">
+                           {index}
+                        </div>
+                     </Html>
+                  }
+               </>}
          </mesh>
       </RigidBody>
    ))
@@ -456,7 +471,7 @@ function CreateRustyBox({ position, rotation, scale }) {
    const rigidBodyRef = useRef()
    const utilityBox = useGLTF('/models/utility_box_02_2k.gltf')
 
-   {/** Verwendung von useFrame() stürzt gelegentlich ab... */}
+   {/** Verwendung von useFrame() stürzt gelegentlich ab... */ }
 
    // useFrame((_, delta) => {
    //    if (!rigidBodyRef || !groupRef) return
@@ -514,12 +529,18 @@ function CreateFireHydrant({ position, rotation, scale = 1 }) {
 export default function Colliders() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
+
    const [camoUsed, setCamoUsed] = useState(false)  // camo for the Balls created?
+   const [indexUsed, setIndexUsed] = useState(false)  // switches index per Ball created
+
    const [createBalls, setCreateBalls] = useState(false)  // start creating Balls?
    const [disabled, setDisabled] = useState(false)  // state of the CREATE button 
    const [enableCircularProgress, setCircularProgress] = useState(false)  // state of CircularProgress
    const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
    const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
+
+   const [lengthScene, setLengthScene] = useState(10)  // lenght of scene in seconds
+
 
    // states for color picker 
    const [color01, setcolor01] = useState('')
@@ -541,7 +562,7 @@ export default function Colliders() {
 
    useEffect(() => {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
-   }, [camoUsed, createBalls, customCamoMix])
+   }, [camoUsed, createBalls, customCamoMix, indexUsed, lengthScene])
 
    // preload of GLTF-models
    useGLTF.preload('/models/oz_rim.glb')
@@ -582,25 +603,30 @@ export default function Colliders() {
                >
                   Steuerelemente
                   <Card className='rounded shadow'>
-                     <Button variant="outlined"
-                        id='idBtn'
-                        color="success"
-                        className='m-1'
-                        disabled={disabled}
-                        onClick={() => {
-                           setCreateBalls(true)
-                           setDisabled(true)
-                           setCircularProgress(true)
+                     <div className="row m-3">
+                        <Button variant="outlined"
+                           id='idBtn'
+                           color="success"
+                           className='m-1'
+                           disabled={disabled}
+                           onClick={() => {
+                              setCreateBalls(true)
+                              setDisabled(true)
+                              setCircularProgress(true)
+                              setLengthScene(lengthScene)
 
-                           // build camo if user mixed one 
-                           let idSwitch = document.getElementById('idSwitchMixCamo')
-                           if (idSwitch.checked === true) {
-                              setCustomColorMix(mixCustomCamo())
-                           }
-                        }}>
-                        Create Balls
-                     </Button>
-                     {enableCircularProgress && <CircularProgress className='m-1' color="success" />}
+                              // build camo if user mixed one 
+                              let idSwitch = document.getElementById('idSwitchMixCamo')
+                              if (idSwitch.checked === true) {
+                                 setCustomColorMix(mixCustomCamo())
+                              }
+                           }}>
+                           Create Balls
+                           {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />}
+                        </Button>
+                     </div>
+
+                     {/** Slider controls */}
                      <div className="row m-3 border border-info rounded">
                         <h6>Adjust SIZE of balls: </h6>
                         <Slider
@@ -632,7 +658,25 @@ export default function Colliders() {
                         />
                      </div>
                   </Card>
+
+                  {/** Switches */}
                   <Card className='rounded shadow'>
+                     {/** SWITCH for using Ball's Index */}
+                     <FormGroup>
+                        <FormControlLabel control={
+                           <Switch
+                              onChange={(e) => {
+                                 if (e.target.checked === true) {
+                                    setIndexUsed(true)
+                                 }
+                                 else {
+                                    setIndexUsed(false)
+                                 }
+                              }} />
+                        }
+                           label="With Index" />
+                     </FormGroup>
+
                      {/** SWITCH for using random camo mix */}
                      <FormGroup>
                         <FormControlLabel control={
@@ -746,6 +790,25 @@ export default function Colliders() {
                         </Select>
                      </FormControl>
                   </Card>
+
+                  {/** Slider for LENGTH of scene [seconds] */}
+                  <Card className='rounded shadow'>
+                     <div className="row m-3 border border-info rounded">
+                        <h6>Adjust LENGTH of scene [seconds]: </h6>
+                        <Slider
+                           name='idLengthScene'
+                           aria-label="Slider for LENGTH of scene"
+                           defaultValue={10}
+                           valueLabelDisplay="auto"
+                           step={1}
+                           min={10}
+                           max={50}
+                           onChange={(event) => { setLengthScene(event.target.value) }}
+                           value={lengthScene}
+                           disabled={disabled}
+                        />
+                     </div>
+                  </Card>
                </Box>
 
                {/* COl with the scene / canvas*/}
@@ -808,6 +871,8 @@ export default function Colliders() {
                            <>
                               <CreateManyBalls position={[-2.25, 5, 0]} size={size} noBalls={noBalls} withCamo={camoUsed}
                                  customCamoMix={customCamoMix}
+                                 withIndex={indexUsed}
+                                 lengthScene={lengthScene}
                                  onDone={() => {
                                     setCreateBalls(prev => {
                                        console.log('onDone, previous value:', prev)
@@ -832,21 +897,23 @@ export default function Colliders() {
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
+                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
+
                         <Wall position={[-1, 2, -4]} size={[0.25, 5, 4]} color={blue[400]} />
 
-                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} 
-                           color={orange[400]} 
-                           rotate = {true}
-                        />
-                        
-                        <Wall position={[0.15, 1.75, -2]} rotation={[1.6, 0, -2]} size={[0.25, 3, 2]} color={red[200]} rotate = {true} />
-                        
-                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]}  rotate = {true}/>
-                        <Wall position={[4, 1.5, 0.75]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
+                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} rotate={false} />
+                        <Wall position={[0.15, 3, -2]} rotation={[1.6, 1, -2]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
 
-                        <Wall position={[8, 1.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 8]} color={blue[100]} />
+                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} />
+                        <Wall position={[4, 1.5, 0.2]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
-                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
+                        <Wall position={[9, 3, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
+
+                        <Wall position={[-9, 3, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
+                        <Wall position={[-7.5, 4.25, 3.15]} rotation={[0, 0, 1.6]} size={[0.25, 4, 5]} color={green[500]} />
+
+                        <Wall position={[-4, 1.25, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[600]} />
+                        <Wall position={[4, 1.25, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[600]} />
 
                         <Floor />
                      </Physics>
