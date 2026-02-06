@@ -198,15 +198,14 @@ function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
 
 //*
 function Floor() {
-
    // const terrainModel = useGLTF('/models/rocky_terrain_02_2k.gltf')  //
 
    return (
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[20, 0.4, 20]}
-            restitution={0.75}
+            args={[20, 0.75, 20]}
+            restitution={0.5}
             friction={0.5}
          />
 
@@ -314,9 +313,9 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
 
    const spawnPositions = useMemo(() =>
       Array.from({ length: noBalls }, (_, index) => [
-         position[0] + (index / 100),
+         (position[0] % 2) ? position[0] + (index / 150) : position[0] - (index / 150),
          position[1] + (index),
-         position[2] + (index / 95)
+         (position[2] % 2) ? position[2] + (index / 150) : position[2] - (index / 150)
       ]), [noBalls, position])
 
    //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
@@ -338,9 +337,9 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          mass={50}
       >
          <BallCollider args={[
-            geometry.parameters.radius * 0.85,
-            geometry.parameters.radius * 0.85,
-            geometry.parameters.radius * 0.85,
+            geometry.parameters.radius * 0.5,
+            geometry.parameters.radius * 0.5,
+            geometry.parameters.radius * 0.5,
          ]}
             restitution={0.75} friction={0.25} />
          <mesh geometry={geometry} material={material} castShadow>
@@ -406,6 +405,10 @@ function setSelectsInvisible() {
 //* crashes since RigidBody is used:
 function CreateOZRim({ position, rotation, scale }) {
 
+   const wheelModel = useGLTF('/models/damagedWheel.glb ')
+
+   return <primitive object={wheelModel.scene} position={position} rotation={rotation} scale={scale} />
+
    // const rimModel = useGLTF('/models/oz_rim.glb')  //
 
    // return (
@@ -448,14 +451,22 @@ function CreateRustyBox({ position, rotation, scale }) {
       <RigidBody ref={rigidBodyRef} type="kinematicPosition" colliders={false}
          position={position} rotation={rotation}
       >
-         <CuboidCollider args={[scale * 0.65, scale * 0.65, scale * 0.65]} />
- 
+         <CuboidCollider args={[scale * 0.5, scale * 0.5, scale * 0.5]} />
+
          <group ref={groupRef} scale={scale}>
             <primitive object={utilityBox.scene} />
          </group>
       </RigidBody>
    )
 }  // CreateRustyBox()
+
+function CreateRockyTerrain({ position, rotation, scale }) {
+
+   const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
+
+   return <primitive object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
+
+}  // 
 
 //* Colliders page component
 export default function Colliders() {
@@ -492,7 +503,7 @@ export default function Colliders() {
 
    // preload of GLTF-models
    useGLTF.preload('/models/oz_rim.glb')
-   // useGLTF.preload('/models/oz_rim.glb')
+   useGLTF.preload('/models/utility_box_02_2k.gltf')
 
    // 
    return (
@@ -720,7 +731,12 @@ export default function Colliders() {
                            <CreateOZRim position={[5, 0.8, -8]} rotation={[-1.55, 0, 0]} scale={5} />
                         </Suspense>
 
-                        <CreateRustyBox position={[0, 0.5, 0]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateRustyBox position={[7, 0.5, -7]} rotation={[0, 0, 0]} scale={2} />
+
+                        <CreateOZRim position={[0, 2, 0]} rotation={[0, 0, 0]}/>
+
+                        {/** füllt unerwünscht den Hintergrund... */}
+                        <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/>
 
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
@@ -749,7 +765,7 @@ export default function Colliders() {
 
                         {createBalls &&
                            <>
-                              <CreateManyBalls position={[-3, 6, 1]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                              <CreateManyBalls position={[-2.25, 5, 0]} size={size} noBalls={noBalls} withCamo={camoUsed}
                                  customCamoMix={customCamoMix}
                                  onDone={() => {
                                     setCreateBalls(prev => {
