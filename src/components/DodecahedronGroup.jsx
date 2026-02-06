@@ -24,7 +24,16 @@ function Dodecahedron({ time, ...props }) {
         // sensor
         onCollisionEnter={() => {
           // ref.current.applyImpulse({ x: 0.25, y: 0.5, z: 0.1 }, true);
-          ref.current.applyTorqueImpulse({ x: Math.random() * 0.5, y: Math.random() * 0.75, z: Math.random() * 0.15 }, true);
+
+          // ref.current.applyImpulse(
+          //   {
+          //     x: dir.x * 8 * ref.current.mass(),
+          //     y: 4 * ref.current.mass(),
+          //     z: dir.z * 8 * ref.current.mass(),
+          //   },
+          //   true
+          // );
+          ref.current.applyTorqueImpulse({ x: Math.random() * 1.5, y: Math.random() * 1.75, z: Math.random() * 0.15 }, true);
         }}
       />
       <mesh>

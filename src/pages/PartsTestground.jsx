@@ -14,7 +14,7 @@ import { useState } from "react"
 
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, RoundedBox, RoundedBoxGeometry, Text } from "@react-three/drei"
+import { OrbitControls, RoundedBox, Text } from "@react-three/drei"
 import { Physics, usePlane } from '@react-three/cannon'
 import { useGLTF } from '@react-three/drei'
 import { useNavigate } from 'react-router-dom'

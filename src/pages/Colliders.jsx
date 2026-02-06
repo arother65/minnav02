@@ -9,37 +9,36 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useMemo, useRef, useEffect } from "react"
+import { useState, useMemo, useRef, useEffect, Suspense } from "react"
 
 
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
-
 import { useFrame } from "@react-three/fiber"  // errs 
-import { useAfterPhysicsStep } from "@react-three/rapier"
 
-
-import { OrbitControls, Text } from "@react-three/drei"
+import { OrbitControls } from "@react-three/drei"
+import { Html } from "@react-three/drei"
+import { useGLTF, Clone } from '@react-three/drei'
 // import { usePlane } from '@react-three/cannon'
+
+import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
+import { CuboidCollider } from "@react-three/rapier"
 
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, CircularProgress, Slider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
-import { CuboidCollider } from "@react-three/rapier"
-// import { useRapier } from "@react-three/rapier"
-
-//* 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
 
 /** ------------------------------------------------------------------------ */
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import BouncingBalls, { BouncingBalls01 } from '../components/BouncingBalls'
-import Connectors from '../components/Connectors'
-import DodecahedronGroup from '../components/DodecahedronGroup'
+// import BouncingBalls, { BouncingBalls01 } from '../components/BouncingBalls'
+// import Connectors from '../components/Connectors'
+// import DodecahedronGroup from '../components/DodecahedronGroup'
+// import OpenableBox from '../components/boxes/OpenableBox'
 
+import "../components/styles.css"
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -340,7 +339,14 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
             restitution={0.75} friction={0.25} />
          <mesh geometry={geometry} material={material} castShadow>
             {!withCamo &&
-               <meshStandardMaterial color={getRandomMuiColor()} />
+               <>
+                  <meshStandardMaterial color={getRandomMuiColor()} />
+                  <Html distanceFactor={10}>
+                     <div className="content">
+                        {index}
+                     </div>
+                  </Html>
+               </>
             }
             {withCamo &&
                <meshStandardMaterial map={camoTexture} />
@@ -391,6 +397,35 @@ function setSelectsInvisible() {
    eleFrmColor.setAttribute('class', newClassList)
 }
 
+//* crashes since RigidBody is used:
+function CreateOZRim({ position, rotation, scale }) {
+   
+   const rimModel = useGLTF('/models/rusted_wheel_rim.gltf')  //
+
+   return (
+      // <RigidBody type="fixed" colliders= {false}
+      //    position={position}
+      //    rotation={rotation}
+      // >
+      //    <CuboidCollider
+      //       args={[
+      //          scale[0] * 0.5,
+      //          scale[1] * 0.5,
+      //          scale[2] * 0.5,
+      //       ]}
+      //       restitution={0.9}
+      //       friction={0}
+      //    />
+      //    {/* <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} /> */}
+      //    {/* <Clone object={rimModel.scene} scale={scale} /> */}
+
+      //    <primitive object={rimModel.scene} scale={scale} />
+      // </RigidBody>
+
+      <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} />
+   )
+}  // 
+
 //* Colliders page component
 export default function Colliders() {
 
@@ -423,6 +458,8 @@ export default function Colliders() {
    useEffect(() => {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
    }, [camoUsed, createBalls, customCamoMix])
+
+   useGLTF.preload('/models/oz_rim.glb')
 
    // 
    return (
@@ -646,6 +683,10 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
+                        <Suspense>
+                           <CreateOZRim position={[5, 0.8, -3]} rotation={[-1.55, 0, 0]} scale={5} />
+                        </Suspense>
+
                         {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
                         {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
 
@@ -668,7 +709,8 @@ export default function Colliders() {
 
                         {/* <Connectors /> */}
 
-                        <DodecahedronGroup />
+                        {/* <DodecahedronGroup />  */}
+                        {/* <OpenableBox position={[5, 1, 7]} color={red[500]}/> */}
 
                         {createBalls &&
                            <>

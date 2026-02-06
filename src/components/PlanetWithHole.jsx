@@ -101,8 +101,6 @@ export function Model({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 })
    treeModel.materials.Green.metalness = 0
    treeModel.materials.Green.roughness = 0.65
 
-   //  useGLTF.preload('/models/Pine Trees.glb')  // usage not clear 
-
    // return <Clone object={treeModel.scene} {...props} />
    return <Clone object={treeModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // Model()
