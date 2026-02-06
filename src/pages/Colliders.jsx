@@ -522,8 +522,29 @@ function CreateFireHydrant({ position, rotation, scale = 1 }) {
 
    const fireHydrantModel = useGLTF('/models/fire_hydrant.glb')
 
-   return <primitive object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <primitive object={fireHydrantModel.scene} />
+         <Html distanceFactor={5}>
+            <div className="content">
+               fire_hydrant GLB-file
+            </div>
+         </Html>
+      </group>
+   )
+
+   // return <primitive object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // CreateFireHydrant()
+
+function CreateGrass({ position, rotation, scale = 2 }) {
+
+   const grassModel = useGLTF('/models/grass_medium.glb')
+   // normal usage: grassModel.scene
+   // grassModel.nodes.grass_medium_01_large_a_LOD0
+
+   return <primitive object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
+
+}  // CreateGrass()
 
 //* Colliders page component
 export default function Colliders() {
@@ -568,6 +589,7 @@ export default function Colliders() {
    useGLTF.preload('/models/oz_rim.glb')
    useGLTF.preload('/models/utility_box_02_2k.gltf')
    useGLTF.preload('/models/fire_hydrant.glb')
+   useGLTF.preload('/models/grass_medium.glb')
 
    // 
    return (
@@ -837,7 +859,9 @@ export default function Colliders() {
 
                         <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
 
-                        <CreateFireHydrant position={[0, 0.5, -8]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateFireHydrant position={[0, 0.25, -6]} rotation={[0, 0, 0]} scale={2} />
+
+                        <CreateGrass position={[0, 0.5, -6]} rotation={[0, 0, 0]} scale={10} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
