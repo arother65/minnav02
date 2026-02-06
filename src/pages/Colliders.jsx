@@ -176,21 +176,25 @@ function ExplodingBox({ position, color }) {
 }  // ExplodingBox()
 
 //*
-function Ball({ position = [0, 3, 0], color = 'green', restitution = 0.75 }) {
+function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
+
+   // corrugated_iron_diff_2k
+   const texture = CreateFloorTexture('/textures/corrugated_iron_diff_2k.jpg')
+
    return (
       <RigidBody
          colliders={false}
          position={position}
-         mass={10}
+         mass={5}
          linearDamping={0}
          angularDamping={0}
       // ccd
       >
-         <BallCollider args={[0.15]} restitution={restitution} friction={0.95} />
+         <BallCollider args={[radius* 0.5, radius* 0.5, radius* 0.5]} restitution={restitution} friction={0.95} />
 
-         <mesh castShadow>
-            <sphereGeometry args={[0.25, 32, 32]} />
-            <meshStandardMaterial color={color} />
+         <mesh castShadow receiveShadow>
+            <sphereGeometry args={[radius, 64, 64]} />
+            <meshStandardMaterial map={texture} metalness={0.85} roughness={0.5}/>
          </mesh>
       </RigidBody>
    )
@@ -352,7 +356,7 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          key={index}
          colliders={false}
          position={position}
-         mass={50}
+         mass={25}
       >
          <BallCollider args={[
             geometry.parameters.radius * 0.5,
@@ -500,14 +504,12 @@ function CreateRustyBox({ position, rotation, scale }) {
    )
 }  // CreateRustyBox()
 
-function CreateFloorTexture() {
+function CreateFloorTexture(path2textureFile) {
 
    // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
    // return <primitive object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
 
-
-   //* use of a PNG-file as a texture 
-   let texture = useTexture('/models/textures/rocky_terrain_02_diff_2k.jpg')
+   let texture = useTexture(path2textureFile)
 
    texture.colorSpace = THREE.SRGBColorSpace
    texture.wrapS = texture.wrapT = THREE.RepeatWrapping
@@ -540,11 +542,31 @@ function CreateGrass({ position, rotation, scale = 2 }) {
 
    const grassModel = useGLTF('/models/grass_medium.glb')
    // normal usage: grassModel.scene
-   // grassModel.nodes.grass_medium_01_large_a_LOD0
+   // grassModel.nodes.grass_medium_01_large_a_LOD0; grassModel.nodes enthält verschiedene Grassgrößen
 
    return <primitive object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
 
 }  // CreateGrass()
+
+function CorrugatedIron({ position, rotation, scale = 2 }) {
+
+   const ironModel = useGLTF('/models/corrugated_iron.glb')
+
+   ironModel.materials.corrugated_iron.metalness = 0.85
+   ironModel.materials.corrugated_iron.roughness = 0.55
+
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <primitive object={ironModel.scene} />
+
+         <Html distanceFactor={5}>
+            <div className="content">
+               ironModel GLB-file
+            </div>
+         </Html>
+      </group>
+   )
+}  // CorrugatedIron()
 
 //* Colliders page component
 export default function Colliders() {
@@ -590,6 +612,8 @@ export default function Colliders() {
    useGLTF.preload('/models/utility_box_02_2k.gltf')
    useGLTF.preload('/models/fire_hydrant.glb')
    useGLTF.preload('/models/grass_medium.glb')
+   useGLTF.preload('/models/corrugated_iron.glb')
+
 
    // 
    return (
@@ -855,13 +879,17 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
+                        <Ball radius={1} position={[0, 8, 0]} restitution={0.75} />
+
+                        <CorrugatedIron position={[-4, 2, -6]} rotation={[0, 0, 0]} scale={1.5} />
+
                         <CreateRustyBox position={[3, 0.75, -7]} rotation={[0, 0, 0]} scale={1.5} />
 
                         <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
 
-                        <CreateFireHydrant position={[0, 0.25, -6]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateFireHydrant position={[0, 0.5, -6]} rotation={[0, 0, 0]} scale={2} />
 
-                        <CreateGrass position={[0, 0.5, -6]} rotation={[0, 0, 0]} scale={10} />
+                        <CreateGrass position={[0, 0.5, -6.25]} rotation={[0, 0, 0]} scale={10} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
