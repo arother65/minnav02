@@ -35,30 +35,30 @@ const shuffle = (accent = 0) => [
 ]
 
 function Connector({ position, children, vec = new THREE.Vector3(), scale, r = THREE.MathUtils.randFloatSpread, accent, ...props }) {
-   const api = useRef()
+
+   const refRigidBody = useRef()
    const pos = useMemo(() => position || [r(10), r(10), r(10)], [])
 
    useFrame((state, delta) => {
       delta = Math.min(0.1, delta)
-      api.current?.applyImpulse(vec.copy(api.current.translation()).negate().multiplyScalar(0.2))
+      refRigidBody.current?.applyImpulse(vec.copy(refRigidBody.current.translation()).negate().multiplyScalar(0.2))
    })
 
    return (
-      <RigidBody ref={api} linearDamping={4} angularDamping={1} friction={0.1} position={pos} colliders={false}>
+      <RigidBody ref={refRigidBody} linearDamping={4} angularDamping={1} friction={0.1} position={pos} colliders={false}>
          <CuboidCollider args={[0.38, 1.27, 0.38]}
             onCollisionEnter={(e) => {
-               console.log('connector collided')
+               // console.log('connector collided')
                // alert('collision')
             }} />
          <CuboidCollider args={[1.27, 0.38, 0.38]} />
          <CuboidCollider args={[0.38, 0.38, 1.27]} />
 
-
          {children ? children : <Model {...props} />}
-         {accent && <pointLight intensity={4} distance={2.5} color={props.color} />}
+         {accent && <pointLight intensity={2} distance={2.5} color={props.color} />}
       </RigidBody>
    )
-}
+}  // Connector()
 
 function Pointer({ vec = new THREE.Vector3() }) {
    const ref = useRef()
@@ -70,7 +70,7 @@ function Pointer({ vec = new THREE.Vector3() }) {
          <BallCollider args={[1]} />
       </RigidBody>
    )
-}
+}  // Pointer()
 
 function Model({ children, color = 'white', roughness = 0, ...props }) {
    const ref = useRef()
@@ -86,30 +86,30 @@ function Model({ children, color = 'white', roughness = 0, ...props }) {
          {children}
       </mesh>
    )
-}
+}  // Model()
 
 //* Main Component
 export default function Connectors(props) {
 
    // props: color, roughness, accent
 
-   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
-   const connectors = useMemo(() => shuffle(accent), [accent])
+   // const [accent, click] = useReducer((state) => ++state % accents.length, 0)
+   // const connectors = useMemo(() => shuffle(accent), [accent])
 
    return (
       <>
          {/* <Physics gravity={[0, -0.981, 0]}> */}
-            <Pointer />
+         <Pointer />
 
-            {connectors.map( (props, i) => <Connector key={i} {...props} /> )}
+         {/* {connectors.map((props, i) => <Connector key={i} {...props} />)} */}
 
-            {/* <Connector position={[0, 6, 0]}>
-               <Model color={red[500]}>
-                  <MeshTransmissionMaterial clearcoat={1} thickness={0.1} anisotropicBlur={0.1} chromaticAberration={0.1} samples={2} resolution={512} />
-               </Model>
-            </Connector> */}
+         <Connector position={props.position}>
+            <Model color={props.color}>
+               <MeshTransmissionMaterial clearcoat={0.85} thickness={0.1} anisotropicBlur={0.1} chromaticAberration={0.1} samples={2} resolution={128} />
+            </Model>
+         </Connector>
 
-            {/* <Connector position={[2, 6, 0]}></Connector> */}
+         {/* <Connector position={[2, 6, 0]}></Connector> */}
 
          {/* </Physics> */}
 

@@ -18,7 +18,7 @@ import { useFrame } from "@react-three/fiber"  // errs
 
 import { OrbitControls } from "@react-three/drei"
 import { Html } from "@react-three/drei"
-import { useGLTF, Clone, useTexture } from '@react-three/drei'
+import { useGLTF, Clone, useTexture, MeshTransmissionMaterial } from '@react-three/drei'
 // import { usePlane } from '@react-three/cannon'
 
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
@@ -34,7 +34,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 /** ------------------------------------------------------------------------ */
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 // import BouncingBalls, { BouncingBalls01 } from '../components/BouncingBalls'
-// import Connectors from '../components/Connectors'
+
+import Connectors from '../components/Connectors'
 // import DodecahedronGroup from '../components/DodecahedronGroup'
 // import OpenableBox from '../components/boxes/OpenableBox'
 
@@ -112,7 +113,8 @@ function explode(world, origin, force = 15, radius = 4) {
    })
 }
 
-function Fragment({ velocity, color }) {
+//*
+function Fragment({ velocity, color = orange[900] }) {
    const ref = useRef()
 
    // const geometry = useMemo(
@@ -190,10 +192,6 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
 
    let [explode, setExplode] = useState(false)
 
-   // useEffect(() => {
-   //    //?
-   // }, [explode])
-
    if (!explode) {
       return (
          <RigidBody
@@ -256,7 +254,6 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
             <Fragment
                key={i}
                velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-               color={color}
             />
          ))
       )
@@ -333,6 +330,16 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
                   size[2] * 1,
                ]} />
             <meshStandardMaterial color={color} />
+
+            {/** erzeugt spiegelnde Oberflächen...GPU-intensiv */}
+            {/* <MeshTransmissionMaterial 
+               color={color} 
+               clearcoat={0.85} 
+               thickness={0.1} 
+               anisotropicBlur={0.1} 
+               chromaticAberration={0.1} 
+               samples={2} 
+               resolution={64} /> */}
          </mesh>
       </RigidBody>
    )
@@ -479,7 +486,6 @@ function setSelectsVisible() {
    classList = classList.replace('d-none', '')
    eleFrmColor.setAttribute('class', classList)
 }
-
 function setSelectsInvisible() {
    let eleFrmColor = document.getElementById('idFrmColor01')
    let classList = eleFrmColor.getAttribute('class')
@@ -687,6 +693,7 @@ export default function Colliders() {
    useGLTF.preload('/models/grass_medium.glb')
    useGLTF.preload('/models/corrugated_iron.glb')
    useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  //?
+   useGLTF.preload('/models/c-transformed.glb')
 
    // 
    return (
@@ -952,9 +959,11 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.5} />
-                        {/* <Ball position={[1, 5, 0]} restitution={0.95} radius={0.55} /> */}
-                        {/* <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.55} /> */}
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.15} />
+                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.25} />
+                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.35} />
+                        <Ball position={[-2, 5, 0]} restitution={0.95} radius={0.45} />
+                        <Ball position={[-3, 8, 0]} restitution={0.95} radius={0.5} />
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
@@ -962,8 +971,6 @@ export default function Colliders() {
 
                         {/** does not work, just shows one ball with corrugatedIron... */}
                         {/* <CorrugatedIron position={[2, 8, 1]} restituion={1} scale={1} /> */}
-
-
 
                         <CreateRustyBox position={[3, 0.75, -7]} rotation={[0, 0, 0]} scale={1.5} />
                         <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
@@ -973,27 +980,14 @@ export default function Colliders() {
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
 
-                        {/* <Ball position={[-1, 6, 0]} color={orange[500]} restitution={0.9} /> */}
-                        {/* <Ball position={[0, 6, 0.25]} color={orange[900]} restitution={0.5} /> */}
-
-                        {/* <Ball position={[-1, 7, 0.25]} color={blue[500]} restitution={0.5} /> */}
-                        {/* <Ball position={[0, 8, 0.25]} color={blue[900]} restitution={0.9} /> */}
-
-                        {/* <Ball position={[3, 5, 0.25]} color={green[400]} restitution={0.75} /> */}
-                        {/* <Ball position={[3.25, 5, 0.25]} color={green[600]} restitution={0.85} /> */}
-
-                        {/* <Ball position={[-0.25, 6, 1]} color={yellow[400]} restitution={0.5} /> */}
-                        {/* <Ball position={[0.25, 6, 1]} color={yellow[600]} restitution={0.5} /> */}
-
                         {/** ab 3.000 wird es langsam... */}
                         {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
-
 
                         {/* <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} /> */}
                         {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
                         {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
 
-                        {/* <Connectors /> */}
+                        <Connectors position={[0, 8, 0]} color={green[500]}/>
 
                         {/* <DodecahedronGroup />  */}
                         {/* <OpenableBox position={[5, 1, 7]} color={red[500]}/> */}
