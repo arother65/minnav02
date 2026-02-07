@@ -188,7 +188,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
 
    let [hitCount, setHitCount] = useState(0)
    let [explode, setExplode] = useState(false)
-   let[rigidBodyPos, setRigidBodyPos] = useState(position)
+   let [rigidBodyPos, setRigidBodyPos] = useState(position)
 
    useEffect(() => {
       //?
@@ -215,8 +215,8 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                   z: Math.random() * 0.05,
                })
                // position des rigidBody aktualisieren:
-               let actPosition = rigidBody.current.translation() 
-               let newPosition = [] 
+               let actPosition = rigidBody.current.translation()
+               let newPosition = []
                newPosition[0] = actPosition.x
                newPosition[1] = actPosition.y
                newPosition[2] = actPosition.z
@@ -522,7 +522,7 @@ function CreateOZRim({ position, rotation, scale }) {
 
    const wheelModel = useGLTF('/models/damagedWheel.glb ')
 
-   return <primitive object={wheelModel.scene} position={position} rotation={rotation} scale={scale} />
+   return <Clone object={wheelModel.scene} position={position} rotation={rotation} scale={scale} />
 
    // const rimModel = useGLTF('/models/oz_rim.glb')  //
 
@@ -543,7 +543,7 @@ function CreateOZRim({ position, rotation, scale }) {
    //    //    {/* <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} /> */}
    //    //    {/* <Clone object={rimModel.scene} scale={scale} /> */}
 
-   //    //    <primitive object={rimModel.scene} scale={scale} />
+   //    //    <Clone object={rimModel.scene} scale={scale} />
    //    // </RigidBody>
 
    //    <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} />
@@ -575,7 +575,7 @@ function CreateRustyBox({ position, rotation, scale }) {
          <CuboidCollider args={[scale * 0.5, scale * 0.5, scale * 0.5]} />
 
          <group ref={groupRef} scale={scale}>
-            <primitive object={utilityBox.scene} />
+            <Clone object={utilityBox.scene} />
             <Html distanceFactor={5}>
                <div className="content">
                   created with Render using a GLTF file
@@ -589,7 +589,7 @@ function CreateRustyBox({ position, rotation, scale }) {
 function CreateFloorTexture(path2textureFile) {
 
    // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
-   // return <primitive object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
+   // return <Clone object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
 
    let texture = useTexture(path2textureFile)
 
@@ -608,7 +608,7 @@ function CreateFireHydrant({ position, rotation, scale = 1 }) {
 
    return (
       <group position={position} rotation={rotation} scale={scale}>
-         <primitive object={fireHydrantModel.scene} />
+         <Clone object={fireHydrantModel.scene} />
          <Html distanceFactor={5}>
             <div className="content">
                fire_hydrant GLB-file
@@ -617,7 +617,7 @@ function CreateFireHydrant({ position, rotation, scale = 1 }) {
       </group>
    )
 
-   // return <primitive object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
+   // return <Clone object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // CreateFireHydrant()
 
 function CreateGrass({ position, rotation, scale = 2 }) {
@@ -626,16 +626,20 @@ function CreateGrass({ position, rotation, scale = 2 }) {
    // normal usage: grassModel.scene
    // grassModel.nodes.grass_medium_01_large_a_LOD0; grassModel.nodes enthält verschiedene Grassgrößen
 
-   return <primitive object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
+   return <Clone object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
 
 }  // CreateGrass()
 
-//* ERRS: zeichnet bei mehrfacher Verwendung genau ein Objekt...
+//*
 function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
 
    const ironModel = useGLTF('/models/corrugated_iron.glb')
    ironModel.materials.corrugated_iron.metalness = 0.95
-   ironModel.materials.corrugated_iron.roughness = 0.65
+   ironModel.materials.corrugated_iron.roughness = 0.15
+
+   // unter "materials.corrugated_iron" finden sich: color im RGB-Format (r:, g:, b:), opacity...  
+   ironModel.materials.corrugated_iron.color = { r: 2, g: 2, b: 12 }
+   ironModel.materials.corrugated_iron.opacity = 0.95
 
    //? useConvexPolyhedron(); vertices + faces from your model’s geometry
    //? useCompoundBody
@@ -644,7 +648,7 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
       <RigidBody
          colliders={false}
          position={position}
-         mass={5}
+         mass={1}
          restitutionCombineRule="max"
          linearDamping={0}
          angularDamping={0}
@@ -653,10 +657,21 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
          softCcdPrediction={0.2}
       >
          <CuboidCollider args={[scale * 1.5, scale * 0.75, scale * 0.6]} restitution={restitution} friction={0.15} />
-         <primitive object={ironModel.scene} scale={scale} castShadow receiveShadow />
+         <Clone object={ironModel.scene} scale={scale} castShadow receiveShadow />
       </RigidBody>
    )
 }  // CorrugatedIron()
+
+//*
+function preloadModelsTextures() {
+   useGLTF.preload('/models/oz_rim.glb')
+   useGLTF.preload('/models/utility_box_02_2k.gltf')
+   useGLTF.preload('/models/fire_hydrant.glb')
+   useGLTF.preload('/models/grass_medium.glb')
+   useGLTF.preload('/models/corrugated_iron.glb')
+   useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  // works
+   useGLTF.preload('/models/c-transformed.glb')
+}  //
 
 //* Colliders page component
 export default function Colliders() {
@@ -697,14 +712,8 @@ export default function Colliders() {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
    }, [camoUsed, createBalls, customCamoMix, indexUsed, lengthScene])
 
-   // preload of GLTF-models
-   useGLTF.preload('/models/oz_rim.glb')
-   useGLTF.preload('/models/utility_box_02_2k.gltf')
-   useGLTF.preload('/models/fire_hydrant.glb')
-   useGLTF.preload('/models/grass_medium.glb')
-   useGLTF.preload('/models/corrugated_iron.glb')
-   useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  //?
-   useGLTF.preload('/models/c-transformed.glb')
+   // preload of GLTF-models and textures:
+   preloadModelsTextures()
 
    // 
    return (
@@ -970,23 +979,25 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.15} />
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.25} />
                         <Ball position={[1, 5, 0]} restitution={0.95} radius={0.25} />
-                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.35} />
+                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.45} />
                         <Ball position={[-2, 5, 0]} restitution={0.95} radius={0.45} />
-                        <Ball position={[-3, 8, 0]} restitution={0.95} radius={0.5} />
+                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={0.65} />
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
-                        {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.75} /> */}
+                        <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.5} />
+                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.9} />
 
-                        {/** does not work, just shows one ball with corrugatedIron... */}
-                        {/* <CorrugatedIron position={[2, 8, 1]} restituion={1} scale={1} /> */}
+                        {/* <CreateRustyBox position={[0, 0.225, 0]} rotation={[0, 0, 0]} scale={1.5} /> */}
+                        <CreateRustyBox position={[-5, 0.225, -8]} rotation={[0, 0, 0]} scale={1.5} />
 
-                        <CreateRustyBox position={[3, 0.75, -7]} rotation={[0, 0, 0]} scale={1.5} />
-                        <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
-                        <CreateFireHydrant position={[0, 0.5, -6]} rotation={[0, 0, 0]} scale={2} />
-                        <CreateGrass position={[0, 0.5, -6.25]} rotation={[0, 0, 0]} scale={10} />
+                        <CreateOZRim position={[0, 0.75, -8]} rotation={[0, 0, 0]} scale={2} />
+                        {/* <CreateOZRim position={[2, 0.75, -7.5]} rotation={[0, 0, 0]} scale={2} /> */}
+
+                        <CreateFireHydrant position={[0, 0.25, -6]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateGrass position={[0, 0.25, -6.25]} rotation={[0, 0, 0]} scale={10} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
