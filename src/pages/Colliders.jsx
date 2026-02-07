@@ -114,7 +114,7 @@ function explode(world, origin, force = 15, radius = 4) {
 }
 
 //*
-function Fragment({ velocity, color = orange[900] }) {
+function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
    const ref = useRef()
 
    // const geometry = useMemo(
@@ -133,10 +133,11 @@ function Fragment({ velocity, color = orange[900] }) {
 
    return (
       // <mesh ref={ref} geometry={geometry} castShadow>
-      <mesh ref={ref} castShadow>
+      <mesh ref={ref} position={position} castShadow>
 
          {/* <sphereGeometry args={[0.08, 8, 8]} />  */}
          <tetrahedronGeometry args={[0.05]} />
+
          <meshStandardMaterial color={color} flatShading />
       </mesh>
    )
@@ -186,11 +187,13 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
    const rigidBody = useRef()
 
    let [hitCount, setHitCount] = useState(0)
+   let [explode, setExplode] = useState(false)
+   let[rigidBodyPos, setRigidBodyPos] = useState(position)
+
    useEffect(() => {
       //?
-   }, [hitCount])
+   }, [hitCount, rigidBodyPos])
 
-   let [explode, setExplode] = useState(false)
 
    if (!explode) {
       return (
@@ -211,11 +214,18 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                   y: Math.random() * 0.05,
                   z: Math.random() * 0.05,
                })
+               // position des rigidBody aktualisieren:
+               let actPosition = rigidBody.current.translation() 
+               let newPosition = [] 
+               newPosition[0] = actPosition.x
+               newPosition[1] = actPosition.y
+               newPosition[2] = actPosition.z
+               setRigidBodyPos(newPosition)
 
                // ref.current.applyForce({ x, y, z }, wake)
                // ref.current.setRotation({ x, y, z, w }, wake)
 
-               rigidBody.current.setRotation({ x: 2, y: 0, z: 0 }, true)
+               rigidBody.current.setRotation({ x: 5, y: 0, z: 0 }, true)
                // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
 
                // increase hit-counter
@@ -244,16 +254,17 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                </Html>
                <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
             </mesh>
-         </RigidBody >
+         </RigidBody>
       )
    }
 
    if (explode) {
       return (
-         Array.from({ length: 80 }).map((_, i) => (
+         Array.from({ length: 50 }).map((_, i) => (
             <Fragment
                key={i}
                velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+               position={rigidBodyPos}
             />
          ))
       )
@@ -329,7 +340,7 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
                   size[1] * 1,
                   size[2] * 1,
                ]} />
-            <meshStandardMaterial color={color} />
+            <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} />
 
             {/** erzeugt spiegelnde Oberflächen...GPU-intensiv */}
             {/* <MeshTransmissionMaterial 
@@ -987,7 +998,8 @@ export default function Colliders() {
                         {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
                         {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
 
-                        <Connectors position={[0, 8, 0]} color={green[500]}/>
+                        {/** !GPU-intensiv: */}
+                        {/* <Connectors position={[0, 8, 0]} color={green[500]}/> */}
 
                         {/* <DodecahedronGroup />  */}
                         {/* <OpenableBox position={[5, 1, 7]} color={red[500]}/> */}
