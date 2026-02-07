@@ -140,7 +140,7 @@ function Fragment({ velocity, color }) {
    )
 }  // Fragment()
 
-function ExplodingBox({ position, color }) {
+function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
 
    const [exploded, setExploded] = useState(false)
    // 
@@ -182,6 +182,11 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
    const texture = CreateFloorTexture('/textures/corrugated_iron_diff_2k.jpg')
    const rigidBody = useRef()
 
+   let [hitCount, setHitCount] = useState(0)
+   useEffect(() => {
+      //?
+   }, [hitCount])
+
    return (
       <RigidBody
          ref={rigidBody}
@@ -196,15 +201,38 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
 
          onCollisionEnter={() => {
             rigidBody.current?.applyTorqueImpulse({
-               x: Math.random() * 0.2,
-               y: Math.random() * 0.2,
-               z: Math.random() * 0.2,
+               x: Math.random() * 0.5,
+               y: Math.random() * 0.05,
+               z: Math.random() * 0.05,
             })
+
+            // ref.current.applyForce({ x, y, z }, wake)
+            // ref.current.setRotation({ x, y, z, w }, wake)
+
+            rigidBody.current.setRotation({ x: 5, y: 0, z: 0 }, true)
+            // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
+
+            // increase hit-counter
+            hitCount++
+            setHitCount(hitCount)
+            if (hitCount > 5) {
+               // set "content-critical" on HTML-tag
+               let HTMLTag = document.getElementById('idHTMLTag')
+               HTMLTag.setAttribute('class', '')
+               HTMLTag.setAttribute('class', 'content-critical')
+            }
          }}
       >
          <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
          <mesh castShadow receiveShadow>
             <sphereGeometry args={[radius, 64, 64]} />
+
+            <Html distanceFactor={8}>
+               <div id='idHTMLTag' className="content">
+                  {hitCount}
+               </div>
+            </Html>
+
             <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
          </mesh>
       </RigidBody>
@@ -213,14 +241,13 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
 
 //*(
 function Floor() {
-   // const terrainModel = useGLTF('/models/rocky_terrain_02_2k.gltf')  //
 
    return (
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
             args={[20, 0, 20]}
-            position={[0, 0.15, 0]}
+            position={[0, 0, 0]}
             restitution={0.95}
             friction={0.1}
             restitutionCombineRule="max"
@@ -228,8 +255,8 @@ function Floor() {
          />
 
          <mesh position={[0, 0, 0]} rotation={[0, 0, 0]} receiveShadow>
-            <boxGeometry args={[30, 0.75, 30]} />
-            {/* <meshStandardMaterial color="lightblue" map={CreateFloorTexture()}/> */}
+            <boxGeometry args={[30, 0.5, 30]} />
+            {/* <meshStandardMaterial map={CreateFloorTexture('/textures/grimy-metal-albedo.png')}/> */}
             <meshStandardMaterial color="lightblue" />
          </mesh>
       </RigidBody>
@@ -604,7 +631,7 @@ export default function Colliders() {
    const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
    const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
 
-   const [lengthScene, setLengthScene] = useState(10)  // lenght of scene in seconds
+   const [lengthScene, setLengthScene] = useState(10)  // length of scene in seconds
 
 
    // states for color picker 
@@ -901,10 +928,11 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.55} />
-                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.55} />
-                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.55} />
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.5} />
+                        {/* <Ball position={[1, 5, 0]} restitution={0.95} radius={0.55} /> */}
+                        {/* <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.55} /> */}
 
+                        {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
                         {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.75} /> */}
 
