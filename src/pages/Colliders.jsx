@@ -685,10 +685,13 @@ export default function Colliders() {
    const [disabled, setDisabled] = useState(false)  // state of the CREATE button 
    const [enableCircularProgress, setCircularProgress] = useState(false)  // state of CircularProgress
    const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
-   const [noBalls, setNoBalls] = useState(5)  // NUMBER of Balls created
-
+   const [noBalls, setNoBalls] = useState(5)  // NUMBER o]f Balls created
    const [lengthScene, setLengthScene] = useState(10)  // length of scene in seconds
 
+   const [ballsPositionX, setBallsPositionX] = useState(0)
+   const [ballsPositionY, setBallsPositionY] = useState(0)
+   const [ballsPositionZ, setBallsPositionZ] = useState(0)
+   const [customPosition, setPosition] = useState([0, 0, 0])  // used in components for Balls
 
    // states for color picker 
    const [color01, setcolor01] = useState('')
@@ -704,13 +707,21 @@ export default function Colliders() {
       return (customCamoMix)
    }  // mixCustomCamo()
 
+   function setCustomPosition() {
+      let customPosition = []
+      customPosition.push(ballsPositionX)
+      customPosition.push(ballsPositionY)
+      customPosition.push(ballsPositionZ)
+      return customPosition
+   }  // setCustomPosition()
+
    const handleChange = (event) => {
       setSize(event.target.value)
    }  // handleChange() Slider-Components
 
    useEffect(() => {
       console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
-   }, [camoUsed, createBalls, customCamoMix, indexUsed, lengthScene])
+   }, [camoUsed, createBalls, customCamoMix, indexUsed, lengthScene, ballsPositionX])
 
    // preload of GLTF-models and textures:
    preloadModelsTextures()
@@ -760,6 +771,7 @@ export default function Colliders() {
                               setDisabled(true)
                               setCircularProgress(true)
                               setLengthScene(lengthScene)
+                              setPosition(setCustomPosition())
 
                               // build camo if user mixed one 
                               let idSwitch = document.getElementById('idSwitchMixCamo')
@@ -800,6 +812,25 @@ export default function Colliders() {
                            max={500}
                            onChange={(event) => { setNoBalls(event.target.value) }}
                            value={noBalls}
+                           disabled={disabled}
+                        />
+                     </div>
+                  </Card>
+
+                  {/** Sliders for unloading POSITION of balls */}
+                  <Card>
+                     <div className="row m-3 border border-info rounded">
+                        <h6>Adjust POSITION of balls: </h6>
+                        <Slider
+                           name='idNoBalls'
+                           aria-label="Slider for POSITION of balls"
+                           defaultValue={1}
+                           valueLabelDisplay="auto"
+                           step={0.25}
+                           min={-5}
+                           max={5}
+                           onChange={(event) => { setBallsPositionX(event.target.value) }}
+                           value={ballsPositionX}
                            disabled={disabled}
                         />
                      </div>
@@ -1017,7 +1048,7 @@ export default function Colliders() {
 
                         {createBalls &&
                            <>
-                              <CreateManyBalls position={[-2.25, 5, 0]} size={size} noBalls={noBalls} withCamo={camoUsed}
+                              <CreateManyBalls position={customPosition} size={size} noBalls={noBalls} withCamo={camoUsed}
                                  customCamoMix={customCamoMix}
                                  withIndex={indexUsed}
                                  lengthScene={lengthScene}
