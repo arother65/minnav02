@@ -175,26 +175,37 @@ function ExplodingBox({ position, color }) {
    }  // exploded 
 }  // ExplodingBox()
 
-//*
+//* 
 function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
 
    // corrugated_iron_diff_2k
    const texture = CreateFloorTexture('/textures/corrugated_iron_diff_2k.jpg')
+   const rigidBody = useRef()
 
    return (
       <RigidBody
+         ref={rigidBody}
          colliders={false}
          position={position}
-         mass={5}
+         mass={1}
+         restitutionCombineRule="max"
          linearDamping={0}
          angularDamping={0}
-      // ccd
-      >
-         <BallCollider args={[radius* 0.5, radius* 0.5, radius* 0.5]} restitution={restitution} friction={0.95} />
+         // ccd  // Continuous Collision Detection
+         // softCcdPrediction={0.2}
 
+         onCollisionEnter={() => {
+            rigidBody.current?.applyTorqueImpulse({
+               x: Math.random() * 0.2,
+               y: Math.random() * 0.2,
+               z: Math.random() * 0.2,
+            })
+         }}
+      >
+         <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
          <mesh castShadow receiveShadow>
             <sphereGeometry args={[radius, 64, 64]} />
-            <meshStandardMaterial map={texture} metalness={0.85} roughness={0.5}/>
+            <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
          </mesh>
       </RigidBody>
    )
@@ -208,13 +219,16 @@ function Floor() {
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[20, 0.75, 20]}
-            restitution={0.5}
-            friction={0.5}
+            args={[20, 0, 20]}
+            position={[0, 0.15, 0]}
+            restitution={0.95}
+            friction={0.1}
+            restitutionCombineRule="max"
+            ccd
          />
 
-         <mesh position={[0, 0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
-            <boxGeometry args={[20, 0.75, 20]} />
+         <mesh position={[0, 0, 0]} rotation={[0, 0, 0]} receiveShadow>
+            <boxGeometry args={[30, 0.75, 30]} />
             {/* <meshStandardMaterial color="lightblue" map={CreateFloorTexture()}/> */}
             <meshStandardMaterial color="lightblue" />
          </mesh>
@@ -356,14 +370,14 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          key={index}
          colliders={false}
          position={position}
-         mass={25}
+         mass={2}
       >
          <BallCollider args={[
             geometry.parameters.radius * 0.5,
             geometry.parameters.radius * 0.5,
             geometry.parameters.radius * 0.5,
          ]}
-            restitution={0.75} friction={0.25}
+            restitution={0.75} friction={0.15}
          />
          <mesh geometry={geometry} material={material} castShadow>
             {!withCamo &&
@@ -548,23 +562,31 @@ function CreateGrass({ position, rotation, scale = 2 }) {
 
 }  // CreateGrass()
 
-function CorrugatedIron({ position, rotation, scale = 2 }) {
+//* ERRS: zeichnet bei mehrfacher Verwendung genau ein Objekt...
+function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
 
    const ironModel = useGLTF('/models/corrugated_iron.glb')
+   ironModel.materials.corrugated_iron.metalness = 0.95
+   ironModel.materials.corrugated_iron.roughness = 0.65
 
-   ironModel.materials.corrugated_iron.metalness = 0.85
-   ironModel.materials.corrugated_iron.roughness = 0.55
+   //? useConvexPolyhedron(); vertices + faces from your model’s geometry
+   //? useCompoundBody
 
    return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <primitive object={ironModel.scene} />
-
-         <Html distanceFactor={5}>
-            <div className="content">
-               ironModel GLB-file
-            </div>
-         </Html>
-      </group>
+      <RigidBody
+         colliders={false}
+         position={position}
+         mass={5}
+         restitutionCombineRule="max"
+         linearDamping={0}
+         angularDamping={0}
+         canSleep={false}
+         ccd  // Continuous Collision Detection
+         softCcdPrediction={0.2}
+      >
+         <CuboidCollider args={[scale * 1.5, scale * 0.75, scale * 0.6]} restitution={restitution} friction={0.15} />
+         <primitive object={ironModel.scene} scale={scale} castShadow receiveShadow />
+      </RigidBody>
    )
 }  // CorrugatedIron()
 
@@ -613,7 +635,7 @@ export default function Colliders() {
    useGLTF.preload('/models/fire_hydrant.glb')
    useGLTF.preload('/models/grass_medium.glb')
    useGLTF.preload('/models/corrugated_iron.glb')
-
+   useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  //?
 
    // 
    return (
@@ -879,16 +901,21 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball radius={1} position={[0, 8, 0]} restitution={0.75} />
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.55} />
+                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.55} />
+                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.55} />
 
-                        <CorrugatedIron position={[-4, 2, -6]} rotation={[0, 0, 0]} scale={1.5} />
+
+                        {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.75} /> */}
+
+                        {/** does not work, just shows one ball with corrugatedIron... */}
+                        {/* <CorrugatedIron position={[2, 8, 1]} restituion={1} scale={1} /> */}
+
+
 
                         <CreateRustyBox position={[3, 0.75, -7]} rotation={[0, 0, 0]} scale={1.5} />
-
                         <CreateOZRim position={[0, 2, -8]} rotation={[0, 0, 0]} scale={2} />
-
                         <CreateFireHydrant position={[0, 0.5, -6]} rotation={[0, 0, 0]} scale={2} />
-
                         <CreateGrass position={[0, 0.5, -6.25]} rotation={[0, 0, 0]} scale={10} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
