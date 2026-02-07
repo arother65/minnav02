@@ -143,6 +143,7 @@ function Fragment({ velocity, color }) {
 function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
 
    const [exploded, setExploded] = useState(false)
+
    // 
    if (!exploded) {
       return (
@@ -175,7 +176,7 @@ function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
    }  // exploded 
 }  // ExplodingBox()
 
-//* 
+//* je nach Stand von hitCount explodiert der Ball...
 function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
 
    // corrugated_iron_diff_2k
@@ -187,56 +188,79 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
       //?
    }, [hitCount])
 
-   return (
-      <RigidBody
-         ref={rigidBody}
-         colliders={false}
-         position={position}
-         mass={1}
-         restitutionCombineRule="max"
-         linearDamping={0}
-         angularDamping={0}
-         // ccd  // Continuous Collision Detection
-         // softCcdPrediction={0.2}
+   let [explode, setExplode] = useState(false)
 
-         onCollisionEnter={() => {
-            rigidBody.current?.applyTorqueImpulse({
-               x: Math.random() * 0.5,
-               y: Math.random() * 0.05,
-               z: Math.random() * 0.05,
-            })
+   // useEffect(() => {
+   //    //?
+   // }, [explode])
 
-            // ref.current.applyForce({ x, y, z }, wake)
-            // ref.current.setRotation({ x, y, z, w }, wake)
+   if (!explode) {
+      return (
+         <RigidBody
+            ref={rigidBody}
+            colliders={false}
+            position={position}
+            mass={1}
+            restitutionCombineRule="max"
+            linearDamping={0}
+            angularDamping={0}
+            // ccd  // Continuous Collision Detection
+            // softCcdPrediction={0.2}
 
-            rigidBody.current.setRotation({ x: 5, y: 0, z: 0 }, true)
-            // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
+            onCollisionEnter={() => {
+               rigidBody.current?.applyTorqueImpulse({
+                  x: Math.random() * 0.5,
+                  y: Math.random() * 0.05,
+                  z: Math.random() * 0.05,
+               })
 
-            // increase hit-counter
-            hitCount++
-            setHitCount(hitCount)
-            if (hitCount > 5) {
-               // set "content-critical" on HTML-tag
-               let HTMLTag = document.getElementById('idHTMLTag')
-               HTMLTag.setAttribute('class', '')
-               HTMLTag.setAttribute('class', 'content-critical')
-            }
-         }}
-      >
-         <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
-         <mesh castShadow receiveShadow>
-            <sphereGeometry args={[radius, 64, 64]} />
+               // ref.current.applyForce({ x, y, z }, wake)
+               // ref.current.setRotation({ x, y, z, w }, wake)
 
-            <Html distanceFactor={8}>
-               <div id='idHTMLTag' className="content">
-                  {hitCount}
-               </div>
-            </Html>
+               rigidBody.current.setRotation({ x: 2, y: 0, z: 0 }, true)
+               // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
 
-            <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
-         </mesh>
-      </RigidBody>
-   )
+               // increase hit-counter
+               hitCount++
+               setHitCount(hitCount)
+               if (hitCount > 5) {
+                  // set "content-critical" on HTML-tag
+                  let HTMLTag = document.getElementById('idHTMLTag')
+                  HTMLTag.setAttribute('class', '')
+                  HTMLTag.setAttribute('class', 'content-critical')
+               }
+               if (hitCount === 12) {
+                  setExplode(true)
+               }
+            }}
+         >
+            <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
+
+            < mesh castShadow receiveShadow>
+               <sphereGeometry args={[radius, 64, 64]} />
+
+               <Html distanceFactor={8}>
+                  <div id='idHTMLTag' className="content">
+                     {hitCount}
+                  </div>
+               </Html>
+               <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
+            </mesh>
+         </RigidBody >
+      )
+   }
+
+   if (explode) {
+      return (
+         Array.from({ length: 80 }).map((_, i) => (
+            <Fragment
+               key={i}
+               velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+               color={color}
+            />
+         ))
+      )
+   }
 }  // Ball()
 
 //*(
@@ -248,8 +272,8 @@ function Floor() {
          <CuboidCollider
             args={[20, 0, 20]}
             position={[0, 0, 0]}
-            restitution={0.95}
-            friction={0.1}
+            restitution={0.75}
+            friction={0.15}
             restitutionCombineRule="max"
             ccd
          />
