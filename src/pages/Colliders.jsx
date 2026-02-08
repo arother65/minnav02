@@ -216,6 +216,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                   y: Math.random() * 0.05,
                   z: Math.random() * 0.05,
                })
+
                // position des rigidBody aktualisieren:
                let actPosition = rigidBody.current.translation()
                let newPosition = []
@@ -244,17 +245,20 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                }
             }}
          >
-            <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
+            <BallCollider args={[radius * 0.5, radius * 0.5, radius * 0.5]} restitution={restitution} friction={0.15} />
 
             <mesh castShadow receiveShadow>
-               <sphereGeometry args={[radius, 64, 64]} />
+               <sphereGeometry args={[radius, 32, 32]} />
 
                <Html distanceFactor={8}>
                   <div id='idHTMLTag' className="content">
                      {hitCount}
                   </div>
                </Html>
-               <meshStandardMaterial map={texture} metalness={0.85} roughness={0.55} />
+
+               <meshStandardMaterial map={texture} metalness={0.95} roughness={0.5} />
+               {hitCount === 10 && <meshStandardMaterial color={orange[500]} map={texture} metalness={0.65} roughness={0.35} />}
+               {hitCount === 11 && <meshStandardMaterial color={red[500]} map={texture} metalness={0.25} roughness={0.55} />}
             </mesh>
          </RigidBody>
       )
@@ -267,6 +271,10 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                key={i}
                velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
                position={rigidBodyPos}
+               metalness={0.95}
+               roughness={0.05}
+               castShadow
+               receiveShadow
             />
          ))
       )
@@ -1037,11 +1045,12 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.25} />
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.15} />
                         <Ball position={[1, 5, 0]} restitution={0.95} radius={0.25} />
-                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.45} />
+                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.35} />
                         <Ball position={[-2, 5, 0]} restitution={0.95} radius={0.45} />
-                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={0.65} />
+                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={0.55} />
+                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={1.55} />
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
@@ -1111,9 +1120,9 @@ export default function Colliders() {
 
                         <Wall position={[-1, 1.75, -4]} size={[0.25, 5, 4]} color={blue[500]} />
 
-                        <Wall position={[-4, 1.25, 0]} rotation={[0, 0, 0]}   size={[0.25, 3, 2]} color={orange[500]} />
+                        <Wall position={[-4, 1.25, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} />
                         <Wall position={[0.15, 5, -2]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
-                        <Wall position={[  -4, 5,  6]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
+                        <Wall position={[-4, 5, 6]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
 
 
                         <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} />
@@ -1129,11 +1138,11 @@ export default function Colliders() {
                         <Wall position={[4, 1.2, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
 
                         {/** Wall zur Begrenzung der Szene */}
-                        <Wall position={[12, 1, -8]}  rotation={[ 1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
-                        <Wall position={[12, 1,  8]}  rotation={[-1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
-                        
+                        <Wall position={[12, 1, -8]} rotation={[1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
+                        <Wall position={[12, 1, 8]} rotation={[-1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
+
                         <Wall position={[-12, 1, -12]} rotation={[-1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
-                        <Wall position={[-12, 1,  12]} rotation={[ 1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
+                        <Wall position={[-12, 1, 12]} rotation={[1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
 
                         <Floor />
                      </Physics>
