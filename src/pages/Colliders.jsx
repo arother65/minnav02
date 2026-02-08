@@ -182,8 +182,10 @@ function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
 //* je nach Stand von hitCount explodiert der Ball...
 function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
 
-   // corrugated_iron_diff_2k
-   const texture = CreateFloorTexture('/textures/corrugated_iron_diff_2k.jpg')
+   // corrugated_iron_diff_2k: dunkel...
+   // const texture = CreateTextureFromFile('/textures/rusty_corrugated_iron_diff_2k.jpg')
+   const texture = CreateTextureFromFile('/textures/wood.jpg')
+
    const rigidBody = useRef()
 
    let [hitCount, setHitCount] = useState(0)
@@ -201,7 +203,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
             ref={rigidBody}
             colliders={false}
             position={position}
-            mass={1}
+            mass={2}
             restitutionCombineRule="max"
             linearDamping={0}
             angularDamping={0}
@@ -244,7 +246,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
          >
             <BallCollider args={[radius * 0.85, radius * 0.85, radius * 0.85]} restitution={restitution} friction={0.15} />
 
-            < mesh castShadow receiveShadow>
+            <mesh castShadow receiveShadow>
                <sphereGeometry args={[radius, 64, 64]} />
 
                <Html distanceFactor={8}>
@@ -252,7 +254,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                      {hitCount}
                   </div>
                </Html>
-               <meshStandardMaterial map={texture} metalness={0.95} roughness={0.65} />
+               <meshStandardMaterial map={texture} metalness={0.85} roughness={0.55} />
             </mesh>
          </RigidBody>
       )
@@ -278,7 +280,7 @@ function Floor() {
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[20, 0, 20]}
+            args={[20, 0.1, 20]}
             position={[0, 0, 0]}
             restitution={0.75}
             friction={0.15}
@@ -286,14 +288,14 @@ function Floor() {
             ccd
          />
 
-         <mesh position={[0, 0, 0]} rotation={[0, 0, 0]} receiveShadow>
+         <mesh position={[0, -0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[30, 0.5, 30]} />
-            {/* <meshStandardMaterial map={CreateFloorTexture('/textures/grimy-metal-albedo.png')}/> */}
-            <meshStandardMaterial color="lightblue" />
+            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/grimy-metal-albedo.png')}/> */}
+            <meshStandardMaterial color="lightblue" metallness={0.5} roughness={0.15} />
          </mesh>
       </RigidBody>
    )
-}
+}  // Floor()
 
 //*
 function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = false }) {
@@ -301,16 +303,23 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
    const rigidBodyRef = useRef()
    const meshRef = useRef()
 
+   const rusty_corrugated_iron = useTexture({
+      map: '/textures/rusty_corrugated_iron_arm_2k.jpg',
+      normalMap: '/textures/rusty_corrugated_iron_nor_gl_2k.jpg',
+      roughnessMap: '/textures/rusty_corrugated_iron_diff_2k.jpg',
+   })
+   rusty_corrugated_iron.map.colorSpace = THREE.SRGBColorSpace
+   rusty_corrugated_iron.normalMap.flipY = false
+
    useFrame((_, delta) => {
       const body = rigidBodyRef.current
 
       if (!body || !meshRef.current || !rotate) return
 
-      // meshRef.current.rotation.x += delta * 0.75
-      meshRef.current.rotation.y += delta * 0.95
+      meshRef.current.rotation.z += delta * 0.75
+      // meshRef.current.rotation.y += delta * 0.95
       // meshRef.current.position.x -= 0.005  // dreht die Wall weg vom FLoor...
 
-      // meshRef.current.rotation.z += delta * 0.95
       body.setNextKinematicRotation(meshRef.current.rotation)
    })
 
@@ -341,6 +350,7 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
                   size[2] * 1,
                ]} />
             <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} />
+            {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} {...rusty_corrugated_iron} /> */}
 
             {/** erzeugt spiegelnde Oberflächen...GPU-intensiv */}
             {/* <MeshTransmissionMaterial 
@@ -354,7 +364,7 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
          </mesh>
       </RigidBody>
    )
-}
+}  // Wall()
 
 //*
 function getMuiColorObj(ivColor) {
@@ -586,7 +596,7 @@ function CreateRustyBox({ position, rotation, scale }) {
    )
 }  // CreateRustyBox()
 
-function CreateFloorTexture(path2textureFile) {
+function CreateTextureFromFile(path2textureFile) {
 
    // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
    // return <Clone object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
@@ -600,7 +610,7 @@ function CreateFloorTexture(path2textureFile) {
    // return the texture created 
    return texture
 
-}  //  CreateFloorTexture()
+}  //  CreateTextureFromFile()
 
 function CreateFireHydrant({ position, rotation, scale = 1 }) {
 
@@ -629,6 +639,22 @@ function CreateGrass({ position, rotation, scale = 2 }) {
    return <Clone object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
 
 }  // CreateGrass()
+
+function CreateFence({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const fenceModel = useGLTF('/models/modular_chainlink_fence_2k.gltf')
+   fenceModel.materials.modular_chainlink_fence_posts.metallness = 0.85
+   fenceModel.materials.modular_chainlink_fence_posts.roughness = 0.85
+   // fenceModel.materials.modular_chainlink_fence_posts.color = { r: 64, g: 8, b: 16 }
+
+   fenceModel.materials.modular_chainlink_fence_wire.metallness = 0.85
+   fenceModel.materials.modular_chainlink_fence_wire.roughness = 0.75
+   // fenceModel.materials.modular_chainlink_fence_wire.color = { r: 64, g: 8, b: 16 }
+
+   // normal usage: Model.scene
+   return <Clone object={fenceModel.scene} position={position} rotation={rotation} scale={scale} />
+}  // CreateFence()
+
 
 //*
 function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
@@ -671,6 +697,7 @@ function preloadModelsTextures() {
    useGLTF.preload('/models/corrugated_iron.glb')
    useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  // works
    useGLTF.preload('/models/c-transformed.glb')
+   useGLTF.preload('/models/modular_chainlink_fence_2k.gltf')
 }  //
 
 //* Colliders page component
@@ -1019,7 +1046,10 @@ export default function Colliders() {
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
                         <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.5} />
-                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.9} />
+                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.25} />
+
+                        {/* <CreateFence position={[-3, 0.25, -9]} /> */}
+
 
                         {/* <CreateRustyBox position={[0, 0.225, 0]} rotation={[0, 0, 0]} scale={1.5} /> */}
                         <CreateRustyBox position={[-5, 0.225, -8]} rotation={[0, 0, 0]} scale={1.5} />
@@ -1028,7 +1058,7 @@ export default function Colliders() {
                         {/* <CreateOZRim position={[2, 0.75, -7.5]} rotation={[0, 0, 0]} scale={2} /> */}
 
                         <CreateFireHydrant position={[0, 0.25, -6]} rotation={[0, 0, 0]} scale={2} />
-                        <CreateGrass position={[0, 0.25, -6.25]} rotation={[0, 0, 0]} scale={10} />
+
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
@@ -1075,24 +1105,35 @@ export default function Colliders() {
 
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
-                        <Wall position={[1, 2, 4]} size={[0.25, 5, 3]} color={blue[200]} />
+                        <Wall position={[1, 1.5, 4]} size={[0.25, 6, 4]} color={blue[200]} />
                         <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
+                        <CreateGrass position={[2, 3.35, 3.15]} rotation={[0, 0, 0]} scale={10} />
 
-                        <Wall position={[-1, 2, -4]} size={[0.25, 5, 4]} color={blue[400]} />
+                        <Wall position={[-1, 1.75, -4]} size={[0.25, 5, 4]} color={blue[500]} />
 
-                        <Wall position={[-4, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} rotate={false} />
-                        <Wall position={[0.15, 3, -2]} rotation={[1.6, 1, -2]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
+                        <Wall position={[-4, 1.25, 0]} rotation={[0, 0, 0]}   size={[0.25, 3, 2]} color={orange[500]} />
+                        <Wall position={[0.15, 5, -2]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
+                        <Wall position={[  -4, 5,  6]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
+
 
                         <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} />
                         <Wall position={[4, 1.5, 0.2]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
-                        <Wall position={[9, 3, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
+                        <Wall position={[9, 2.75, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
 
-                        <Wall position={[-9, 3, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
-                        <Wall position={[-7.5, 4.25, 3.15]} rotation={[0, 0, 1.6]} size={[0.25, 4, 5]} color={green[500]} />
+                        <Wall position={[-9, 2.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[500]} />
+                        <Wall position={[-7.5, 4, 3.15]} rotation={[0, 0, 1.6]} size={[0.25, 4, 5]} color={green[500]} />
+                        <CreateGrass position={[-7.5, 4.35, 3.15]} rotation={[0, 0, 0]} scale={5} />
 
-                        <Wall position={[-4, 1.25, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[600]} />
-                        <Wall position={[4, 1.25, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[600]} />
+                        <Wall position={[-4, 1.2, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
+                        <Wall position={[4, 1.2, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
+
+                        {/** Wall zur Begrenzung der Szene */}
+                        <Wall position={[12, 1, -8]}  rotation={[ 1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
+                        <Wall position={[12, 1,  8]}  rotation={[-1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
+                        
+                        <Wall position={[-12, 1, -12]} rotation={[-1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
+                        <Wall position={[-12, 1,  12]} rotation={[ 1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
 
                         <Floor />
                      </Physics>
