@@ -369,9 +369,9 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
                   size[1] * 1,
                   size[2] * 1,
                ]} />
-            {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} /> */}
+            <meshStandardMaterial color={color} metallness={0.9} roughness={0.1} />
 
-            <meshStandardMaterial map={CreateTextureFromFile('/textures/curly_teddy_checkered.jpg')} />
+            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/curly_teddy_checkered.jpg')} /> */}
 
             {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} {...rusty_corrugated_iron} /> */}
 
@@ -659,6 +659,8 @@ function CreateGrass({ position, rotation, scale = 2 }) {
    // normal usage: grassModel.scene
    // grassModel.nodes.grass_medium_01_large_a_LOD0; grassModel.nodes enthält verschiedene Grassgrößen
 
+   // Zugriff auf das gwünschte Objekt über: model.nodes.<name>
+
    return <Clone object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
 
 }  // CreateGrass()
@@ -730,6 +732,28 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
       </RigidBody>
    )
 }  // CorrugatedIron()
+
+function CreateCables({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
+
+   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
+
+   cablesModel.nodes.cable_box_turn.material.metallness = 0.95
+   cablesModel.nodes.cable_box_turn.material.roughness = 0.55
+
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <Clone object={cablesModel.nodes.cable_box_turn} />
+
+         <Html distanceFactor={2}>
+            <div className="content">
+               cablesModel.scene
+            </div>
+         </Html>
+      </group>
+   )
+}  // CreateCables()
 
 //*
 function preloadModelsTextures() {
@@ -1087,7 +1111,10 @@ export default function Colliders() {
                         {/* <Ball position={[0, 5, 0]} restitution={0.95} radius={0.5} /> */}
                         {/* <Ball position={[-1, 5, 2]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
-                        <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} />
+                        {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
+
+                        <CreateCables position={[4.15, 1.5, -2.65]} rotation={[0, 1.55, 0]} scale={10} />
+
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[500]}/> */}
 
