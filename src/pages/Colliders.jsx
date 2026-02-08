@@ -180,6 +180,7 @@ function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
 }  // ExplodingBox()
 
 //* je nach Stand von hitCount explodiert der Ball...
+
 function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
 
    // corrugated_iron_diff_2k: dunkel...
@@ -196,6 +197,42 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
       //?
    }, [hitCount, rigidBodyPos])
 
+   //* Event handler
+   function handleOnCollisionEnter(rigidBody) {
+
+      rigidBody.current?.applyTorqueImpulse({
+         x: Math.random() * 0.5,
+         y: Math.random() * 0.05,
+         z: Math.random() * 0.05,
+      })
+
+      // position des rigidBody aktualisieren:
+      let actPosition = rigidBody.current.translation()
+      let newPosition = []
+      newPosition[0] = actPosition.x
+      newPosition[1] = actPosition.y
+      newPosition[2] = actPosition.z
+      setRigidBodyPos(newPosition)
+
+      // ref.current.applyForce({ x, y, z }, wake)
+      // ref.current.setRotation({ x, y, z, w }, wake)
+
+      rigidBody.current.setRotation({ x: 1, y: 0, z: 0 }, true)
+      // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
+
+      // increase hit-counter
+      hitCount++
+      setHitCount(hitCount)
+      if (hitCount > 5) {
+         // set "content-critical" on HTML-tag
+         let HTMLTag = document.getElementById('idHTMLTag')
+         HTMLTag.setAttribute('class', '')
+         HTMLTag.setAttribute('class', 'content-critical')
+      }
+      if (hitCount === 12) {
+         setExplode(true)
+      }
+   }  // handleOnCollisionEnter()
 
    if (!explode) {
       return (
@@ -209,41 +246,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
             angularDamping={0}
             // ccd  // Continuous Collision Detection
             // softCcdPrediction={0.2}
-
-            onCollisionEnter={() => {
-               rigidBody.current?.applyTorqueImpulse({
-                  x: Math.random() * 0.5,
-                  y: Math.random() * 0.05,
-                  z: Math.random() * 0.05,
-               })
-
-               // position des rigidBody aktualisieren:
-               let actPosition = rigidBody.current.translation()
-               let newPosition = []
-               newPosition[0] = actPosition.x
-               newPosition[1] = actPosition.y
-               newPosition[2] = actPosition.z
-               setRigidBodyPos(newPosition)
-
-               // ref.current.applyForce({ x, y, z }, wake)
-               // ref.current.setRotation({ x, y, z, w }, wake)
-
-               rigidBody.current.setRotation({ x: 5, y: 0, z: 0 }, true)
-               // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
-
-               // increase hit-counter
-               hitCount++
-               setHitCount(hitCount)
-               if (hitCount > 5) {
-                  // set "content-critical" on HTML-tag
-                  let HTMLTag = document.getElementById('idHTMLTag')
-                  HTMLTag.setAttribute('class', '')
-                  HTMLTag.setAttribute('class', 'content-critical')
-               }
-               if (hitCount === 12) {
-                  setExplode(true)
-               }
-            }}
+            onCollisionEnter={() => { if (rigidBody) { handleOnCollisionEnter(rigidBody) } }}
          >
             <BallCollider args={[radius * 0.5, radius * 0.5, radius * 0.5]} restitution={restitution} friction={0.15} />
 
@@ -260,7 +263,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
                {hitCount === 10 && <meshStandardMaterial color={orange[500]} map={texture} metalness={0.65} roughness={0.35} />}
                {hitCount === 11 && <meshStandardMaterial color={red[500]} map={texture} metalness={0.25} roughness={0.55} />}
             </mesh>
-         </RigidBody>
+         </RigidBody >
       )
    }
 
@@ -299,7 +302,15 @@ function Floor() {
          <mesh position={[0, -0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[30, 0.5, 30]} />
             {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/grimy-metal-albedo.png')}/> */}
-            <meshStandardMaterial color="lightblue" metallness={0.5} roughness={0.15} />
+            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/broken_brick_wall_diff_2k.jpg')} /> */}
+
+            <meshStandardMaterial
+               map={CreateTextureFromFile('/textures/corrugated_iron_diff_2k.jpg')}
+               metallness={0.85}
+               roughness={0.45}
+            />
+
+            {/* <meshStandardMaterial color={blue[100]} metallness={0.25} roughness={0.15} /> */}
          </mesh>
       </RigidBody>
    )
@@ -415,7 +426,7 @@ function getRandomMuiColor() {
 function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, withCamo = false, withIndex = false, customCamoMix, onDone, lengthScene }) {
 
    // useMemo() for better performance with big noBalls
-   const geometry = useMemo(() => new THREE.SphereGeometry(size, 16, 16), [size])
+   const geometry = useMemo(() => new THREE.SphereGeometry(size, 64, 64), [size])
 
    const camoTexture = useMemo(() => {
       // return createNatoCamoTexture([getRandomMuiColor(), green[200], grey[500]])
@@ -430,7 +441,7 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          // color:  new THREE.Color(getRandomMuiColor()),
          // color: getRandomMuiColor(),
          metalness: 0.95,
-         roughness: 0.1
+         roughness: 0
          // map: camoTexture
       }), [])
 
@@ -460,9 +471,9 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          mass={2}
       >
          <BallCollider args={[
-            geometry.parameters.radius * 0.5,
-            geometry.parameters.radius * 0.5,
-            geometry.parameters.radius * 0.5,
+            geometry.parameters.radius * 0.75,
+            geometry.parameters.radius * 0.75,
+            geometry.parameters.radius * 0.75,
          ]}
             restitution={0.75} friction={0.15}
          />
@@ -667,6 +678,8 @@ function CreateFence({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) 
 //*
 function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
 
+   const rigidBody = useRef()
+
    const ironModel = useGLTF('/models/corrugated_iron.glb')
    ironModel.materials.corrugated_iron.metalness = 0.95
    ironModel.materials.corrugated_iron.roughness = 0.15
@@ -678,19 +691,37 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
    //? useConvexPolyhedron(); vertices + faces from your model’s geometry
    //? useCompoundBody
 
+   function handleOnCollisionEnter(rigidBody) {
+
+      rigidBody.current?.applyTorqueImpulse({
+         x: Math.random() * 0.15,
+         y: Math.random() * 0,
+         z: Math.random() * 0,
+      })
+
+      // ref.current.applyForce({ x, y, z }, wake)
+      // rigidBody.current.applyForce({ x: 1, y: 1, z: 0 }, true)
+
+      // ref.current.setRotation({ x, y, z, w }, wake)
+      rigidBody.current.setRotation({ x: 3, y: 0.05, z: 0.05 }, true)
+
+   }  // handleOnCollisionEnter()
+
    return (
       <RigidBody
+         ref={rigidBody}
          colliders={false}
          position={position}
-         mass={1}
+         mass={5}
          restitutionCombineRule="max"
          linearDamping={0}
          angularDamping={0}
          canSleep={false}
          ccd  // Continuous Collision Detection
          softCcdPrediction={0.2}
+         onCollisionEnter={() => { if (rigidBody) { handleOnCollisionEnter(rigidBody) } }}
       >
-         <CuboidCollider args={[scale * 1.5, scale * 0.75, scale * 0.6]} restitution={restitution} friction={0.15} />
+         <CuboidCollider args={[scale * 0.5, scale * 0.5, scale * 0.5]} restitution={restitution} friction={0.15} />
          <Clone object={ironModel.scene} scale={scale} castShadow receiveShadow />
       </RigidBody>
    )
@@ -837,18 +868,21 @@ export default function Colliders() {
                      </div>
                      <div className="row m-3 border border-info rounded">
                         <h6>Adjust NUMBER of balls: </h6>
-                        <Slider
-                           name='idNoBalls'
-                           aria-label="Slider for number of balls"
-                           defaultValue={1}
-                           valueLabelDisplay="auto"
-                           step={1}
-                           min={1}
-                           max={500}
-                           onChange={(event) => { setNoBalls(event.target.value) }}
-                           value={noBalls}
-                           disabled={disabled}
-                        />
+                        <Tooltip title="!get's SLOW when high" arrow>
+                           <Slider
+                              name='idNoBalls'
+                              aria-label="Slider for number of balls"
+                              defaultValue={1}
+                              valueLabelDisplay="auto"
+                              marks
+                              step={1}
+                              min={1}
+                              max={900}
+                              onChange={(event) => { setNoBalls(event.target.value) }}
+                              value={noBalls}
+                              disabled={disabled}
+                           />
+                        </Tooltip>
                      </div>
                   </Card>
 
@@ -1045,29 +1079,25 @@ export default function Colliders() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.15} />
-                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.25} />
-                        <Ball position={[-1, 5, 0]} restitution={0.95} radius={0.35} />
-                        <Ball position={[-2, 5, 0]} restitution={0.95} radius={0.45} />
-                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={0.55} />
-                        <Ball position={[-3, 5, 0]} restitution={0.95} radius={1.55} />
+                        {/** explodieren nach einer Anzahl an Kontakten: */}
+                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.25} />
+                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.5} />
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
 
-                        <CorrugatedIron position={[1, 8, 0]} restitution={0.95} scale={0.5} />
-                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.25} />
+                        <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
+                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.5} />
 
                         {/* <CreateFence position={[-3, 0.25, -9]} /> */}
 
 
                         {/* <CreateRustyBox position={[0, 0.225, 0]} rotation={[0, 0, 0]} scale={1.5} /> */}
-                        <CreateRustyBox position={[-5, 0.225, -8]} rotation={[0, 0, 0]} scale={1.5} />
+                        <CreateRustyBox position={[-5, 0, -12]} rotation={[0, 0, 0]} scale={3} />
 
-                        <CreateOZRim position={[0, 0.75, -8]} rotation={[0, 0, 0]} scale={2} />
+                        <CreateOZRim position={[0, 0.65, -12]} rotation={[0, 0, 0]} scale={3} />
                         {/* <CreateOZRim position={[2, 0.75, -7.5]} rotation={[0, 0, 0]} scale={2} /> */}
 
-                        <CreateFireHydrant position={[0, 0.25, -6]} rotation={[0, 0, 0]} scale={2} />
-
+                        <CreateFireHydrant position={[0, 0.15, -12]} rotation={[0, 0, 0]} scale={3} />
 
                         {/** füllt unerwünscht den Hintergrund... */}
                         {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
@@ -1136,6 +1166,12 @@ export default function Colliders() {
 
                         <Wall position={[-4, 1.2, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
                         <Wall position={[4, 1.2, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
+
+                        {/** Begrenzung OBERHALB der Szene */}
+                        <Wall position={[-5, 7, 5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[400]} />
+                        <Wall position={[0, 8, -5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[800]} />
+                        <Wall position={[8, 7, 0]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[500]} />
+
 
                         {/** Wall zur Begrenzung der Szene */}
                         <Wall position={[12, 1, -8]} rotation={[1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
