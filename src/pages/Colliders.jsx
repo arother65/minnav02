@@ -740,7 +740,9 @@ function CreateCables({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 })
    // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
 
    cablesModel.nodes.cable_box_turn.material.metallness = 0.95
-   cablesModel.nodes.cable_box_turn.material.roughness = 0.55
+   cablesModel.nodes.cable_box_turn.material.roughness = 0.45
+   cablesModel.nodes.cable_box_turn.material.color = { isColor: true, r: 128, g : 0, b: 0 }
+   cablesModel.nodes.cable_box_turn.material.blendColor = { isColor: true, r: 128, g : 0, b: 16 }
 
    return (
       <group position={position} rotation={rotation} scale={scale}>
