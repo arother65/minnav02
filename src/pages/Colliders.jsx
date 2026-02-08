@@ -9,7 +9,7 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useMemo, useRef, useEffect, Suspense } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 
 
 import * as THREE from 'three'
@@ -18,7 +18,7 @@ import { useFrame } from "@react-three/fiber"  // errs
 
 import { OrbitControls } from "@react-three/drei"
 import { Html } from "@react-three/drei"
-import { useGLTF, Clone, useTexture, MeshTransmissionMaterial } from '@react-three/drei'
+import { useGLTF, Clone, useTexture } from '@react-three/drei'
 // import { usePlane } from '@react-three/cannon'
 
 import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
@@ -35,8 +35,9 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 // import BouncingBalls, { BouncingBalls01 } from '../components/BouncingBalls'
 
-import Connectors from '../components/Connectors'
-// import DodecahedronGroup from '../components/DodecahedronGroup'
+// import Connectors from '../components/Connectors'
+
+import DodecahedronGroup from '../components/DodecahedronGroup'
 // import OpenableBox from '../components/boxes/OpenableBox'
 
 import "../components/styles.css"
@@ -368,7 +369,10 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
                   size[1] * 1,
                   size[2] * 1,
                ]} />
-            <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} />
+            {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} /> */}
+
+            <meshStandardMaterial map={CreateTextureFromFile('/textures/curly_teddy_checkered.jpg')} />
+
             {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} {...rusty_corrugated_iron} /> */}
 
             {/** erzeugt spiegelnde Oberflächen...GPU-intensiv */}
@@ -1080,16 +1084,18 @@ export default function Colliders() {
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         {/** explodieren nach einer Anzahl an Kontakten: */}
-                        <Ball position={[0, 5, 0]} restitution={0.95} radius={0.25} />
-                        <Ball position={[1, 5, 0]} restitution={0.95} radius={0.5} />
+                        {/* <Ball position={[0, 5, 0]} restitution={0.95} radius={0.5} /> */}
+                        {/* <Ball position={[-1, 5, 2]} restitution={0.95} radius={0.65} /> */}
+                        {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
+                        <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} />
 
-                        {/* <ExplodingBox position = {[0, 8, 0]} color={green[400]}/> */}
+                        {/* <ExplodingBox position = {[0, 8, 0]} color={green[500]}/> */}
 
                         <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
                         <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.5} />
+                        <CorrugatedIron position={[3, 8, 1]} restitution={0.9} scale={0.65} />
 
                         {/* <CreateFence position={[-3, 0.25, -9]} /> */}
-
 
                         {/* <CreateRustyBox position={[0, 0.225, 0]} rotation={[0, 0, 0]} scale={1.5} /> */}
                         <CreateRustyBox position={[-5, 0, -12]} rotation={[0, 0, 0]} scale={3} />
@@ -1112,7 +1118,9 @@ export default function Colliders() {
                         {/** !GPU-intensiv: */}
                         {/* <Connectors position={[0, 8, 0]} color={green[500]}/> */}
 
-                        {/* <DodecahedronGroup />  */}
+                        {/* <DodecahedronGroup position={[0, 0, 0]} />  */}
+                        {/* <DodecahedronGroup position={[2, 0, 0]}/> */}
+
                         {/* <OpenableBox position={[5, 1, 7]} color={red[500]}/> */}
 
                         {createBalls &&

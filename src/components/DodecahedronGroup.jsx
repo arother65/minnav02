@@ -6,7 +6,9 @@
 
 //*
 import { useRef } from "react"
-import { useFrame } from "@react-three/fiber"
+
+// import { useFrame } from "@react-three/fiber"
+
 import { Html } from "@react-three/drei"
 import { RigidBody, CuboidCollider } from "@react-three/rapier"
 import "./styles.css"
@@ -33,13 +35,17 @@ function Dodecahedron({ time, ...props }) {
           //   },
           //   true
           // );
-          ref.current.applyTorqueImpulse({ x: Math.random() * 1.5, y: Math.random() * 1.75, z: Math.random() * 0.15 }, true);
+          ref.current.applyTorqueImpulse({ x: Math.random() * 0.5, y: Math.random() * 1.5, z: Math.random() * 0.15 }, true);
         }}
       />
+
       <mesh>
         <dodecahedronGeometry args={[0.95]} />
+
         {/* <meshStandardMaterial roughness={0.5} emissive="#404057" color={props.color} /> */}
-        <meshStandardMaterial roughness={0.1} color={props.color} />
+        
+        <meshStandardMaterial metalness={0.75} roughness={0.1} color={props.color} opacity={0.85} transparent/>
+        
         <Html distanceFactor={10}>
           <div className="content">
             {props.text}
@@ -51,16 +57,17 @@ function Dodecahedron({ time, ...props }) {
 }  // Dodecahedron()
 
 //* erstellt eine rotierende Gruppe von "Dodecahedron"-Objekten
-export default function DodecahedronGroup() {
+export default function DodecahedronGroup( { position= [0, 0, 0] }) {
+  
   const ref = useRef()
 
   // 
   return (
-    <group ref={ref}>
-      <Dodecahedron position={[0, 3, 0]} color={red[900]} text={'01'} />
-      <Dodecahedron position={[0, 4, 0]} color={green[500]} text={'02'} />
-      <Dodecahedron position={[-1, 5, 0.25]} color={blue[900]} text={'03'} />
-      <Dodecahedron position={[-2, 5, 0.5]} color={orange[900]} text={'04'} />
+    <group ref={ref} position={position}>
+      <Dodecahedron position={[0, 3, 0    ]} color={red[900]}    text={'01'} />
+      <Dodecahedron position={[0, 4, 0.15 ]} color={green[500]}  text={'02'} />
+      <Dodecahedron position={[-1, 5, 0.25]} color={blue[900]}   text={'03'} />
+      <Dodecahedron position={[-2, 5, 0.5 ]} color={orange[900]} text={'04'} />
       <Dodecahedron position={[-3, 5, 0.75]} color={yellow[900]} text={'05'} />
     </group>
   )
