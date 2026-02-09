@@ -45,74 +45,7 @@ import "../components/styles.css"
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
 /** ------------------------------------------------------------------------ */
-function Ground({ onClick }) {
-   return (
-      <RigidBody type="fixed" colliders="cuboid">
-         <mesh
-            position={[0, -1, 0]}
-            receiveShadow
 
-         // onClick={(e) => {
-         //    e.stopPropagation()
-         //    alert('in fn Ground')
-         //    // onClick(e.point)
-         // }}
-         >
-            <boxGeometry args={[10, 1, 10]} />
-            <meshStandardMaterial color="lightblue" />
-         </mesh>
-      </RigidBody>
-   )
-}  // Ground()
-
-//*
-function ColliderBox({ position = [0, 0, 0] }) {
-   return (
-      <RigidBody
-         position={position}
-         mass={10}
-         linearDamping={0}
-         angularDamping={0}
-      >
-
-         {/* <BallCollider args={[0.25]} restitution={0.55} friction={0.95} /> */}
-         <CuboidCollider args={[0.25, 0.25, 0.25]} restitution={0.5} friction={0.95} />
-
-         <mesh >
-            <boxGeometry args={[0.75, 1, 0.75]} />
-            <meshStandardMaterial metallness={0.9} roughness={0.25} color={getRandomMuiColor()} />
-         </mesh>
-      </RigidBody>
-   )
-}  // ColliderBox()
-
-//*
-function explode(world, origin, force = 15, radius = 4) {
-
-   world.forEachRigidBody((body) => {
-      if (body.isFixed()) return
-
-      const p = body.translation()
-
-      const dx = p.x - origin.x
-      const dy = p.y - origin.y
-      const dz = p.z - origin.z
-
-      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-      if (dist === 0 || dist > radius) return
-
-      const strength = (1 - dist / radius) * force * 100
-
-      body.applyImpulse(
-         {
-            x: (dx / dist) * strength,
-            y: (dy / dist) * strength,
-            z: (dz / dist) * strength,
-         },
-         true // wake up body
-      )
-   })
-}
 
 //*
 function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
@@ -144,44 +77,8 @@ function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
    )
 }  // Fragment()
 
-function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
-
-   const [exploded, setExploded] = useState(false)
-
-   // 
-   if (!exploded) {
-      return (
-         <RigidBody position={position} mass={10} >
-            <CuboidCollider
-               args={[0.5, 0.5, 0.5]}
-               // sensor
-               onCollisionEnter={(e) => {
-                  setExploded(true)
-               }}
-            />
-            <mesh>
-               <boxGeometry args={[1, 1, 1]} />
-               <meshStandardMaterial color={color} />
-            </mesh>
-         </RigidBody>
-      )
-   }  // not exploded
-
-   if (exploded) {
-      return (
-         Array.from({ length: 80 }).map((_, i) => (
-            <Fragment
-               key={i}
-               velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-               color={color}
-            />
-         ))
-      )
-   }  // exploded 
-}  // ExplodingBox()
 
 //* je nach Stand von hitCount explodiert der Ball...
-
 function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
 
    // corrugated_iron_diff_2k: dunkel...
@@ -457,7 +354,7 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
          (position[2] % 2) ? position[2] + (index / 150) : position[2] - (index / 150)
       ]), [noBalls, position])
 
-   //* ohne diesen Aufruf wird die Szene im Parent (Colliders.jsx) zu schnell gelöscht...
+   //* ohne diesen Aufruf wird die Szene im Parent (Pipes.jsx) zu schnell gelöscht...
    let lengthTimeout = lengthScene * 1000
    if (noBalls >= 1000) {
       lengthTimeout = 50000
@@ -551,75 +448,6 @@ function setSelectsInvisible() {
    eleFrmColor.setAttribute('class', newClassList)
 }
 
-//* crashes since RigidBody is used:
-function CreateOZRim({ position, rotation, scale }) {
-
-   const wheelModel = useGLTF('/models/damagedWheel.glb ')
-
-   return <Clone object={wheelModel.scene} position={position} rotation={rotation} scale={scale} />
-
-   // const rimModel = useGLTF('/models/oz_rim.glb')  //
-
-   // return (
-   //    // <RigidBody type="fixed" colliders= {false}
-   //    //    position={position}
-   //    //    rotation={rotation}
-   //    // >
-   //    //    <CuboidCollider
-   //    //       args={[
-   //    //          scale[0] * 0.5,
-   //    //          scale[1] * 0.5,
-   //    //          scale[2] * 0.5,
-   //    //       ]}
-   //    //       restitution={0.9}
-   //    //       friction={0}
-   //    //    />
-   //    //    {/* <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} /> */}
-   //    //    {/* <Clone object={rimModel.scene} scale={scale} /> */}
-
-   //    //    <Clone object={rimModel.scene} scale={scale} />
-   //    // </RigidBody>
-
-   //    <Clone object={rimModel.scene} position={position} rotation={rotation} scale={scale} />
-   // )
-
-}  // 
-
-function CreateRustyBox({ position, rotation, scale }) {
-
-   const groupRef = useRef()
-   const rigidBodyRef = useRef()
-   const utilityBox = useGLTF('/models/utility_box_02_2k.gltf')
-
-   {/** Verwendung von useFrame() stürzt gelegentlich ab... */ }
-
-   // useFrame((_, delta) => {
-   //    if (!rigidBodyRef || !groupRef) return
-
-   //    // groupRef.current.rotation.x += delta * 0.75
-   //    groupRef.current.rotation.y += delta * 0.95
-
-   //    rigidBodyRef.current.setNextKinematicRotation(groupRef.current.rotation)
-   // })
-
-   return (
-      <RigidBody ref={rigidBodyRef} type="kinematicPosition" colliders={false}
-         position={position} rotation={rotation}
-      >
-         <CuboidCollider args={[scale * 0.5, scale * 0.5, scale * 0.5]} />
-
-         <group ref={groupRef} scale={scale}>
-            <Clone object={utilityBox.scene} />
-            <Html distanceFactor={5}>
-               <div className="content">
-                  created with Render using a GLTF file
-               </div>
-            </Html>
-         </group>
-      </RigidBody>
-   )
-}  // CreateRustyBox()
-
 function CreateTextureFromFile(path2textureFile) {
 
    // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
@@ -635,51 +463,6 @@ function CreateTextureFromFile(path2textureFile) {
    return texture
 
 }  //  CreateTextureFromFile()
-
-function CreateFireHydrant({ position, rotation, scale = 1 }) {
-
-   const fireHydrantModel = useGLTF('/models/fire_hydrant.glb')
-
-   return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <Clone object={fireHydrantModel.scene} />
-         <Html distanceFactor={5}>
-            <div className="content">
-               fire_hydrant GLB-file
-            </div>
-         </Html>
-      </group>
-   )
-
-   // return <Clone object={fireHydrantModel.scene} position={position} rotation={rotation} scale={scale} />
-}  // CreateFireHydrant()
-
-function CreateGrass({ position, rotation, scale = 2 }) {
-
-   const grassModel = useGLTF('/models/grass_medium.glb')
-   // normal usage: grassModel.scene
-   // grassModel.nodes.grass_medium_01_large_a_LOD0; grassModel.nodes enthält verschiedene Grassgrößen
-
-   // Zugriff auf das gwünschte Objekt über: model.nodes.<name>
-
-   return <Clone object={grassModel.nodes.grass_medium_01_large_a_LOD0} position={position} rotation={rotation} scale={scale} />
-
-}  // CreateGrass()
-
-function CreateFence({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
-
-   const fenceModel = useGLTF('/models/modular_chainlink_fence_2k.gltf')
-   fenceModel.materials.modular_chainlink_fence_posts.metallness = 0.85
-   fenceModel.materials.modular_chainlink_fence_posts.roughness = 0.85
-   // fenceModel.materials.modular_chainlink_fence_posts.color = { r: 64, g: 8, b: 16 }
-
-   fenceModel.materials.modular_chainlink_fence_wire.metallness = 0.85
-   fenceModel.materials.modular_chainlink_fence_wire.roughness = 0.75
-   // fenceModel.materials.modular_chainlink_fence_wire.color = { r: 64, g: 8, b: 16 }
-
-   // normal usage: Model.scene
-   return <Clone object={fenceModel.scene} position={position} rotation={rotation} scale={scale} />
-}  // CreateFence()
 
 
 //*
@@ -734,54 +517,7 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
    )
 }  // CorrugatedIron()
 
-function CreateCableBox({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
-
-   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
-
-   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
-
-   cablesModel.nodes.cable_box_turn.material.metallness = 0.95
-   cablesModel.nodes.cable_box_turn.material.roughness = 0.15
-   cablesModel.nodes.cable_box_turn.material.color = { isColor: true, r: 4, g: 1, b: 1 }
-   cablesModel.nodes.cable_box_turn.material.blendColor = { isColor: true, r: 1, g: 0, b: 0 }
-
-   // cablesModel.nodes
-
-   return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <Clone object={cablesModel.nodes.cable_box_turn} />
-
-         {/* <Html distanceFactor={10}>
-            <div className="content">
-               cablesModel.scene
-            </div>
-         </Html> */}
-      </group>
-   )
-}  // CreateCableBox()
-
-function CreateCable2cm({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
-
-   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
-
-   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
-
-   cablesModel.nodes.cable_bridge_1.material.metallness = 0.95
-   cablesModel.nodes.cable_bridge_1.material.roughness = 0.15
-   cablesModel.nodes.cable_bridge_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
-
-   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
-
-   // cablesModel.nodes
-   // cable_bridge_1
-
-   return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <Clone object={cablesModel.nodes.cable_bridge_1} />
-      </group>
-   )
-}  // CreateCable2cm()
-
+//*
 function CreateCableCurve({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
@@ -807,7 +543,7 @@ function CreateCableCurve({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 
    )
 }  // CreateCableCurve()
 
-
+//*
 function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const pipesModel = useGLTF('/models/modular_pipes_2k.gltf')  // holt das gesamte model mit allen nodes
@@ -871,20 +607,13 @@ function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) 
 
 //*
 function preloadModelsTextures() {
-   useGLTF.preload('/models/oz_rim.glb')
-   useGLTF.preload('/models/utility_box_02_2k.gltf')
-   useGLTF.preload('/models/fire_hydrant.glb')
-   useGLTF.preload('/models/grass_medium.glb')
    useGLTF.preload('/models/corrugated_iron.glb')
    useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  // works
-   useGLTF.preload('/models/c-transformed.glb')
-   useGLTF.preload('/models/modular_chainlink_fence_2k.gltf')
    useGLTF.preload('/models/modular_pipes_2k.gltf')
-
 }  //
 
-//* Colliders page component
-export default function Colliders() {
+//* Pipes page component
+export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
@@ -1215,12 +944,6 @@ export default function Colliders() {
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
-                     {/* <Physics gravity={[0, -9.81, 0]}> */}
-                     {/* <ColliderBox position={[0, 2, 0]} /> */}
-                     {/* Ground */}
-                     {/* <Ground /> */}
-                     {/* </Physics> */}
-
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
                         {/** explodieren nach einer Anzahl an Kontakten: */}
@@ -1229,48 +952,15 @@ export default function Colliders() {
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
-                        <CreateCableBox position={[4.1, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
-                        <CreateCable2cm position={[4.1, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />
-                        <CreateCable2cm position={[4.1, 0, 0]} rotation={[0, 1.55, 0]} scale={3} />
-
                         <CreateCableCurve position={[4.1, 0.5, 1]} rotation={[0, 1.55, 0]} scale={3} />
 
                         {/** Group aus Rohren */}
                         <CreatePipes position={[-8, 0, -5]} rotation={[0, 1, 0]} scale={3} />
 
-                        {/* <ExplodingBox position = {[0, 8, 0]} color={green[500]}/> */}
-
-                        <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
+                        {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
                         <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.5} />
-                        <CorrugatedIron position={[3, 8, 1]} restitution={0.9} scale={0.65} />
+                        <CorrugatedIron position={[3, 8, 1]} restitution={0.9} scale={0.65} /> */}
 
-                        {/* <CreateFence position={[-3, 0.25, -9]} /> */}
-
-                        {/* <CreateRustyBox position={[0, 0.225, 0]} rotation={[0, 0, 0]} scale={1.5} /> */}
-                        <CreateRustyBox position={[-5, 0, -12]} rotation={[0, 0, 0]} scale={3} />
-
-                        <CreateOZRim position={[0, 0.65, -12]} rotation={[0, 0, 0]} scale={3} />
-                        {/* <CreateOZRim position={[2, 0.75, -7.5]} rotation={[0, 0, 0]} scale={2} /> */}
-
-                        <CreateFireHydrant position={[0, 0.15, -12]} rotation={[0, 0, 0]} scale={3} />
-
-                        {/** füllt unerwünscht den Hintergrund... */}
-                        {/* <CreateRockyTerrain position={[0, 0, 0]} rotation={[0, 0, 0]} scale={1}/> */}
-
-                        {/** ab 3.000 wird es langsam... */}
-                        {/* <CreateManyBalls position={[0, 5, 0]} noBalls={50} color={green[500]} /> */}
-
-                        {/* <ExplodingBox position={[0, 5, 0]} color={getRandomMuiColor()} /> */}
-                        {/* <ExplodingBox position={[2, 5, 1]} color={green[500]} /> */}
-                        {/* <ExplodingBox position={[-2, 5, -1]} color={yellow[500]} /> */}
-
-                        {/** !GPU-intensiv: */}
-                        {/* <Connectors position={[0, 8, 0]} color={green[500]}/> */}
-
-                        {/* <DodecahedronGroup position={[0, 0, 0]} />  */}
-                        {/* <DodecahedronGroup position={[2, 0, 0]}/> */}
-
-                        {/* <OpenableBox position={[5, 1, 7]} color={red[500]}/> */}
 
                         {createBalls &&
                            <>
@@ -1290,44 +980,33 @@ export default function Colliders() {
                            </>
                         }
 
-                        {/*                         <BouncingBalls colors={{color1: red[200], color2: blue[200]}}/>
-                        <BouncingBalls colors={{color1: red[400], color2: blue[400]}} />
-                        <BouncingBalls colors={{color1: red[600], color2: blue[600]}} /> */}
-
-                        {/* <BouncingBalls01 /> */}
-
-                        {/* <ColliderBox position={[-1, 8, 0]} /> */}
-                        {/* <ColliderBox position={[1, 3, 0]} /> */}
-
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 1.5, 4]} size={[0.25, 6, 4]} color={blue[200]} />
                         <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
-                        <CreateGrass position={[2, 3.35, 3.15]} rotation={[0, 0, 0]} scale={10} />
 
                         <Wall position={[-1, 1.75, -4]} size={[0.25, 5, 4]} color={blue[500]} />
 
                         <Wall position={[-4, 1.25, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={orange[500]} />
-                        <Wall position={[0.15, 5, -2]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
-                        <Wall position={[-4, 5, 6]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} />
+                        {/* <Wall position={[0.15, 5, -2]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} /> */}
+                        {/* <Wall position={[-4, 5, 6]} rotation={[1.5, 0, 0]} size={[0.25, 3, 2]} color={red[200]} rotate={true} /> */}
 
 
-                        <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} />
+                        {/* <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} /> */}
                         <Wall position={[4, 1.5, 0.2]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
 
                         <Wall position={[9, 2.75, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
 
                         <Wall position={[-9, 2.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[500]} />
                         <Wall position={[-7.5, 4, 3.15]} rotation={[0, 0, 1.6]} size={[0.25, 4, 5]} color={green[500]} />
-                        <CreateGrass position={[-7.5, 4.35, 3.15]} rotation={[0, 0, 0]} scale={5} />
 
                         <Wall position={[-4, 1.2, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
                         <Wall position={[4, 1.2, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
 
                         {/** Begrenzung OBERHALB der Szene */}
-                        <Wall position={[-5, 7, 5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[400]} />
+                        {/* <Wall position={[-5, 7, 5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[400]} />
                         <Wall position={[0, 8, -5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[800]} />
-                        <Wall position={[8, 7, 0]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[500]} />
+                        <Wall position={[8, 7, 0]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[500]} /> */}
 
 
                         {/** Wall zur Begrenzung der Szene */}
@@ -1347,4 +1026,4 @@ export default function Colliders() {
          </main>
       </>
    )
-}  // Colliders()
+}  // Pipes()

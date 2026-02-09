@@ -303,6 +303,14 @@ export default function AppBarTop() {
             Colliders
           </MenuItem>
 
+          <MenuItem
+            sx={menuItemSx}
+            onClick={() => {
+              fnNavigate('/Pipes')
+            }}>
+            Pipes
+          </MenuItem>
+
           {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {
