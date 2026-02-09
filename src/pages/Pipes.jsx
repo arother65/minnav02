@@ -924,7 +924,9 @@ export default function Pipes() {
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
-                        <Flipper position={[0, 1, 0]} />
+                        <Flipper position={[0, 4, 0]} rotation={[1.55, 0, 0]}/>
+                        {/* <Flipper position={[1, 2, -2]} /> */}
+                        {/* <Flipper position={[-1, 2, -1]} /> */}
 
 
                         {/** Group aus Rohren */}
