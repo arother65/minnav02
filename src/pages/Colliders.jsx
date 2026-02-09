@@ -360,6 +360,7 @@ function Wall({ position, rotation = [1.55, 0, 1.55], size, color, rotate = fals
             restitution={0.9}
             friction={0}
          />
+
          <mesh ref={meshRef} receiveShadow>
             <boxGeometry
                position={position}
@@ -811,21 +812,55 @@ function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) 
 
    const pipesModel = useGLTF('/models/modular_pipes_2k.gltf')  // holt das gesamte model mit allen nodes
 
-   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
-
-   // pipesModel.nodes.cable_scurve_1.material.metallness = 0.95
-   // pipesModel.nodes.cable_scurve_1.material.roughness = 0.15
-
-   // pipesModel.nodes.cable_scurve_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
-   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
+   console.log('CreatePipes')
 
    // <Model>.nodes
 
+   pipesModel.nodes.pipe_200cm_metal.material.metallness = 0.55
+   pipesModel.nodes.pipe_200cm_metal.material.roughness = 0.85
+
+   pipesModel.nodes.pipe_200cm_metal.material.color = { isColor: true, r: 6, g: 1, b: 1 }
+   pipesModel.nodes.pipe_200cm_metal.material.blendColor = { isColor: true, r: 1, g: 1, b: 1 }
+
+   // pipe_200cm_metal; pipe_valve_large_metal
+
+   // pipe_thin_200cm_pvc
 
    return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <Clone object={pipesModel.scene} />
-      </group>
+      <RigidBody
+         type="fixed"
+         position={position}
+         rotation={rotation}
+         colliders={false}
+         mass={5}
+         restitutionCombineRule="max"
+         linearDamping={0}
+         angularDamping={0}
+      >
+
+         <CuboidCollider
+            args={[
+               scale * 0.85,
+               scale * 0.85,
+               scale * 0.85,
+            ]}
+            restitution={0.15}
+            friction={0.1}
+         />
+
+         {/* <group position={position} rotation={rotation} scale={scale}> */}
+         <group scale={scale}>
+
+            <Clone position={[1,    0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
+            <Clone position={[0.75, 0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
+            <Clone position={[0.5,  0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
+
+            <Clone position={[0, 0.15, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
+            <Clone position={[0, 0.25, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
+            <Clone position={[0, 0.35, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
+
+         </group>
+      </RigidBody>
    )
 }  // CreatePipes()
 
@@ -1189,13 +1224,15 @@ export default function Colliders() {
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
-                        <CreateCableBox position={[4.15, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
-                        <CreateCable2cm position={[4.15, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />
-                        <CreateCable2cm position={[4.15, 0, 0.75]} rotation={[0, 1.55, 0]} scale={3} />
+                        <CreateCableBox position={[4.1, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
+                        <CreateCable2cm position={[4.1, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />
+                        <CreateCable2cm position={[4.1, 0, 0]} rotation={[0, 1.55, 0]} scale={3} />
 
-                        <CreateCableCurve position={[5, 0.25, 5]} rotation={[0, 1.55, 0]} scale={3}/>
+                        <CreateCableCurve position={[4.1, 0.5, 1]} rotation={[0, 1.55, 0]} scale={3} />
 
-                        <CreatePipes position={[6.5, 0.35, -13]} rotation={[0, 0, 0]} scale={3}/>
+
+                        {/** Group aus Rohren */}
+                        <CreatePipes position={[-4, 0, -10]} rotation={[0, 0, 0]} scale={3} />
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[500]}/> */}
 
