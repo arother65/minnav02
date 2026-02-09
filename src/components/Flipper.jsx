@@ -296,7 +296,7 @@ export default function Flipper({ position = [0, 0, 0], rotation = [0, 0, 0] }) 
 
   function flip() {
     if (!body.current) return
-    body.current.setAngvel( { x: 0, y: 12, z: 0 }, true )
+    body.current.setAngvel( { x: 0, y: 25, z: 0 }, true )
   }
 
   return (
