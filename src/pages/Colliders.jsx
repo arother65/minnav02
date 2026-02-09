@@ -733,29 +733,101 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
    )
 }  // CorrugatedIron()
 
-function CreateCables({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+function CreateCableBox({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
 
    // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
 
    cablesModel.nodes.cable_box_turn.material.metallness = 0.95
-   cablesModel.nodes.cable_box_turn.material.roughness = 0.45
-   cablesModel.nodes.cable_box_turn.material.color = { isColor: true, r: 128, g : 0, b: 0 }
-   cablesModel.nodes.cable_box_turn.material.blendColor = { isColor: true, r: 128, g : 0, b: 16 }
+   cablesModel.nodes.cable_box_turn.material.roughness = 0.15
+   cablesModel.nodes.cable_box_turn.material.color = { isColor: true, r: 4, g: 1, b: 1 }
+   cablesModel.nodes.cable_box_turn.material.blendColor = { isColor: true, r: 1, g: 0, b: 0 }
+
+   // cablesModel.nodes
 
    return (
       <group position={position} rotation={rotation} scale={scale}>
          <Clone object={cablesModel.nodes.cable_box_turn} />
 
-         <Html distanceFactor={2}>
+         {/* <Html distanceFactor={10}>
             <div className="content">
                cablesModel.scene
             </div>
-         </Html>
+         </Html> */}
       </group>
    )
-}  // CreateCables()
+}  // CreateCableBox()
+
+function CreateCable2cm({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
+
+   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
+
+   cablesModel.nodes.cable_bridge_1.material.metallness = 0.95
+   cablesModel.nodes.cable_bridge_1.material.roughness = 0.15
+   cablesModel.nodes.cable_bridge_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
+
+   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
+
+   // cablesModel.nodes
+   // cable_bridge_1
+
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <Clone object={cablesModel.nodes.cable_bridge_1} />
+      </group>
+   )
+}  // CreateCable2cm()
+
+function CreateCableCurve({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
+
+   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
+
+   cablesModel.nodes.cable_scurve_1.material.metallness = 0.95
+   cablesModel.nodes.cable_scurve_1.material.roughness = 0.15
+
+   cablesModel.nodes.cable_scurve_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
+   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
+
+   // cablesModel.nodes
+   // cable_scurve_1
+   // cable_scurve_2
+   // cable_scurve_3
+   // cable_scurve_4   
+
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <Clone object={cablesModel.nodes.cable_scurve_1} />
+      </group>
+   )
+}  // CreateCableCurve()
+
+
+function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
+
+   const pipesModel = useGLTF('/models/modular_pipes_2k.gltf')  // holt das gesamte model mit allen nodes
+
+   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
+
+   // pipesModel.nodes.cable_scurve_1.material.metallness = 0.95
+   // pipesModel.nodes.cable_scurve_1.material.roughness = 0.15
+
+   // pipesModel.nodes.cable_scurve_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
+   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
+
+   // <Model>.nodes
+
+
+   return (
+      <group position={position} rotation={rotation} scale={scale}>
+         <Clone object={pipesModel.scene} />
+      </group>
+   )
+}  // CreatePipes()
 
 //*
 function preloadModelsTextures() {
@@ -767,6 +839,8 @@ function preloadModelsTextures() {
    useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  // works
    useGLTF.preload('/models/c-transformed.glb')
    useGLTF.preload('/models/modular_chainlink_fence_2k.gltf')
+   useGLTF.preload('/models/modular_pipes_2k.gltf')
+
 }  //
 
 //* Colliders page component
@@ -1115,8 +1189,13 @@ export default function Colliders() {
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
-                        <CreateCables position={[4.15, 1.5, -2.65]} rotation={[0, 1.55, 0]} scale={10} />
+                        <CreateCableBox position={[4.15, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
+                        <CreateCable2cm position={[4.15, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />
+                        <CreateCable2cm position={[4.15, 0, 0.75]} rotation={[0, 1.55, 0]} scale={3} />
 
+                        <CreateCableCurve position={[5, 0.25, 5]} rotation={[0, 1.55, 0]} scale={3}/>
+
+                        <CreatePipes position={[6.5, 0.35, -13]} rotation={[0, 0, 0]} scale={3}/>
 
                         {/* <ExplodingBox position = {[0, 8, 0]} color={green[500]}/> */}
 
