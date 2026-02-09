@@ -1,16 +1,23 @@
+/**
+ * 
+ * 
+ * 
+ */
 
+//*
 import { useRef, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
+// import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 
 import {
    RigidBody,
-   CuboidCollider,
-   CapsuleCollider,
-   useRevoluteJoint,
+   CuboidCollider 
 } from '@react-three/rapier'
 
+import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
+
 //*
-export function useFlipperInput() {
+function useFlipperInput() {
 
    const left = useRef(false)
    const right = useRef(false)
@@ -38,7 +45,7 @@ export function useFlipperInput() {
 }
 
 //*
-export function useArrowInput() {
+function useArrowInput() {
    const left = useRef(false)
    const right = useRef(false)
 
@@ -64,151 +71,76 @@ export function useArrowInput() {
    return { left, right }
 }
 
-//* The main component created here:
-function Flipper00({ position, side = 'left', input }) {
 
-   const baseRef = useRef()
-   const flipperRef = useRef()
+export default function Flipper({ position = [0, 0, 0], rotation = [Math.PI / 2, 0, 0] }) {
 
-   const dir = side === 'left' ? 1 : -1
-   const isPressed = side === 'left' ? input.left : input.right
+   const rigidBody = useRef()
 
-   const REST_ANGLE = dir * -0.35
-   const ACTIVE_ANGLE = dir * 0.35
+   //* Event handler
+   function handleOnCollisionEnter(rigidBody) {
 
-   const joint = useRevoluteJoint(baseRef, flipperRef, {
-      axis: [0, 1, 0],
-      limits: [REST_ANGLE, ACTIVE_ANGLE],
-      motorEnabled: true,
-   })
+      // rigidBody.current?.applyTorqueImpulse({
+      //    x: Math.random() * 1,
+      //    y: Math.random() * 1,
+      //    z: Math.random() * 0.15,
+      // })
 
-   useFrame(() => {
-      if (!joint.current) return
+      rigidBody.current?.setRotation({ x: 0.95, y: 5, z: 0.25 }, true)
 
-      joint.current.setMotorTarget(
-         isPressed.current ? ACTIVE_ANGLE : REST_ANGLE,
-         40,   // motor speed
-         120   // motor torque
-      )
-   })
+      // rigidBody.current?.applyForce({ x: 5, y: 0.5, z: 0 }, true)
+      // rigidBody.current?.setAngvel({ x: Math.random() * 5, y: 0, z: 0 })  // angular velocity 
+
+   }  // handleOnCollisionEnter()
 
    return (
       <>
-         {/* Fixed pivot */}
-         <RigidBody ref={baseRef} type="fixed" position={position} />
-
-         {/* Flipper paddle */}
-         <RigidBody
-            ref={flipperRef}
-            type="dynamic"
+         {/** Math.PI / 2 = 90° */}
+         < RigidBody
+            ref={rigidBody}
+            // type="kinematicVelocity"  // kinematicVelocity or manually set rotation if you want controlled motion
+            type="dynamic"  // makes physics work
+            position={position}
+            rotation={rotation}
             colliders={false}
-            enabledTranslations={[false, false, false]}
-            enabledRotations={[false, true, false]}
-            angularDamping={0.15}
+            onCollisionEnter={() => { if (rigidBody) { handleOnCollisionEnter(rigidBody) } }
+            }
          >
             <CuboidCollider
-               args={[0.6, 0.12, 0.2]}
-               restitution={0.9}
-               friction={0.02}
+               args={[1.25, 1, 1]}
+               restitution={0.5}
+               friction={0.05}
             />
 
-            <CapsuleCollider
-               args={[0.12, 0.2]}
-               position={[0.6 * dir, 0, 0]}
-               restitution={0.9}
-               friction={0.02}
-            />
+            <group>
+               <mesh>
+                  {/** radius, length, capSegments, radialSegemnts */}
+                  <capsuleGeometry args={[0.25, 3, 8, 32]} />
+                  <meshStandardMaterial color="orange" metallness={0.95} roughness={0.15} />
+               </mesh>
 
-            <mesh position={[0.6 * dir, 0, 0]}>
-               <boxGeometry args={[1.2, 0.24, 0.4]} />
-               <meshStandardMaterial color={side === 'left' ? 'orange' : 'deepskyblue'} />
-            </mesh>
-         </RigidBody>
+               {/** rubber band, left */}
+               <mesh position={[0, 0.5, 0]}>
+                  {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
+                  <torusGeometry args={[0.25, 0.1, 32, 32]} />
+                  <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
+               </mesh>
+
+               {/** rubber band, middle */}
+               <mesh position={[0, 0, 0]}>
+                  {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
+                  <torusGeometry args={[0.25, 0.1, 32, 32]} />
+                  <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
+               </mesh>
+
+               {/** rubber band, right */}
+               <mesh position={[0, -0.5, 0]}>
+                  {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
+                  <torusGeometry args={[0.25, 0.1, 32, 32]} />
+                  <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
+               </mesh>
+            </group>
+         </RigidBody >
       </>
+
    )
-}
-
-export default function Flipper({ position, side = 'left', input }) {
-
-   const baseRef = useRef()
-   const flipperRef = useRef()
-
-   const dir = side === 'left' ? 1 : -1
-   const isPressed = side === 'left' ? input?.left : input?.right
-
-   const REST_ANGLE = dir * -0.35
-   const ACTIVE_ANGLE = dir * 0.35
-
-   // ✅ CORRECT joint creation
-   const joint = useRevoluteJoint(
-      baseRef,
-      flipperRef,
-      [
-         [0, 0, 0],                 // anchor on base
-         [-0.6 * dir, 0, 0],        // anchor on flipper (pivot point)
-         [0, 1, 0],                 // rotation axis (Y)
-      ]
-   )
-
-   // Configure joint AFTER creation
-   useEffect(() => {
-      if (!joint.current) return
-
-      joint.current.setLimits(REST_ANGLE, ACTIVE_ANGLE)
-      joint.current.configureMotorPosition(
-         REST_ANGLE,
-         40,   // motor speed
-         120   // motor force
-      )
-   }, [])
-
-   useFrame(() => {
-      if (!joint.current || !isPressed) return
-
-      joint.current.configureMotorPosition(
-         isPressed.current ? ACTIVE_ANGLE : REST_ANGLE,
-         40,
-         120
-      )
-   })
-
-   return (
-      <>
-         {/* Fixed pivot */}
-         <RigidBody ref={baseRef} type="fixed" position={position} />
-
-         {/* Flipper paddle */}
-         <RigidBody
-            ref={flipperRef}
-            type="dynamic"
-            colliders={false}
-            enabledTranslations={[false, false, false]}
-            enabledRotations={[false, true, false]}
-            angularDamping={0.15}
-         >
-            {/* Main body */}
-            <CuboidCollider
-               args={[0.6, 0.12, 0.2]}
-               restitution={0.9}
-               friction={0.02}
-            />
-
-            {/* Rounded tip */}
-            <CapsuleCollider
-               args={[0.12, 0.2]}
-               position={[0.6 * dir, 0, 0]}
-               restitution={0.9}
-               friction={0.02}
-            />
-
-            {/* Visual */}
-            <mesh position={[0.6 * dir, 0, 0]}>
-               <boxGeometry args={[1.2, 0.24, 0.4]} />
-               <meshStandardMaterial
-                  color={side === 'left' ? 'orange' : 'deepskyblue'}
-               />
-            </mesh>
-         </RigidBody>
-      </>
-   )
-}
+}  // Flipper()

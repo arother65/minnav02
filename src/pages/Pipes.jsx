@@ -34,7 +34,7 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import Flipper, { useFlipperInput } from '../components/Flipper'
+import Flipper from '../components/Flipper'
 
 import "../components/styles.css"
 
@@ -513,32 +513,6 @@ function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
 }  // CorrugatedIron()
 
 //*
-function CreateCableCurve({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
-
-   const cablesModel = useGLTF('/models/modular_electric_cables_2k.gltf')  // holt das gesamte model mit allen nodes
-
-   // cablesModel.nodes.cable_box_turn  // Zugriff auf ein einzelnes Objekt
-
-   cablesModel.nodes.cable_scurve_1.material.metallness = 0.95
-   cablesModel.nodes.cable_scurve_1.material.roughness = 0.15
-
-   cablesModel.nodes.cable_scurve_1.material.color = { isColor: true, r: 1, g: 1, b: 1 }
-   // cablesModel.nodes.cable_2cm.material.blendColor = { isColor: true, r: 16, g : 0, b: 0 }
-
-   // cablesModel.nodes
-   // cable_scurve_1
-   // cable_scurve_2
-   // cable_scurve_3
-   // cable_scurve_4   
-
-   return (
-      <group position={position} rotation={rotation} scale={scale}>
-         <Clone object={cablesModel.nodes.cable_scurve_1} />
-      </group>
-   )
-}  // CreateCableCurve()
-
-//*
 function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
 
    const pipesModel = useGLTF('/models/modular_pipes_2k.gltf')  // holt das gesamte model mit allen nodes
@@ -662,9 +636,6 @@ export default function Pipes() {
 
    // preload of GLTF-models and textures:
    preloadModelsTextures()
-
-   // for the Flipper-component:
-   const input = useFlipperInput()
 
    // 
    return (
@@ -953,36 +924,8 @@ export default function Pipes() {
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
+                        <Flipper position={[0, 1, 0]} />
 
-                        {/** Math.PI / 2 = 90° */}
-                        <group position={[12, 1.0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                           <mesh>
-                              {/** radius, length, capSegments, radialSegemnts */}
-                              <capsuleGeometry args={[0.25, 1.2, 8, 32]} />
-                              <meshStandardMaterial color="orange" metallness={0.95} roughness={0.15} />
-                           </mesh>
-
-                           {/** rubber band, left */}
-                           <mesh position={[0, 0.5, 0]}>
-                              {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
-                              <torusGeometry args={[0.25, 0.1, 32, 32]} />
-                              <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
-                           </mesh>
-
-                           {/** rubber band, middle */}
-                           <mesh position={[0, 0, 0]}>
-                              {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
-                              <torusGeometry args={[0.25, 0.1, 32, 32]} />
-                              <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
-                           </mesh>
-
-                           {/** rubber band, right */}
-                           <mesh position={[0, -0.5, 0]}>
-                              {/** new THREE.TorusGeometry(radius, tube, radialSegments, tubularSegments) */}
-                              <torusGeometry args={[0.25, 0.1, 32, 32]} />
-                              <meshStandardMaterial color={red[500]} side={THREE.DoubleSide} metallness={0} roughness={0.45} />
-                           </mesh>
-                        </group>
 
                         {/** Group aus Rohren */}
                         <CreatePipes position={[-8, 0, -5]} rotation={[0, 1, 0]} scale={3} />
@@ -990,23 +933,9 @@ export default function Pipes() {
 
                         <Wall position={[4.5, 1.75, -7.5]} size={[0.25, 5, 4]} color={blue[200]} />
 
-                        {/** keine Positionierung möglich :  */}
-                        {/* <Flipper
-                           side="left"
-                           position={[2.2, 2, 0]}
-                           input={input}
-                        />
-
-                        <Flipper
-                           side="right"
-                           position={[2.2, 2, 0]}
-                           input={input}
-                        /> */}
-
                         {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
                         <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.5} />
                         <CorrugatedIron position={[3, 8, 1]} restitution={0.9} scale={0.65} /> */}
-
 
                         {createBalls &&
                            <>
@@ -1025,7 +954,6 @@ export default function Pipes() {
                               />
                            </>
                         }
-
 
                         {/** size wird in WALL für Collider und Geometry verwendet */}
                         <Wall position={[1, 1.5, 4]} size={[0.25, 6, 4]} color={blue[200]} />
