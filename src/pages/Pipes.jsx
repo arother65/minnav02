@@ -19,9 +19,7 @@ import { OrbitControls } from "@react-three/drei"
 // import { Html } from "@react-three/drei"
 // import { useGLTF, Clone } from '@react-three/drei'
 
-import { Physics, RigidBody, BallCollider, CuboidCollider, useImpulseJoint, useRevoluteJoint } from '@react-three/rapier'
-
-// import { CuboidCollider } from "@react-three/rapier"
+import { Physics, RigidBody, BallCollider, CapsuleCollider, CuboidCollider, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch } from '@mui/material'
@@ -175,7 +173,14 @@ export default function Pipes() {
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
-                     <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
+                     {/* <Physics gravity={[0, -9.81, 0]} > debug */}
+                     <Physics
+                        gravity={[0, -9.81, 0]}
+                        timeStep="vary"
+                        interpolate
+                        colliders={false}
+                        solverIterations={12}
+                     >
 
                         <Playfield />
                         <Walls />
@@ -267,71 +272,6 @@ function Bumper({ position, ballRef }) {
    )
 }
 
-function Flipper00({ position, side = "left", length = 2 }) {
-
-   const ref = useRef(null)
-   const dir = side === "left" ? 1 : -1
-   const key = side === "left" ? "ArrowLeft" : "ArrowRight"
-   const active = useRef(false)
-
-   // Key controls
-   useEffect(() => {
-      const down = (e) => {
-         if (e.code === key) active.current = true
-      }
-
-      const up = (e) => {
-         if (e.code === key) active.current = false
-      }
-
-      window.addEventListener("keydown", down)
-      window.addEventListener("keyup", up)
-
-      return () => {
-         window.removeEventListener("keydown", down)
-         window.removeEventListener("keyup", up)
-      }
-   }, [key])
-
-   // Motor logic
-   useFrame(() => {
-      const body = ref.current
-      if (!body) return
-
-      const rot = body.rotation().y
-      const min = dir * -0.4
-      const max = dir * 0.7
-
-      if (active.current && rot < max) {
-         body.setAngvel({ x: 0, y: 15 * dir, z: 0 }, true)
-
-      } else if (!active.current && rot > min) {
-         body.setAngvel({ x: 0, y: -10 * dir, z: 0 }, true)
-
-      } else {
-         body.setAngvel({ x: 0, y: 0, z: 0 }, true)
-      }
-   })
-
-   return (
-      <RigidBody
-         ref={ref}
-         type="dynamic"
-         colliders="cuboid"
-         position={[position[0] + dir * length / 2, position[1], position[2]]}
-
-         angularDamping={0.05}
-         restitution={1}
-         enabledTranslations={[false, false, false]}
-      >
-         <mesh>
-            <boxGeometry args={[length, 0.35, 0.4]} />
-            <meshStandardMaterial color="#ffcc00" />
-         </mesh>
-      </RigidBody>
-   )
-}
-
 //*
 function Flipper({ position, side = "left", length = 2 }) {
    const pivot = useRef()
@@ -367,16 +307,6 @@ function Flipper({ position, side = "left", length = 2 }) {
    }, [key])
 
    // Motor control
-   // useFrame(() => {
-   //    if (!joint.current) return
-
-   //    if (active.current) {
-   //       joint.current.configureMotorVelocity(20 * dir, 2)
-   //    } else {
-   //       joint.current.configureMotorVelocity(-10 * dir, 2)
-   //    }
-   // })
-
    useFrame(() => {
       if (!joint.current) return
 
@@ -401,8 +331,6 @@ function Flipper({ position, side = "left", length = 2 }) {
    // joint.current.setLimits(dir * -0.4, dir * 0.7)
    // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
 
-
-
    return (
       <>
          {/* Invisible fixed pivot */}
@@ -426,7 +354,6 @@ function Flipper({ position, side = "left", length = 2 }) {
    )
 }
 
-
 function Ball({ position, ballRef }) {
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
@@ -437,6 +364,7 @@ function Ball({ position, ballRef }) {
    return (
       <RigidBody
          ref={ballRef}
+         name='ball'
          type="dynamic"
          colliders="ball"
          restitution={0.85}
@@ -446,7 +374,6 @@ function Ball({ position, ballRef }) {
          position={position}
          mass={5}
          ccd
-      // enabledTranslations={[true, true, true]}
       >
          <mesh castShadow>
             <sphereGeometry args={[0.35, 32, 32]} />
