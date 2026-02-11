@@ -248,20 +248,22 @@ export default function PartsTestground() {
                      <directionalLight position={[0, 5, 5]} castShadow />
 
                      {/** Ball */}
-                     <Ball position={[-2, 0.5, 0]} velocity={[1, 0, 0]} color={red[500]}/>
-                     <Ball position={[2, 0.5, 0]}  velocity={[-1, 0, 0]} color={red[900]}/>
-                     <Ball position={[-3, 0.5, 1]} velocity={[1, 0, 0]} color={orange[500]}/>
-                     <Ball position={[3, 0.5, 1]}  velocity={[-1, 0, 0]} color={blue[900]}/>
+                     <Ball position={[-2, 0.5, 0]} velocity={[0.5, 0, 0]} color={red[500]}/>
+                     <Ball position={[2, 0.5, 0]}  velocity={[-0.5, 0, 0]} color={red[900]}/>
+
+{/*                      <Ball position={[-3, 0.5, 1]} velocity={[1, 0, 0]} color={orange[500]}/>
+                     <Ball position={[3, 0.5, 1]}  velocity={[-1, 0, 0]} color={blue[900]}/> */}
 
 
                      {/* <Cannonball /> */}
                      <Physics gravity={[0, 0, 0]} allowSleep>
+                        
                         <Cannonball position={[0, 1, 1]} velocity={[0, 0, 0]} />
                         <Text position={[0, 1.65, 1]} color={blue[500]} fontSize={0.25}>
                            Cannonball with Physics, click to explode
                         </Text>
 
-                        <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
+{/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
                         <Model position={[7, 0, 5.25]} rotation={[0, 0, 0]} scale={2.25} />
 
@@ -271,7 +273,7 @@ export default function PartsTestground() {
                         <CreateSingleTree position={[3, 0, -5.75]} rotation={[0, 0, 0]} scale={0.55} />
                         <CreateSingleTree position={[6, 0, -5.75]} rotation={[0, 0, 0]} scale={0.45} />
 
-                        <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color='white' />
+                        <Tube position={[0, 0, 4]} rotation={[0, 0, 0.725]} curve={catmullCurveTest} color='white' /> */}
 
                         {/* <CreateExtrudeGeometry noObjects={20} /> */}
                         {/* <CreateExtrudeGeometry02 noObjects={10} /> */}
@@ -291,11 +293,11 @@ export default function PartsTestground() {
                         <ShockAbsorber position={[0, -0.1, 0.5]} rotation={[0, 0, 0.55]} />
 
                         {/** front wishbones */}
-                        <DIYControlArm position={[0.35, 0.15, 1.5]} rotation={[0, 1.5, 0]} />
-                        <DIYControlArm position={[-0.35, 0.15, 0]} rotation={[0, -1.5, 0]} />
+{/*                         <DIYControlArm position={[0.35, 0.15, 1.5]} rotation={[0, 1.5, 0]} />
+                        <DIYControlArm position={[-0.35, 0.15, 0]} rotation={[0, -1.5, 0]} /> */}
 
                         {/** some parts / group later */}
-                        <group position={[0, 0.25, -10]}>
+{/*                         <group position={[0, 0.25, -10]}>
                            <MetalRod args={[1, 1.75, 0.15]}
                               position={[2, 0.85, 7]}
                               rotation={[0, 0, 1.585]}
@@ -321,7 +323,7 @@ export default function PartsTestground() {
                               rotation={[0, 1.6, 0]}
                               color={grey[300]}
                            />
-                        </group>
+                        </group> */}
 
 
                         {/* Ground */}

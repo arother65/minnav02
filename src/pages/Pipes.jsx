@@ -9,7 +9,7 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, forwardRef } from "react"
 
 // import * as THREE from 'three'
 
@@ -19,18 +19,21 @@ import { OrbitControls } from "@react-three/drei"
 // import { Html } from "@react-three/drei"
 // import { useGLTF, Clone } from '@react-three/drei'
 
-import { Physics, RigidBody, BallCollider, CapsuleCollider, CuboidCollider, useRevoluteJoint } from '@react-three/rapier'
+import { RigidBody, BallCollider, CapsuleCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
+import { useSphere } from "@react-three/cannon"
 
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
-// import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
+import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
 
 /** ------------------------------------------------------------------------ */
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 // import "../components/styles.css"
+
+import MetalSpring, { HelixCurve } from '../components/MetalSpring'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
@@ -188,17 +191,18 @@ export default function Pipes() {
                         <Flipper position={[-2.25, 0.7, 5.8]} side="left" />
                         <Flipper position={[2.25, 0.7, 5.8]} side="right" />
 
+                        <Ball ref={ballRef} position={[3.5, 0.45, 4]} />
+
                         {/** Bumper oben im Spielfeld */}
                         <Bumper position={[0, 0.15, -3]} ballRef={ballRef} />
                         <Bumper position={[-2, 0.15, -4]} ballRef={ballRef} />
                         <Bumper position={[2, 0.15, -4]} ballRef={ballRef} />
 
                         {/** Bumper seitlich */}
-                        <Bumper position={[3.5, 0.15, -2]} ballRef={ballRef} />
-                        <Bumper position={[-3.5, 0.55, 3]} ballRef={ballRef} />
+                        <Bumper position={[3.5, 0.15, -2]} ballRef={ballRef} /> 
+                        {/* <Bumper position={[-3.5, 0.55, 3]} ballRef={ballRef} /> */}
 
                         <ShooterLane x={3.5} />
-                        <Ball ballRef={ballRef} position={[3.5, 0.35, 2.4]} />
                         <Plunger ballRef={ballRef} x={3.5} />
 
                      </Physics>
@@ -247,18 +251,25 @@ function Walls() {
    )
 }
 
-function Bumper({ position, ballRef }) {
+function Bumper({ ballRef, position }) {
+
+   // use ballRef to give the ball some spin...
+   useEffect(() => {
+
+      ballRef.current?.applyImpulse(
+         // { x: 0, y: 0, z: -impulse },
+         { x: -3, y: 0, z: -1 },
+         true
+      )
+   }, [ballRef])
 
    return (
       <RigidBody
          type="fixed"
-         // colliders="ball"
-         // colliders="false"
-         // restitution={2.95}
-
+         colliders={false}
          position={position}
          enabledTranslations={[true, false, true]}
-         onCollisionEnter={() => { handleOnCollisionEnter(ballRef) }}
+      // onCollisionEnter={() => { }}
       >
 
          {/* <BallCollider args={[0.5]} restitution={0.95} friction={0.15} /> */}
@@ -354,16 +365,25 @@ function Flipper({ position, side = "left", length = 2 }) {
    )
 }
 
-function Ball({ position, ballRef }) {
+// function Ball({ position, ballRef }) {
+const Ball = forwardRef(({ position }, ref) => {
+   // const [ref] = useSphere(() => ({
+   //    mass: 1,
+   //    position: position,
+   //    velocity: 2
+   // }))
+
+   console.log("ballRef:", ref)
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
    useEffect(() => {
-      ballRef.current?.applyImpulse({ x: 2, y: 0, z: -5 }, true)
-   }, [ballRef])
+      ref.current?.applyImpulse({ x: 0, y: 0, z: -20 }, true)
+      // ref.current?.
+   }, [ref])
 
    return (
       <RigidBody
-         ref={ballRef}
+         ref={ref}
          name='ball'
          type="dynamic"
          colliders="ball"
@@ -372,18 +392,19 @@ function Ball({ position, ballRef }) {
          linearDamping={0.05}
          angularDamping={0.05}
          position={position}
-         mass={5}
+         mass={2}
          ccd
       >
          <mesh castShadow>
             <sphereGeometry args={[0.35, 32, 32]} />
-            <meshStandardMaterial metalness={0.85} roughness={0.25} />
+            <meshStandardMaterial color='orange' metalness={0.85} roughness={0.25} />
          </mesh>
       </RigidBody>
    )
-}
+}) // Ball()
 
 function ShooterLane({ x = 2.5 }) {
+
    return (
       <>
          {/* Lane floor */}
@@ -391,27 +412,28 @@ function ShooterLane({ x = 2.5 }) {
             type="fixed"
             friction={0.05}
             restitution={0}
-            position={[x, 0.55, 5]}
+            position={[x, 0.15, 4.5]}
+            rotation={[-0.15, 0, 0]}
          >
             <mesh receiveShadow>
-               <boxGeometry args={[0.9, 0.1, 4]} />
-               <meshStandardMaterial color="#222" />
+               <boxGeometry args={[0.9, 0.05, 5]} />
+               <meshStandardMaterial color="grey" />
             </mesh>
          </RigidBody>
 
          {/* Left rail */}
-         <RigidBody type="fixed" position={[x - 0.55, 0.4, 4]}>
+         <RigidBody type="fixed" position={[x - 0.55, 0.4, 5]}>
             <mesh>
                <boxGeometry args={[0.1, 0.8, 4]} />
-               <meshStandardMaterial color="#333" />
+               <meshStandardMaterial color="lightgrey" />
             </mesh>
          </RigidBody>
 
          {/* Right rail */}
-         <RigidBody type="fixed" position={[x + 0.55, 0.4, 4]}>
+         <RigidBody type="fixed" position={[x + 0.55, 0.4, 5]}>
             <mesh>
                <boxGeometry args={[0.1, 0.8, 4]} />
-               <meshStandardMaterial color="#333" />
+               <meshStandardMaterial color="lightgrey" />
             </mesh>
          </RigidBody>
       </>
@@ -420,8 +442,19 @@ function ShooterLane({ x = 2.5 }) {
 
 function Plunger({ ballRef, x = 2.5 }) {
 
+   console.log("ballRef in fn Plunger(): ", ballRef)
+
    const pulling = useRef(false)
    const power = useRef(0)
+
+   const curve = new HelixCurve({
+      radius: 0.25,  // DURCHMESSER, außen der gesamten Feder
+      turns: 8,  // ANZAHL der Wicklungen
+      height: 0.75,  // LÄNGE der zu erzeugenden Feder
+
+      // offset: (i / strands) * Math.PI * 2,
+      offset: 0  // verschiebt die Feder in deren Längsachse
+   })
 
    useEffect(() => {
       const down = (e) => {
@@ -461,13 +494,14 @@ function Plunger({ ballRef, x = 2.5 }) {
    return (
       <RigidBody
          type="fixed"
-         position={[x, 0.45, 4]}
+         position={[x, 0.55, 6.25]}
          colliders="cuboid"
       >
          <mesh>
             <boxGeometry args={[0.4, 0.4, 0.4]} />
-            <meshStandardMaterial color="#888" />
+            <meshStandardMaterial color={orange[200]} metalness={0.95} roughness={0.45} />
          </mesh>
+         <MetalSpring position={[0, 0.25, -1]} rotation={[1.55, 0, 0]} color='red' helixCurve={curve} />
       </RigidBody>
    )
 }

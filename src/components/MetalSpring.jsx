@@ -27,7 +27,7 @@ import * as THREE from "three"
 //    )  // useMemo()
 // }  // HelixCurve()
 
-class HelixCurve extends THREE.Curve {
+export class HelixCurve extends THREE.Curve {
 
    constructor({ radius, turns, height, offset }) {
       super()
@@ -46,7 +46,7 @@ class HelixCurve extends THREE.Curve {
 
 
 //* Main Component
-export default function MetalSpring({ position = [0, 0, 0], rotation = [0, 0, 0], color = 'lightsteelblue' }) {
+export default function MetalSpring({ position = [0, 0, 0], rotation = [0, 0, 0], color = 'lightsteelblue', helixCurve }) {
 
    const strands = 1  //? DURCHMESSER der einzelnen Windungen
 
@@ -58,25 +58,30 @@ export default function MetalSpring({ position = [0, 0, 0], rotation = [0, 0, 0]
             // const curve = HelixCurve( { offset: (i / strands) * Math.PI * 2, height })
             // let lvOffset = (i / strands) * Math.PI * 2, height 
 
-            const curve = new HelixCurve({
-               radius: 0.025,  // DURCHMESSER, außen der gesamten Feder
-               turns: 6,  // ANZAHL der Wicklungen
-               height: 0.15,  // LÄNGE der zu erzeugenden Feder
+            let curve = {}
+            if (!helixCurve) {
+               curve = new HelixCurve({
+                  radius: 0.035,  // DURCHMESSER, außen der gesamten Feder
+                  turns: 6,  // ANZAHL der Wicklungen
+                  height: 0.25,  // LÄNGE der zu erzeugenden Feder
 
-               // offset: (i / strands) * Math.PI * 2,
-               offset: 0  // verschiebt die Feder in deren Längsachse
-            })
+                  // offset: (i / strands) * Math.PI * 2,
+                  offset: 0.5  // verschiebt die Feder in deren Längsachse
+               })
+            } else {
+               curve = helixCurve
+            }
             // let curve = oCurve.getPoint(1)  // errs
 
             // 
             return (
                <mesh key={i}>
                   {/**                      | RenderObj, Durchmesser, ?, ? */}
-                  <tubeGeometry args={[curve, 256, 0.0045, 128, false]} />
+                  <tubeGeometry args={[curve, 256,       0.045, 128, false]} />
                   <meshStandardMaterial
                      color={color}
-                     metalness={0.85}
-                     roughness={0.95}
+                     metalness={0.95}
+                     roughness={0.15}
                      side={2}
                   />
                </mesh>
