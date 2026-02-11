@@ -15,13 +15,20 @@ function createShape() {
    const shape = new THREE.Shape()
 
    shape.moveTo(0, 0)
-   shape.lineTo(0.005, 0.005)
-   shape.lineTo(0.005, 0.005)
+   shape.lineTo(0.05, 0.05)  // divides the shape in half
+   shape.lineTo(0.05, 0.05)  // divides the shape in half
 
    // shape.lineTo(0.025, 0.005)
    // shape.lineTo(0.025, 0.005)
 
-   shape.bezierCurveTo(0.01, 0.01, 0.01, 0.01)
+   shape.bezierCurveTo(
+      0.75,  // ? Länge des Objekts UND Lage in der vertikalen Achse
+      0.75,  // Länge und Lage im Raum 
+      // 0.5, //? Länge des Objekts
+      // 1, 
+      // 0.75,  // Breite des Objekts 
+      // 0.25
+   )
    // shape.bezierCurveTo(0.02, 0.02, 0.02, 0.02)
    shape.closePath()
 
@@ -40,14 +47,14 @@ function getRandomColor() {
 
 
 //* 
-export default function CreateExtrudeGeometry({noObjects = 2}) {
+export default function CreateExtrudeGeometry({ position = [0, 0, 0], rotation = [0, 0, 0], color = 'red' }) {
 
    const shape02 = createShape()
 
    const geometry = useMemo(
       () =>
          new THREE.ExtrudeGeometry(shape02, {
-            depth: 0.01,
+            depth: 0.01,  // length of the object 
             steps: 16,
             bevelEnabled: true,
             bevelSize: 0.1,
@@ -58,25 +65,22 @@ export default function CreateExtrudeGeometry({noObjects = 2}) {
 
    const material = useMemo(() =>
       new THREE.MeshStandardMaterial({
-         color: getRandomColor(),
+         color: color,
          metalness: 0.95,
          roughness: 0.45,
          side: THREE.DoubleSide,
       }), [])
 
    return (
-      Array.from({ length: noObjects }).map((_, index) => (
-         <mesh
-            key={index}
-            geometry={geometry}
-            material={material}
-            position={[-5 + index / 4, 0.15 + index / 4, 2]}
-            rotation={[0, 0, 0.8]}
-            receiveShadow
-         >
-            <Text position={[0, 0.35, 0]} color={material.color} fontSize={0.2}>{index}</Text>
-         </mesh>
-      ))
+      <mesh
+         geometry={geometry}
+         material={material}
+         position={position}
+         rotation={rotation}
+         receiveShadow
+      >
+         {/* <Text depthOffset={1} position={[0, 0.45, 0]} color={material.color} fontSize={0.2}>THREE.ExtrudeGeometry</Text> */}
+      </mesh>
    )  // return()
 }  // CreateExtrudeGeometry()
 
