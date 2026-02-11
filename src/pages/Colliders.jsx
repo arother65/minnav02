@@ -215,10 +215,7 @@ function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution =
       newPosition[2] = actPosition.z
       setRigidBodyPos(newPosition)
 
-      // ref.current.applyForce({ x, y, z }, wake)
-      // ref.current.setRotation({ x, y, z, w }, wake)
-
-      rigidBody.current.setRotation({ x: 1, y: 0, z: 0 }, true)
+      rigidBody.current?.setRotation({ x: 1, y: 0, z: 0 }, true)
       // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
 
       // increase hit-counter

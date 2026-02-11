@@ -483,7 +483,8 @@ export default function Car3D() {
                {/** TEST Rohre / tubes */}
                <mesh key={1} position={[3, 0.35, 2]} receiveShadow>
                   <tubeGeometry args={[curve, 32, 0.2, 32, true]} />
-                  <meshStandardMaterial color="#444" metalness={0.85} roughness={0.45} />
+                  {/* <meshStandardMaterial color="#444" metalness={0.85} roughness={0.45} /> */}
+                  <meshStandardMaterial color="red" metalness={0.85} roughness={0.25} />
                </mesh>
                <mesh position={[3, 0.95, 4]} rotation={[0, 0, 1.65]} receiveShadow>
                   <tubeGeometry args={[curve, 32, 0.1, 32, true]} />

@@ -1,6 +1,6 @@
 /**
  * 
- *  Stand: 01.02.2026
+ *  Stand: 10.02.2026
  * 
  */
 
@@ -9,633 +9,60 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useMemo, useRef, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 
+// import * as THREE from 'three'
 
-import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
-import { useFrame } from "@react-three/fiber"  // errs 
-
-import { CapsuleGeometry } from 'three'
-
+import { useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
-import { Html } from "@react-three/drei"
-import { useGLTF, Clone, useTexture } from '@react-three/drei'
+// import { Html } from "@react-three/drei"
+// import { useGLTF, Clone } from '@react-three/drei'
 
-import { Physics, RigidBody, BallCollider } from '@react-three/rapier'
-import { CuboidCollider } from "@react-three/rapier"
+import { Physics, RigidBody, BallCollider, useImpulseJoint, useRevoluteJoint } from '@react-three/rapier'
+
+// import { CuboidCollider } from "@react-three/rapier"
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, CircularProgress, Slider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
+
+// import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
 
 /** ------------------------------------------------------------------------ */
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
-import { createNatoCamoTexture } from '../components/NatoCamoPattern'
-import Flipper from '../components/Flipper'
-
-import "../components/styles.css"
+// import "../components/styles.css"
 
 /** ------------------------------------------------------------------------ */
-//    Local declarations / components
+//    Local declarations
 /** ------------------------------------------------------------------------ */
 
 
-//*
-function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
-   const ref = useRef()
+/** ------------------------------------------------------------------------ */
+//    Local components / functions
+/** ------------------------------------------------------------------------ */
+function handleOnCollisionEnter(ref) {
 
-   // const geometry = useMemo(
-   //    () =>
-   //       new THREE.TetrahedronGeometry(0.08, 64),
-   //    []
-   // )
+   // ref.current?.applyTorqueImpulse({
+   //    x: Math.random() * 1,
+   //    y: 0,
+   //    z: Math.random() * 0.5,
+   // })
 
-   useFrame((_, delta) => {
-      ref.current.position.addScaledVector(velocity, delta)
-      velocity.y -= 3 * delta // gravity
-
-      ref.current.rotation.x += 6 * delta
-      ref.current.rotation.y += 8 * delta
-   })
-
-   return (
-      // <mesh ref={ref} geometry={geometry} castShadow>
-      <mesh ref={ref} position={position} castShadow>
-
-         {/* <sphereGeometry args={[0.08, 8, 8]} />  */}
-         <tetrahedronGeometry args={[0.05]} />
-
-         <meshStandardMaterial color={color} flatShading />
-      </mesh>
+   ref.current?.applyImpulse(
+      // { x: 0, y: 0, z: -impulse },
+      { x: 0.5, y: -0.15, z: 0.25 },
+      true
    )
-}  // Fragment()
+}  // Handler for Collision with a Bumper 
 
-
-//* je nach Stand von hitCount explodiert der Ball...
-function Ball({ position = [0, 5, 0], radius = 1, color = 'green', restitution = 0.75 }) {
-
-   // corrugated_iron_diff_2k: dunkel...
-   // const texture = CreateTextureFromFile('/textures/rusty_corrugated_iron_diff_2k.jpg')
-   const texture = CreateTextureFromFile('/textures/wood.jpg')
-
-   const rigidBody = useRef()
-
-   let [hitCount, setHitCount] = useState(0)
-   let [explode, setExplode] = useState(false)
-   let [rigidBodyPos, setRigidBodyPos] = useState(position)
-
-   useEffect(() => {
-      //?
-   }, [hitCount, rigidBodyPos])
-
-   //* Event handler
-   function handleOnCollisionEnter(rigidBody) {
-
-      rigidBody.current?.applyTorqueImpulse({
-         x: Math.random() * 0.5,
-         y: Math.random() * 0.05,
-         z: Math.random() * 0.05,
-      })
-
-      // position des rigidBody aktualisieren:
-      let actPosition = rigidBody.current.translation()
-      let newPosition = []
-      newPosition[0] = actPosition.x
-      newPosition[1] = actPosition.y
-      newPosition[2] = actPosition.z
-      setRigidBodyPos(newPosition)
-
-      // ref.current.applyForce({ x, y, z }, wake)
-      // ref.current.setRotation({ x, y, z, w }, wake)
-
-      rigidBody.current.setRotation({ x: 1, y: 0, z: 0 }, true)
-      // rigidBody.current.applyForce({ x: 1, y: 0, z: 0 }, true)
-
-      // increase hit-counter
-      hitCount++
-      setHitCount(hitCount)
-      if (hitCount > 5) {
-         // set "content-critical" on HTML-tag
-         let HTMLTag = document.getElementById('idHTMLTag')
-         HTMLTag.setAttribute('class', '')
-         HTMLTag.setAttribute('class', 'content-critical')
-      }
-      if (hitCount === 12) {
-         setExplode(true)
-      }
-   }  // handleOnCollisionEnter()
-
-   if (!explode) {
-      return (
-         <RigidBody
-            ref={rigidBody}
-            colliders={false}
-            position={position}
-            mass={2}
-            restitutionCombineRule="max"
-            linearDamping={0}
-            angularDamping={0}
-            // ccd  // Continuous Collision Detection
-            // softCcdPrediction={0.2}
-            onCollisionEnter={() => { if (rigidBody) { handleOnCollisionEnter(rigidBody) } }}
-         >
-            <BallCollider args={[radius * 0.5, radius * 0.5, radius * 0.5]} restitution={restitution} friction={0.15} />
-
-            <mesh castShadow receiveShadow>
-               <sphereGeometry args={[radius, 32, 32]} />
-
-               <Html distanceFactor={8}>
-                  <div id='idHTMLTag' className="content">
-                     {hitCount}
-                  </div>
-               </Html>
-
-               <meshStandardMaterial map={texture} metalness={0.95} roughness={0.5} />
-               {hitCount === 10 && <meshStandardMaterial color={orange[500]} map={texture} metalness={0.65} roughness={0.35} />}
-               {hitCount === 11 && <meshStandardMaterial color={red[500]} map={texture} metalness={0.25} roughness={0.55} />}
-            </mesh>
-         </RigidBody >
-      )
-   }
-
-   if (explode) {
-      return (
-         Array.from({ length: 50 }).map((_, i) => (
-            <Fragment
-               key={i}
-               velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-               position={rigidBodyPos}
-               metalness={0.95}
-               roughness={0.05}
-               castShadow
-               receiveShadow
-            />
-         ))
-      )
-   }
-}  // Ball()
-
-//*(
-function Floor() {
-
-   return (
-      // mit collider={false} wird kein Auto-collider gesetzt
-      <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
-         <CuboidCollider
-            args={[20, 0.1, 20]}
-            position={[0, 0, 0]}
-            restitution={0.75}
-            friction={0.15}
-            restitutionCombineRule="max"
-            ccd
-         />
-
-         <mesh position={[0, -0.15, 0]} rotation={[0, 0, 0]} receiveShadow>
-            <boxGeometry args={[30, 0.5, 30]} />
-            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/grimy-metal-albedo.png')}/> */}
-            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/broken_brick_wall_diff_2k.jpg')} /> */}
-
-            <meshStandardMaterial
-               map={CreateTextureFromFile('/textures/corrugated_iron_diff_2k.jpg')}
-               metallness={0.85}
-               roughness={0.45}
-            />
-
-            {/* <meshStandardMaterial color={blue[100]} metallness={0.25} roughness={0.15} /> */}
-         </mesh>
-      </RigidBody>
-   )
-}  // Floor()
-
-//*
-function Wall({ position = [0, 0, 0], rotation = [0, 0, 0], size, color, rotate = false }) {
-
-   const rigidBodyRef = useRef()
-   const meshRef = useRef()
-
-   const rusty_corrugated_iron = useTexture({
-      map: '/textures/rusty_corrugated_iron_arm_2k.jpg',
-      normalMap: '/textures/rusty_corrugated_iron_nor_gl_2k.jpg',
-      roughnessMap: '/textures/rusty_corrugated_iron_diff_2k.jpg',
-   })
-   rusty_corrugated_iron.map.colorSpace = THREE.SRGBColorSpace
-   rusty_corrugated_iron.normalMap.flipY = false
-
-   useFrame((_, delta) => {
-      const body = rigidBodyRef.current
-
-      if (!body || !meshRef.current || !rotate) return
-
-      meshRef.current.rotation.z += delta * 0.75
-      // meshRef.current.rotation.y += delta * 0.95
-      // meshRef.current.position.x -= 0.005  // dreht die Wall weg vom FLoor...
-
-      body.setNextKinematicRotation(meshRef.current.rotation)
-   })
-
-   return (
-      <RigidBody
-         ref={rigidBodyRef}
-         type="kinematicPosition"  // wegen Verwendung von setNextKinematicRotation()
-         position={position}
-         rotation={rotation}
-         colliders={false}
-      >
-         <CuboidCollider
-            args={[
-               size[0] * 0.5,
-               size[1] * 0.5,
-               size[2] * 0.5,
-            ]}
-            restitution={0.9}
-            friction={0}
-         />
-
-         <mesh ref={meshRef} receiveShadow>
-            <boxGeometry
-               position={position}
-               rotation={rotation}
-               args={[
-                  size[0] * 1,
-                  size[1] * 1,
-                  size[2] * 1,
-               ]} />
-            <meshStandardMaterial color={color} metallness={0.9} roughness={0.1} />
-
-            {/* <meshStandardMaterial map={CreateTextureFromFile('/textures/curly_teddy_checkered.jpg')} /> */}
-
-            {/* <meshStandardMaterial color={color} metallness={0.95} roughness={0.15} {...rusty_corrugated_iron} /> */}
-
-            {/** erzeugt spiegelnde Oberflächen...GPU-intensiv */}
-            {/* <MeshTransmissionMaterial 
-               color={color} 
-               clearcoat={0.85} 
-               thickness={0.1} 
-               anisotropicBlur={0.1} 
-               chromaticAberration={0.1} 
-               samples={2} 
-               resolution={64} /> */}
-         </mesh>
-      </RigidBody>
-   )
-}  // Wall()
-
-//*
-function getMuiColorObj(ivColor) {
-   const arr = [blue, brown, green, grey, orange, purple, red, yellow]
-
-   switch (ivColor) {
-      case 'blue':
-         return arr[0][500]
-      case 'brown':
-         return arr[1][500]
-      case 'green':
-         return arr[2][500]
-      case 'grey':
-         return arr[3][500]
-      case 'orange':
-         return arr[4][500]
-      case 'purple':
-         return arr[5][500]
-      case 'red':
-         return arr[6][500]
-      case 'yellow':
-         return arr[7][500]
-      default:
-         return arr[0][500]  // blue[500]
-   }
-}
-
-//*
-function getRandomMuiColor() {
-
-   // returns a randon color of [blue, brown, green, grey, orange, purple, red, yellow], length 8
-   const arr = [blue, brown, green, grey, orange, purple, red, yellow]
-   const randomIndex = Math.floor(Math.random() * arr.length)
-   const randomItem = arr[randomIndex]
-
-   return randomItem[500]
-}  // getRandomMuiColor()
-
-//*
-function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, withCamo = false, withIndex = false, customCamoMix, onDone, lengthScene }) {
-
-   // useMemo() for better performance with big noBalls
-   const geometry = useMemo(() => new THREE.SphereGeometry(size, 64, 64), [size])
-
-   const camoTexture = useMemo(() => {
-      // return createNatoCamoTexture([getRandomMuiColor(), green[200], grey[500]])
-      if (customCamoMix.length > 0) {
-         return createNatoCamoTexture([customCamoMix[0], customCamoMix[1], customCamoMix[2]])
-      }
-      return createNatoCamoTexture([getRandomMuiColor(), getRandomMuiColor(), getRandomMuiColor()])
-   }, [customCamoMix])
-
-   const material = useMemo(() =>
-      new THREE.MeshStandardMaterial({
-         // color:  new THREE.Color(getRandomMuiColor()),
-         // color: getRandomMuiColor(),
-         metalness: 0.95,
-         roughness: 0
-         // map: camoTexture
-      }), [])
-
-   const spawnPositions = useMemo(() =>
-      Array.from({ length: noBalls }, (_, index) => [
-         (position[0] % 2) ? position[0] + (index / 150) : position[0] - (index / 150),
-         position[1] + (index),
-         (position[2] % 2) ? position[2] + (index / 150) : position[2] - (index / 150)
-      ]), [noBalls, position])
-
-   //* ohne diesen Aufruf wird die Szene im Parent (Pipes.jsx) zu schnell gelöscht...
-   let lengthTimeout = lengthScene * 1000
-   if (noBalls >= 1000) {
-      lengthTimeout = 50000
-   }
-   useEffect(() => {
-      const id = setTimeout(() => onDone?.(), lengthTimeout)
-      return () => clearTimeout(id)
-   }, [lengthTimeout, onDone])
-
-   // 
-   return spawnPositions.map((position, index) => (
-      <RigidBody
-         key={index}
-         colliders={false}
-         position={position}
-         mass={2}
-      >
-         <BallCollider args={[
-            geometry.parameters.radius * 0.75,
-            geometry.parameters.radius * 0.75,
-            geometry.parameters.radius * 0.75,
-         ]}
-            restitution={0.75} friction={0.15}
-         />
-         <mesh geometry={geometry} material={material} castShadow>
-            {!withCamo &&
-               <>
-                  <meshStandardMaterial color={getRandomMuiColor()} />
-                  {withIndex &&
-                     <Html distanceFactor={10}>
-                        <div className="content">
-                           {index}
-                        </div>
-                     </Html>
-                  }
-               </>}
-
-            {withCamo &&
-               <>
-                  <meshStandardMaterial map={camoTexture} />
-                  {withIndex &&
-                     <Html distanceFactor={10}>
-                        <div className="content">
-                           {index}
-                        </div>
-                     </Html>
-                  }
-               </>}
-         </mesh>
-      </RigidBody>
-   ))
-}  // CreateManyBalls()
-
-//* making Select-boxes visible or invisible
-function setSelectsVisible() {
-   let eleFrmColor = document.getElementById('idFrmColor01')
-   let classList = eleFrmColor.getAttribute('class')
-   classList = classList.replace('invisible', '')
-   classList = classList.replace('d-none', '')
-   eleFrmColor.setAttribute('class', classList)
-
-   eleFrmColor = document.getElementById('idFrmColor02')
-   classList = eleFrmColor.getAttribute('class')
-   classList = classList.replace('invisible', '')
-   classList = classList.replace('d-none', '')
-   eleFrmColor.setAttribute('class', classList)
-
-   eleFrmColor = document.getElementById('idFrmColor03')
-   classList = eleFrmColor.getAttribute('class')
-   classList = classList.replace('invisible', '')
-   classList = classList.replace('d-none', '')
-   eleFrmColor.setAttribute('class', classList)
-}
-function setSelectsInvisible() {
-   let eleFrmColor = document.getElementById('idFrmColor01')
-   let classList = eleFrmColor.getAttribute('class')
-   let newClassList = ''
-   newClassList = newClassList.concat(classList, ' invisible d-none')
-   eleFrmColor.setAttribute('class', newClassList)
-
-   newClassList = ''
-   eleFrmColor = document.getElementById('idFrmColor02')
-   classList = eleFrmColor.getAttribute('class')
-   newClassList = newClassList.concat(classList, ' invisible d-none')
-   eleFrmColor.setAttribute('class', newClassList)
-
-   newClassList = ''
-   eleFrmColor = document.getElementById('idFrmColor03')
-   classList = eleFrmColor.getAttribute('class')
-   newClassList = newClassList.concat(classList, ' invisible d-none')
-   eleFrmColor.setAttribute('class', newClassList)
-}
-
-function CreateTextureFromFile(path2textureFile) {
-
-   // const rockyTerrainModel = useGLTF('/models/rockyTerrain.glb ')
-   // return <Clone object={rockyTerrainModel.scene} position={position} rotation={rotation} scale={scale} />
-
-   let texture = useTexture(path2textureFile)
-
-   texture.colorSpace = THREE.SRGBColorSpace
-   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-   texture.repeat.set(1, 1)
-
-   // return the texture created 
-   return texture
-
-}  //  CreateTextureFromFile()
-
-//*
-function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
-
-   const rigidBody = useRef()
-
-   const ironModel = useGLTF('/models/corrugated_iron.glb')
-   ironModel.materials.corrugated_iron.metalness = 0.95
-   ironModel.materials.corrugated_iron.roughness = 0.15
-
-   // unter "materials.corrugated_iron" finden sich: color im RGB-Format (r:, g:, b:), opacity...  
-   ironModel.materials.corrugated_iron.color = { r: 2, g: 2, b: 12 }
-   ironModel.materials.corrugated_iron.opacity = 0.95
-
-   //? useConvexPolyhedron(); vertices + faces from your model’s geometry
-   //? useCompoundBody
-
-   function handleOnCollisionEnter(rigidBody) {
-
-      rigidBody.current?.applyTorqueImpulse({
-         x: Math.random() * 0.15,
-         y: Math.random() * 0,
-         z: Math.random() * 0,
-      })
-
-      // ref.current.applyForce({ x, y, z }, wake)
-      // rigidBody.current.applyForce({ x: 1, y: 1, z: 0 }, true)
-
-      // ref.current.setRotation({ x, y, z, w }, wake)
-      rigidBody.current.setRotation({ x: 3, y: 0.05, z: 0.05 }, true)
-
-   }  // handleOnCollisionEnter()
-
-   return (
-      <RigidBody
-         ref={rigidBody}
-         colliders={false}
-         position={position}
-         mass={5}
-         restitutionCombineRule="max"
-         linearDamping={0}
-         angularDamping={0}
-         canSleep={false}
-         ccd  // Continuous Collision Detection
-         softCcdPrediction={0.2}
-         onCollisionEnter={() => { if (rigidBody) { handleOnCollisionEnter(rigidBody) } }}
-      >
-         <CuboidCollider args={[scale * 0.5, scale * 0.5, scale * 0.5]} restitution={restitution} friction={0.15} />
-         <Clone object={ironModel.scene} scale={scale} castShadow receiveShadow />
-      </RigidBody>
-   )
-}  // CorrugatedIron()
-
-//*
-function CreatePipes({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) {
-
-   const pipesModel = useGLTF('/models/modular_pipes_2k.gltf')  // holt das gesamte model mit allen nodes
-
-   console.log('CreatePipes')
-
-   // <Model>.nodes
-
-   pipesModel.nodes.pipe_200cm_metal.material.metallness = 0.55
-   pipesModel.nodes.pipe_200cm_metal.material.roughness = 0.85
-
-   pipesModel.nodes.pipe_200cm_metal.material.color = { isColor: true, r: 6, g: 1, b: 1 }
-   pipesModel.nodes.pipe_200cm_metal.material.blendColor = { isColor: true, r: 1, g: 1, b: 1 }
-
-   // pipe_200cm_metal; pipe_valve_large_metal
-
-   // pipe_thin_200cm_pvc
-
-   return (
-      <RigidBody
-         type="fixed"
-         position={position}
-         rotation={rotation}
-         colliders='trimesh'
-         // mass={5}  // is ignored by fixed RigidBody
-         restitutionCombineRule="max"
-         linearDamping={0}
-         angularDamping={0}
-      >
-
-         <CuboidCollider
-            // args={[
-            //    scale * 0.85,
-            //    scale * 0.85,
-            //    scale * 0.85,
-            // ]}
-            args={[1.2, 0.3, 0.3]}
-            restitution={0.75}
-            friction={0.05}
-         />
-
-         {/* <group position={position} rotation={rotation} scale={scale}> */}
-         <group scale={scale}>
-
-            <Clone position={[1, 0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
-            <Clone position={[0.75, 0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
-            <Clone position={[0.5, 0, 0]} object={pipesModel.nodes.pipe_200cm_metal} />
-
-            <Clone position={[0, 0.15, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
-            <Clone position={[0, 0.25, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
-            <Clone position={[0, 0.35, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
-
-            <Clone position={[0, 0.55, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
-            <Clone position={[0, 0.75, 0]} object={pipesModel.nodes.pipe_thin_200cm_pvc} />
-
-            <Wall position={[0, 1, 0]} rotation={[0, 1.55, 0]} size={[0.25, 2, 1]} color={red[300]} />
-            <Wall position={[2, 1, 0]} rotation={[0, 1.55, 0]} size={[0.25, 2, 1]} color={orange[300]} />
-            <Wall position={[1, 2, 0.75]} rotation={[1.55, 1.55, 0]} size={[0.25, 2, 1]} color={green[300]} />
-
-         </group>
-      </RigidBody>
-   )
-}  // CreatePipes()
-
-//*
-function preloadModelsTextures() {
-   useGLTF.preload('/models/corrugated_iron.glb')
-   useGLTF.preload('/textures/corrugated_iron_diff_2k.jpg')  // works
-   useGLTF.preload('/models/modular_pipes_2k.gltf')
-}  //
 
 //* Pipes page component
 export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
-
-   const [camoUsed, setCamoUsed] = useState(false)  // camo for the Balls created?
-   const [indexUsed, setIndexUsed] = useState(false)  // switches index per Ball created
-
-   const [createBalls, setCreateBalls] = useState(false)  // start creating Balls?
-   const [disabled, setDisabled] = useState(false)  // state of the CREATE button 
-   const [enableCircularProgress, setCircularProgress] = useState(false)  // state of CircularProgress
-   const [size, setSize] = useState(0.15)  // SIZE of the Balls created 
-   const [noBalls, setNoBalls] = useState(5)  // NUMBER o]f Balls created
-   const [lengthScene, setLengthScene] = useState(10)  // length of scene in seconds
-
-   const [ballsPositionX, setBallsPositionX] = useState(0)
-   const [ballsPositionY, setBallsPositionY] = useState(0)
-   const [ballsPositionZ, setBallsPositionZ] = useState(0)
-   const [customPosition, setPosition] = useState([0, 0, 0])  // used in components for Balls
-
-   // states for color picker 
-   const [color01, setcolor01] = useState('')
-   const [color02, setcolor02] = useState('')
-   const [color03, setcolor03] = useState('')
-   const [customCamoMix, setCustomColorMix] = useState([])
-
-   function mixCustomCamo() {
-      let customCamoMix = []
-      customCamoMix.push(getMuiColorObj(color01))  // später: mit [shade]
-      customCamoMix.push(getMuiColorObj(color02))
-      customCamoMix.push(getMuiColorObj(color03))
-      return (customCamoMix)
-   }  // mixCustomCamo()
-
-   function setCustomPosition() {
-      let customPosition = []
-      customPosition.push(ballsPositionX)
-      customPosition.push(ballsPositionY)
-      customPosition.push(ballsPositionZ)
-      return customPosition
-   }  // setCustomPosition()
-
-   const handleChange = (event) => {
-      setSize(event.target.value)
-   }  // handleChange() Slider-Components
-
-   useEffect(() => {
-      console.log('useEffect(): createBalls:', createBalls, 'camoUsed: ', camoUsed)
-   }, [camoUsed, createBalls, customCamoMix, indexUsed, lengthScene, ballsPositionX])
-
-   // preload of GLTF-models and textures:
-   preloadModelsTextures()
+   const ballRef = useRef(null)
 
    // 
    return (
@@ -676,77 +103,11 @@ export default function Pipes() {
                            id='idBtn'
                            color="success"
                            className='m-1'
-                           disabled={disabled}
-                           onClick={() => {
-                              setCreateBalls(true)
-                              setDisabled(true)
-                              setCircularProgress(true)
-                              setLengthScene(lengthScene)
-                              setPosition(setCustomPosition())
-
-                              // build camo if user mixed one 
-                              let idSwitch = document.getElementById('idSwitchMixCamo')
-                              if (idSwitch.checked === true) {
-                                 setCustomColorMix(mixCustomCamo())
-                              }
-                           }}>
+                           // disabled={disabled}
+                           onClick={() => { }}>
                            Create Balls
-                           {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />}
+                           {/* {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />} */}
                         </Button>
-                     </div>
-
-                     {/** Slider controls */}
-                     <div className="row m-3 border border-info rounded">
-                        <h6>Adjust SIZE of balls: </h6>
-                        <Slider
-                           name='idRadius'
-                           aria-label="Slider for radius"
-                           defaultValue={0.15}
-                           valueLabelDisplay="auto"
-                           step={0.05}
-                           min={0.15}
-                           max={1}
-                           onChange={handleChange}
-                           value={size}
-                           disabled={disabled}
-                        />
-                     </div>
-                     <div className="row m-3 border border-info rounded">
-                        <h6>Adjust NUMBER of balls: </h6>
-                        <Tooltip title="!get's SLOW when high" arrow>
-                           <Slider
-                              name='idNoBalls'
-                              aria-label="Slider for number of balls"
-                              defaultValue={1}
-                              valueLabelDisplay="auto"
-                              marks
-                              step={1}
-                              min={1}
-                              max={900}
-                              onChange={(event) => { setNoBalls(event.target.value) }}
-                              value={noBalls}
-                              disabled={disabled}
-                           />
-                        </Tooltip>
-                     </div>
-                  </Card>
-
-                  {/** Sliders for unloading POSITION of balls */}
-                  <Card>
-                     <div className="row m-3 border border-info rounded">
-                        <h6>Adjust POSITION of balls: </h6>
-                        <Slider
-                           name='idNoBalls'
-                           aria-label="Slider for POSITION of balls"
-                           defaultValue={1}
-                           valueLabelDisplay="auto"
-                           step={0.25}
-                           min={-5}
-                           max={5}
-                           onChange={(event) => { setBallsPositionX(event.target.value) }}
-                           value={ballsPositionX}
-                           disabled={disabled}
-                        />
                      </div>
                   </Card>
 
@@ -758,10 +119,10 @@ export default function Pipes() {
                            <Switch
                               onChange={(e) => {
                                  if (e.target.checked === true) {
-                                    setIndexUsed(true)
+                                    // setIndexUsed(true)
                                  }
                                  else {
-                                    setIndexUsed(false)
+                                    // setIndexUsed(false)
                                  }
                               }} />
                         }
@@ -774,10 +135,10 @@ export default function Pipes() {
                            <Switch
                               onChange={(e) => {
                                  if (e.target.checked === true) {
-                                    setCamoUsed(true)
+                                    // setCamoUsed(true)
                                  }
                                  else {
-                                    setCamoUsed(false)
+                                    // setCamoUsed(false)
                                  }
                               }} />
                         }
@@ -790,115 +151,11 @@ export default function Pipes() {
                            <Switch
                               id='idSwitchMixCamo'
                               onChange={(e) => {
-                                 if (e.target.checked === true) {
-                                    // mixCustomCamo()  is done when button is pressed
-                                    // make select's visible 
-                                    setSelectsVisible()
-                                 }
-                                 else {
-                                    // inactivate color select's
-                                    setcolor01(null)
-                                    setcolor02(null)
-                                    setcolor03(null)
-                                    setCustomColorMix([])
-
-                                    // make select's invisible
-                                    setSelectsInvisible()
-                                 }
-                              }} />
+                              }
+                              } />
                         }
                            label="mix camo" />
                      </FormGroup>
-
-                     {/** choose color01 */}
-                     <FormControl id='idFrmColor01' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                        {/* blue, brown, green, grey, orange, purple, red, yellow */}
-                        <InputLabel id="idColor01">Color01</InputLabel>
-                        <Select
-                           labelId="idSelectColor01"
-                           id="idSelectColor01"
-                           value={color01}
-                           onChange={(e) => {
-                              setcolor01(e.target.value)
-                           }}
-                           label="Color01"
-                        >
-                           <MenuItem value={'blue'}>Blue</MenuItem>
-                           <MenuItem value={'brown'}>Brown</MenuItem>
-                           <MenuItem value={'green'}>Green</MenuItem>
-                           <MenuItem value={'grey'}>Grey</MenuItem>
-                           <MenuItem value={'orange'}>Orange</MenuItem>
-                           <MenuItem value={'purple'}>Purple</MenuItem>
-                           <MenuItem value={'red'}>Red</MenuItem>
-                           <MenuItem value={'yellow'}>Yellow</MenuItem>
-                        </Select>
-                     </FormControl>
-
-                     {/** choose color02 */}
-                     <FormControl id='idFrmColor02' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="idColor02">Color02</InputLabel>
-                        <Select
-                           labelId="idSelectColor01"
-                           id="idSelectColor01"
-                           value={color02}
-                           onChange={(e) => {
-                              setcolor02(e.target.value)
-                           }}
-                           label="Color02"
-                        >
-                           <MenuItem value={'blue'}>Blue</MenuItem>
-                           <MenuItem value={'brown'}>Brown</MenuItem>
-                           <MenuItem value={'green'}>Green</MenuItem>
-                           <MenuItem value={'grey'}>Grey</MenuItem>
-                           <MenuItem value={'orange'}>Orange</MenuItem>
-                           <MenuItem value={'purple'}>Purple</MenuItem>
-                           <MenuItem value={'red'}>Red</MenuItem>
-                           <MenuItem value={'yellow'}>Yellow</MenuItem>
-                        </Select>
-                     </FormControl>
-
-                     {/** choose color03 */}
-                     <FormControl id='idFrmColor03' className="invisible d-none" variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                        {/* blue, brown, green, grey, orange, purple, red, yellow */}
-                        <InputLabel id="idColor03">Color03</InputLabel>
-                        <Select
-                           labelId="idSelectColor03"
-                           id="idSelectColor03"
-                           value={color03}
-                           onChange={(e) => {
-                              setcolor03(e.target.value)
-                           }}
-                           label="Color03"
-                        >
-                           <MenuItem value={'blue'}>Blue</MenuItem>
-                           <MenuItem value={'brown'}>Brown</MenuItem>
-                           <MenuItem value={'green'}>Green</MenuItem>
-                           <MenuItem value={'grey'}>Grey</MenuItem>
-                           <MenuItem value={'orange'}>Orange</MenuItem>
-                           <MenuItem value={'purple'}>Purple</MenuItem>
-                           <MenuItem value={'red'}>Red</MenuItem>
-                           <MenuItem value={'yellow'}>Yellow</MenuItem>
-                        </Select>
-                     </FormControl>
-                  </Card>
-
-                  {/** Slider for LENGTH of scene [seconds] */}
-                  <Card className='rounded shadow'>
-                     <div className="row m-3 border border-info rounded">
-                        <h6>Adjust LENGTH of scene [seconds]: </h6>
-                        <Slider
-                           name='idLengthScene'
-                           aria-label="Slider for LENGTH of scene"
-                           defaultValue={10}
-                           valueLabelDisplay="auto"
-                           step={1}
-                           min={10}
-                           max={50}
-                           onChange={(event) => { setLengthScene(event.target.value) }}
-                           value={lengthScene}
-                           disabled={disabled}
-                        />
-                     </div>
                   </Card>
                </Box>
 
@@ -918,77 +175,25 @@ export default function Pipes() {
 
                      <Physics gravity={[0, -9.81, 0]} > {/** debug> */}
 
-                        {/** explodieren nach einer Anzahl an Kontakten: */}
-                        {/* <Ball position={[0, 5, 0]} restitution={0.95} radius={0.5} /> */}
-                        {/* <Ball position={[-1, 5, 2]} restitution={0.95} radius={0.65} /> */}
-                        {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
-                        {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
+                        <Playfield />
+                        <Walls />
 
-                        <Flipper position={[0, 1, 0]} rotation={[1.55, 0, 0]} />
-                        <Flipper position={[-3, 1, 1]} rotation={[1.55, 0, 0]} />
-                        <Flipper position={[3, 1, -3]} rotation={[1.55, 0, 0]} />
+                        <Flipper position={[-2.25, 0.7, 5.8]} side="left" />
+                        <Flipper position={[2.25, 0.7, 5.8]} side="right" />
 
-                        {/* <Flipper position={[1, 2, -2]} /> */}
-                        {/* <Flipper position={[-1, 2, -1]} /> */}
+                        {/** Bumper oben im Spielfeld */}
+                        <Bumper position={[0, 0.45, -3]} ref={ballRef} />
+                        <Bumper position={[-2, 0.45, -4]} ref={ballRef} />
+                        <Bumper position={[2, 0.45, -4]} ref={ballRef} />
 
+                        {/** Bumper seitlich */}
+                        <Bumper position={[3.5, 0.55, -2]} ref={ballRef} />
+                        <Bumper position={[-3.5, 0.55, 3]} ref={ballRef} />
 
-                        {/** Group aus Rohren */}
-                        <CreatePipes position={[-8, 0, -5]} rotation={[0, 1, 0]} scale={3} />
-                        <CreatePipes position={[6.5, 0, 12]} rotation={[0, -2.75, 0]} scale={2.25} />
+                        <ShooterLane x={3.5} />
+                        <Ball ref={ballRef} position={[3.5, 0.35, 2.4]} />
+                        <Plunger ballRef={ballRef} x={3.5} />
 
-                        <Wall position={[4.5, 1.75, -7.5]} size={[0.25, 5, 4]} color={blue[200]} />
-
-                        {/* <CorrugatedIron position={[1, 8, 0]} restitution={0.9} scale={0.3} />
-                        <CorrugatedIron position={[2, 8, 1]} restitution={0.9} scale={0.5} />
-                        <CorrugatedIron position={[3, 8, 1]} restitution={0.9} scale={0.65} /> */}
-
-                        {createBalls &&
-                           <>
-                              <CreateManyBalls position={customPosition} size={size} noBalls={noBalls} withCamo={camoUsed}
-                                 customCamoMix={customCamoMix}
-                                 withIndex={indexUsed}
-                                 lengthScene={lengthScene}
-                                 onDone={() => {
-                                    setCreateBalls(prev => {
-                                       console.log('onDone, previous value:', prev)
-                                       return false
-                                    })
-                                    setDisabled(false)  // setzt den Button zur Erzeugung von Bällen wieder auf aktiv
-                                    setCircularProgress(false)  // CircularProgress neben Button "Create" aus 
-                                 }}
-                              />
-                           </>
-                        }
-
-                        {/** size wird in WALL für Collider und Geometry verwendet */}
-                        <Wall position={[1, 1.5, 4]} size={[0.25, 6, 4]} color={blue[200]} />
-                        <Wall position={[2, 3.25, 3.15]} rotation={[0, 0, 1.55]} size={[0.25, 3, 4]} color={green[500]} />
-
-                        {/* <Wall position={[4, 1.5, 2.5]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[600]} rotate={true} /> */}
-                        <Wall position={[8, 1.5, 0]} rotation={[0, 0, 0]} size={[0.25, 3, 2]} color={red[900]} />
-
-                        <Wall position={[9, 2.75, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[600]} />
-
-                        <Wall position={[-9, 2.5, 2]} rotation={[1.55, 0, 0]} size={[0.25, 8, 5]} color={blue[500]} />
-                        <Wall position={[-7.5, 4, 3.15]} rotation={[0, 0, 1.6]} size={[0.25, 4, 5]} color={green[500]} />
-
-                        <Wall position={[-4, 1.2, 9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
-                        <Wall position={[4, 1.2, -9]} rotation={[1.55, 0, -1.5]} size={[0.15, 7, 2]} color={blue[700]} />
-
-                        {/** Begrenzung OBERHALB der Szene */}
-                        {/* <Wall position={[-5, 7, 5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[400]} />
-                        <Wall position={[0, 8, -5]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[800]} />
-                        <Wall position={[8, 7, 0]} rotation={[0, 0, 1.55]} size={[0.15, 7, 2]} color={purple[500]} /> */}
-
-
-                        {/** Wall zur Begrenzung der Szene */}
-                        <Wall position={[12, 1, -8]} rotation={[1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
-                        <Wall position={[12, 1, 8]} rotation={[-1.55, 0, -0.65]} size={[0.15, 7, 2]} color={yellow[700]} />
-
-                        <Wall position={[-12, 1, -12]} rotation={[-1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
-                        <Wall position={[-12, 1, 12]} rotation={[1.55, 0, -0.75]} size={[0.15, 7, 2]} color={yellow[600]} />
-
-                        <Floor />
                      </Physics>
 
                      <OrbitControls />
@@ -999,3 +204,242 @@ export default function Pipes() {
       </>
    )
 }  // Pipes()
+
+function Playfield() {
+   return (
+      <RigidBody
+         type="fixed"
+         rotation={[-0.08, 0, 0]} // slope
+         colliders="cuboid"
+      >
+         <mesh receiveShadow position={[0, -0.2, 0]}>
+            <boxGeometry args={[9, 0.4, 14]} />
+            <meshStandardMaterial color="#0a5c3b" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+function Walls() {
+
+   const wall = (pos, size) => (
+      <RigidBody type="fixed" position={pos} colliders="cuboid" restitution={0.85}>
+         <mesh>
+            <boxGeometry args={size} />
+            <meshStandardMaterial color="#444" />
+         </mesh>
+      </RigidBody>
+   )
+
+   return (
+      <>
+         {wall([-4.5, 0.3, 0], [0.3, 1, 14])}
+         {wall([4.5, 0.3, 0], [0.3, 1, 14])}
+         {wall([0, 0.3, -7], [9, 1, 0.3])}
+      </>
+   )
+}
+
+function Bumper({ position, ref }) {
+
+   return (
+      <RigidBody
+         type="fixed"
+         colliders="ball"
+         // colliders="hull"
+
+         restitution={3.95}
+         position={position}
+         // enabledTranslations={[true, false, true]}
+         onCollisionEnter={() => { handleOnCollisionEnter(ref) }}
+      >
+         <mesh castShadow>
+            <sphereGeometry args={[0.5, 32, 32]} />
+            <meshStandardMaterial color="#ff3366" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+function Flipper({ position, side = "left", length = 2 }) {
+
+   const ref = useRef(null)
+   const dir = side === "left" ? 1 : -1
+   const key = side === "left" ? "ArrowLeft" : "ArrowRight"
+   const active = useRef(false)
+
+   // Key controls
+   useEffect(() => {
+      const down = (e) => {
+         if (e.code === key) active.current = true
+      }
+
+      const up = (e) => {
+         if (e.code === key) active.current = false
+      }
+
+      window.addEventListener("keydown", down)
+      window.addEventListener("keyup", up)
+
+      return () => {
+         window.removeEventListener("keydown", down)
+         window.removeEventListener("keyup", up)
+      }
+   }, [key])
+
+   // Motor logic
+   useFrame(() => {
+      const body = ref.current
+      if (!body) return
+
+      const rot = body.rotation().y
+      const min = dir * -0.4
+      const max = dir * 0.7
+
+      if (active.current && rot < max) {
+         body.setAngvel({ x: 0, y: 15 * dir, z: 0 }, true)
+
+      } else if (!active.current && rot > min) {
+         body.setAngvel({ x: 0, y: -10 * dir, z: 0 }, true)
+
+      } else {
+         body.setAngvel({ x: 0, y: 0, z: 0 }, true)
+      }
+   })
+
+   return (
+      <RigidBody
+         ref={ref}
+         type="dynamic"
+         colliders="cuboid"
+         position={[position[0] + dir * length / 2, position[1], position[2]]}
+
+         angularDamping={0.05}
+         restitution={1}
+         enabledTranslations={[false, false, false]}
+      >
+         <mesh>
+            <boxGeometry args={[length, 0.25, 0.4]} />
+            <meshStandardMaterial color="#ffcc00" />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+function Ball({ position, ref }) {
+
+   // so wird der Impuls nicht bei jedem Render erneut erzeugt:
+   useEffect(() => {
+      ref.current?.applyImpulse({ x: 0, y: 0, z: -10 }, true)
+   }, [ref])
+
+   return (
+      <RigidBody
+         ref={ref}
+         type="dynamic"
+         colliders="ball"
+         restitution={0.85}
+         friction={0.5}
+         linearDamping={0.05}
+         angularDamping={0.05}
+         position={position}
+         mass={2}
+         ccd
+      // enabledTranslations={[true, true, true]}
+      >
+         <mesh castShadow>
+            <sphereGeometry args={[0.35, 32, 32]} />
+            <meshStandardMaterial metalness={0.85} roughness={0.25} />
+         </mesh>
+      </RigidBody>
+   )
+}
+
+function ShooterLane({ x = 2.5 }) {
+   return (
+      <>
+         {/* Lane floor */}
+         <RigidBody
+            type="fixed"
+            friction={0.05}
+            restitution={0}
+            position={[x, 0.55, 5]}
+         >
+            <mesh receiveShadow>
+               <boxGeometry args={[0.9, 0.1, 4]} />
+               <meshStandardMaterial color="#222" />
+            </mesh>
+         </RigidBody>
+
+         {/* Left rail */}
+         <RigidBody type="fixed" position={[x - 0.55, 0.4, 4]}>
+            <mesh>
+               <boxGeometry args={[0.1, 0.8, 4]} />
+               <meshStandardMaterial color="#333" />
+            </mesh>
+         </RigidBody>
+
+         {/* Right rail */}
+         <RigidBody type="fixed" position={[x + 0.55, 0.4, 4]}>
+            <mesh>
+               <boxGeometry args={[0.1, 0.8, 4]} />
+               <meshStandardMaterial color="#333" />
+            </mesh>
+         </RigidBody>
+      </>
+   )
+}
+
+function Plunger({ ballRef, x = 2.5 }) {
+
+   const pulling = useRef(false)
+   const power = useRef(0)
+
+   useEffect(() => {
+      const down = (e) => {
+         if (e.code === "ArrowDown") pulling.current = true
+      }
+
+      const up = (e) => {
+         if (e.code === "ArrowDown") {
+            pulling.current = false
+
+            const impulse = Math.min(20, 8 + power.current * 14)
+
+            ballRef.current?.applyImpulse(
+               // { x: 0, y: 0, z: -impulse },
+               { x: 2, y: 0, z: -1 },
+               true
+            )
+            power.current = 0
+         }
+      }
+
+      window.addEventListener("keydown", down)
+      window.addEventListener("keyup", up)
+
+      return () => {
+         window.removeEventListener("keydown", down)
+         window.removeEventListener("keyup", up)
+      }
+   }, [ballRef])
+
+   useFrame((_, delta) => {
+      if (pulling.current) {
+         power.current = Math.min(1, power.current + delta)
+      }
+   })
+
+   return (
+      <RigidBody
+         type="fixed"
+         position={[x, 0.45, 4]}
+         colliders="cuboid"
+      >
+         <mesh>
+            <boxGeometry args={[0.4, 0.4, 0.4]} />
+            <meshStandardMaterial color="#888" />
+         </mesh>
+      </RigidBody>
+   )
+}
