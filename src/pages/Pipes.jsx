@@ -19,7 +19,7 @@ import { OrbitControls } from "@react-three/drei"
 // import { Html } from "@react-three/drei"
 // import { useGLTF, Clone } from '@react-three/drei'
 
-import { Physics, RigidBody, BallCollider, useImpulseJoint, useRevoluteJoint } from '@react-three/rapier'
+import { Physics, RigidBody, BallCollider, CuboidCollider, useImpulseJoint, useRevoluteJoint } from '@react-three/rapier'
 
 // import { CuboidCollider } from "@react-three/rapier"
 
@@ -52,9 +52,11 @@ function handleOnCollisionEnter(ref) {
 
    ref.current?.applyImpulse(
       // { x: 0, y: 0, z: -impulse },
-      { x: 0.5, y: -0.15, z: 0.25 },
+      { x: 1.5, y: 0, z: 1.25 },
       true
    )
+   // ref.current?.addForce({ x: 0.5, y: 0, z: 0 })
+
 }  // Handler for Collision with a Bumper 
 
 
@@ -182,16 +184,16 @@ export default function Pipes() {
                         <Flipper position={[2.25, 0.7, 5.8]} side="right" />
 
                         {/** Bumper oben im Spielfeld */}
-                        <Bumper position={[0, 0.45, -3]} ref={ballRef} />
-                        <Bumper position={[-2, 0.45, -4]} ref={ballRef} />
-                        <Bumper position={[2, 0.45, -4]} ref={ballRef} />
+                        <Bumper position={[0, 0.15, -3]} ballRef={ballRef} />
+                        <Bumper position={[-2, 0.15, -4]} ballRef={ballRef} />
+                        <Bumper position={[2, 0.15, -4]} ballRef={ballRef} />
 
                         {/** Bumper seitlich */}
-                        <Bumper position={[3.5, 0.55, -2]} ref={ballRef} />
-                        <Bumper position={[-3.5, 0.55, 3]} ref={ballRef} />
+                        <Bumper position={[3.5, 0.15, -2]} ballRef={ballRef} />
+                        <Bumper position={[-3.5, 0.55, 3]} ballRef={ballRef} />
 
                         <ShooterLane x={3.5} />
-                        <Ball ref={ballRef} position={[3.5, 0.35, 2.4]} />
+                        <Ball ballRef={ballRef} position={[3.5, 0.35, 2.4]} />
                         <Plunger ballRef={ballRef} x={3.5} />
 
                      </Physics>
@@ -212,8 +214,8 @@ function Playfield() {
          rotation={[-0.08, 0, 0]} // slope
          colliders="cuboid"
       >
-         <mesh receiveShadow position={[0, -0.2, 0]}>
-            <boxGeometry args={[9, 0.4, 14]} />
+         <mesh receiveShadow position={[0, -0.4, 0]}>
+            <boxGeometry args={[9, 0.45, 14]} />
             <meshStandardMaterial color="#0a5c3b" />
          </mesh>
       </RigidBody>
@@ -233,26 +235,30 @@ function Walls() {
 
    return (
       <>
-         {wall([-4.5, 0.3, 0], [0.3, 1, 14])}
-         {wall([4.5, 0.3, 0], [0.3, 1, 14])}
-         {wall([0, 0.3, -7], [9, 1, 0.3])}
+         {wall([-4.5, 0.3, 0], [0.3, 2, 14])}
+         {wall([4.5, 0.3, 0], [0.3, 2, 14])}
+         {wall([0, 0.3, -7], [9, 2, 0.3])}
       </>
    )
 }
 
-function Bumper({ position, ref }) {
+function Bumper({ position, ballRef }) {
 
    return (
       <RigidBody
          type="fixed"
-         colliders="ball"
-         // colliders="hull"
+         // colliders="ball"
+         // colliders="false"
+         // restitution={2.95}
 
-         restitution={3.95}
          position={position}
-         // enabledTranslations={[true, false, true]}
-         onCollisionEnter={() => { handleOnCollisionEnter(ref) }}
+         enabledTranslations={[true, false, true]}
+         onCollisionEnter={() => { handleOnCollisionEnter(ballRef) }}
       >
+
+         {/* <BallCollider args={[0.5]} restitution={0.95} friction={0.15} /> */}
+         <CuboidCollider args={[0.35, 0.35, 0.35]} restitution={6.5} friction={0.15} />
+
          <mesh castShadow>
             <sphereGeometry args={[0.5, 32, 32]} />
             <meshStandardMaterial color="#ff3366" />
@@ -261,7 +267,7 @@ function Bumper({ position, ref }) {
    )
 }
 
-function Flipper({ position, side = "left", length = 2 }) {
+function Flipper00({ position, side = "left", length = 2 }) {
 
    const ref = useRef(null)
    const dir = side === "left" ? 1 : -1
@@ -319,23 +325,118 @@ function Flipper({ position, side = "left", length = 2 }) {
          enabledTranslations={[false, false, false]}
       >
          <mesh>
-            <boxGeometry args={[length, 0.25, 0.4]} />
+            <boxGeometry args={[length, 0.35, 0.4]} />
             <meshStandardMaterial color="#ffcc00" />
          </mesh>
       </RigidBody>
    )
 }
 
-function Ball({ position, ref }) {
+//*
+function Flipper({ position, side = "left", length = 2 }) {
+   const pivot = useRef()
+   const flipper = useRef()
+
+   const dir = side === "left" ? 1 : -1
+   const key = side === "left" ? "ArrowLeft" : "ArrowRight"
+   const active = useRef(false)
+
+   // Create hinge joint
+   const joint = useRevoluteJoint(
+      pivot,
+      flipper,
+      [
+         [0, 0, 0],                 // pivot local anchor
+         [-dir * length / 2, 0, 0], // flipper local anchor
+         [0, 1, 0]                  // hinge axis (Y axis)
+      ]
+   )
+
+   // Keyboard controls
+   useEffect(() => {
+      const down = (e) => e.code === key && (active.current = true)
+      const up = (e) => e.code === key && (active.current = false)
+
+      window.addEventListener("keydown", down)
+      window.addEventListener("keyup", up)
+
+      return () => {
+         window.removeEventListener("keydown", down)
+         window.removeEventListener("keyup", up)
+      }
+   }, [key])
+
+   // Motor control
+   // useFrame(() => {
+   //    if (!joint.current) return
+
+   //    if (active.current) {
+   //       joint.current.configureMotorVelocity(20 * dir, 2)
+   //    } else {
+   //       joint.current.configureMotorVelocity(-10 * dir, 2)
+   //    }
+   // })
+
+   useFrame(() => {
+      if (!joint.current) return
+
+      const restAngle = dir * -0.4
+      const activeAngle = dir * 0.7
+
+      if (active.current) {
+         joint.current.configureMotorPosition(
+            activeAngle,
+            200,   // stiffness
+            20     // damping
+         )
+      } else {
+         joint.current.configureMotorPosition(
+            restAngle,
+            200,
+            20
+         )
+      }
+   })
+
+   // joint.current.setLimits(dir * -0.4, dir * 0.7)
+   // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
+
+
+
+   return (
+      <>
+         {/* Invisible fixed pivot */}
+         <RigidBody type="fixed" ref={pivot} position={position} />
+
+         {/* Flipper */}
+         <RigidBody
+            ref={flipper}
+            type="dynamic"
+            colliders="cuboid"
+            restitution={1}
+            friction={0.2}
+            angularDamping={0.8}
+         >
+            <mesh>
+               <boxGeometry args={[length, 0.35, 0.4]} />
+               <meshStandardMaterial color="#ffcc00" />
+            </mesh>
+         </RigidBody>
+      </>
+   )
+}
+
+
+function Ball({ position, ballRef }) {
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
    useEffect(() => {
-      ref.current?.applyImpulse({ x: 0, y: 0, z: -10 }, true)
-   }, [ref])
+      ballRef.current?.applyImpulse({ x: 2, y: 0, z: -5 }, true)
+   }, [ballRef])
 
    return (
       <RigidBody
-         ref={ref}
+         ref={ballRef}
          type="dynamic"
          colliders="ball"
          restitution={0.85}
@@ -343,7 +444,7 @@ function Ball({ position, ref }) {
          linearDamping={0.05}
          angularDamping={0.05}
          position={position}
-         mass={2}
+         mass={5}
          ccd
       // enabledTranslations={[true, true, true]}
       >
@@ -408,7 +509,7 @@ function Plunger({ ballRef, x = 2.5 }) {
 
             ballRef.current?.applyImpulse(
                // { x: 0, y: 0, z: -impulse },
-               { x: 2, y: 0, z: -1 },
+               { x: 0, y: 0, z: -2 },
                true
             )
             power.current = 0
