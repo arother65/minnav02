@@ -11,7 +11,7 @@
 // import * as THREE from 'three'
 import { useState, useRef, useEffect, forwardRef, createContext, useContext } from "react"
 import * as THREE from "three"
-import { Text } from "@react-three/drei"
+import { RoundedBoxGeometry, Text } from "@react-three/drei"
 
 // import * as THREE from 'three'
 
@@ -215,9 +215,26 @@ export default function Pipes() {
                         <Plunger ballRef={ballRef} x={3.5} />
 
                         {/** Deckel der Bumper */}
-                        <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} />
+                        {/* <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} /> */}
 
                         {/* <ScorePopup position={[0, 5, 0]} value={100} onDone={(e) => { console.log('onDone...') }} /> */}
+
+                        {/** Abweiser unten links */}
+                        <RigidBody type="fixed" colliders='hull' restitution={0.5}>
+                           {/* <CreateExtrudeGeometry position={[-3.15, 0.65, 5]} rotation={[-0.5, 2, 0]} color={orange[100]} /> */}
+
+                           <mesh position={[-3.15, 0.75, 4.5]}  rotation={[0, -0.75, 0]}>
+                              <ringGeometry args={[0.25, 0.8, 64]} />
+                              <meshStandardMaterial
+                                 color="red"
+                                 // emissive="orange"
+                                 // emissiveIntensity={0.5}
+                                 metalness={0.95}
+                                 roughness={0.45}
+                                 side={THREE.DoubleSide}
+                              />
+                           </mesh>
+                        </RigidBody>
 
                      </Physics>
 
@@ -230,6 +247,7 @@ export default function Pipes() {
    )
 }  // Pipes()
 
+//*
 function Playfield() {
    return (
       <RigidBody
@@ -237,13 +255,13 @@ function Playfield() {
          rotation={[-0.08, 0, 0]} // slope
          colliders="cuboid"
       >
-         <mesh receiveShadow position={[0, -0.4, 0]}>
+         <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color="#0a5c3b" />
+            <meshStandardMaterial color="#0a5c3b" metalness={0.25} roughness={0.75}/>
          </mesh>
       </RigidBody>
    )
-}
+}  // PlayField()
 
 function Walls() {
 
@@ -254,19 +272,20 @@ function Walls() {
 
          <mesh>
             <boxGeometry args={size} />
-            <meshStandardMaterial color="#444" />
+            <meshStandardMaterial color="lightgreen" opacity={0.25} transparent />
          </mesh>
       </RigidBody>
    )
 
    return (
       <>
-         {wall([-4.5, 0.3, 0], [0.3, 2, 14])}
-         {wall([4.5, 0.3, 0], [0.3, 2, 14])}
-         {wall([0, 0.3, -7], [9, 2, 0.3])}
+         {/**   pos,            size      */}
+         {wall([-4.5, 0.75, 0], [0.3, 3, 14])}
+         {wall([4.5, 0.75, 0], [0.3, 3, 14])}
+         {wall([0, 0.75, -7], [9, 3, 0.3])}
       </>
    )
-}
+}  // Walls()
 
 function Bumper({ ballRef, position }) {
 
@@ -319,7 +338,7 @@ function Bumper({ ballRef, position }) {
          </mesh>
       </RigidBody>
    )
-}
+}  // Bumper()
 
 function BumperWithLight({ position }) {
 
@@ -415,7 +434,7 @@ function BumperWithLight({ position }) {
          {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
       </>
    )
-}
+}  // BumperWithLight
 
 //*
 function flipperShape(length) {
@@ -435,6 +454,7 @@ function flipperShape(length) {
 
 //*
 function Flipper({ position, side = "left", length = 2 }) {
+
    const pivot = useRef()
    const flipper = useRef()
 
@@ -515,7 +535,7 @@ function Flipper({ position, side = "left", length = 2 }) {
             // enabledTranslations={[false, false, false]}  {/** creates strange errors */}
             enabledRotations={[false, true, false]}
             canSleep={false}
-            mass={2.5}               // realistic inertia
+            mass={1}               // realistic inertia
          >
             <mesh castShadow>
 
@@ -614,7 +634,7 @@ function ShooterLane({ x = 2.5 }) {
          </RigidBody>
       </>
    )
-}
+}  // ShooterLane()
 
 function Plunger({ ballRef, x = 2.5 }) {
 
@@ -682,7 +702,12 @@ function Plunger({ ballRef, x = 2.5 }) {
          <MetalSpring position={[0, 0.15, -1]} rotation={[1.55, -0.15, 0]} color='red' helixCurve={curve} />
       </RigidBody>
    )
-}
+}  // Plunger()
+
+
+/** ------------------------------------------------------------------------ */
+//* experimental 
+/** ------------------------------------------------------------------------ */
 
 //* Score and display
 function ScorePopup({ position, value, onDone }) {
@@ -727,11 +752,7 @@ function ScorePopup({ position, value, onDone }) {
          </Text>
       </group>
    )
-}
-
-/** ------------------------------------------------------------------------ */
-//* experimental 
-/** ------------------------------------------------------------------------ */
+}  // ScorePopup
 
 function FlipperTemp({ position, side = "left", length = 2 }) {
 

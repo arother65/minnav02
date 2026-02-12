@@ -22,12 +22,12 @@ function createShape() {
    // shape.lineTo(0.025, 0.005)
 
    shape.bezierCurveTo(
-      0.75,  // ? Länge des Objekts UND Lage in der vertikalen Achse
-      0.75,  // Länge und Lage im Raum 
+      1.9,  // ? Länge des Objekts UND Lage in der vertikalen Achse
+      1.9,  // Länge und Lage im Raum 
       // 0.5, //? Länge des Objekts
       // 1, 
-      // 0.75,  // Breite des Objekts 
-      // 0.25
+      3.75,  // Breite des Objekts 
+      0.25
    )
    // shape.bezierCurveTo(0.02, 0.02, 0.02, 0.02)
    shape.closePath()
