@@ -181,17 +181,17 @@ export function CreateTruck({ position = [0, 0, 0], rotation = [0, 0, 0], scale 
    // grassModel.materials.Grass.roughness = 0.8
 
    truckModel.materials.F44336.metallness = 0.95
-   truckModel.materials.F44336.roughness  = 0.45
+   truckModel.materials.F44336.roughness = 0.45
    truckModel.materials.F44336.color = { isColor: true, r: 128, g: 0, b: 0 }  //?
 
    truckModel.materials.FF5722.metallness = 0.95
-   truckModel.materials.FF5722.roughness  = 0.45
+   truckModel.materials.FF5722.roughness = 0.45
 
    truckModel.materials.FF9800.metallness = 0.95
-   truckModel.materials.FF9800.roughness  = 0.45
+   truckModel.materials.FF9800.roughness = 0.45
 
    truckModel.materials.FFEB3B.metallness = 0.95
-   truckModel.materials.FFEB3B.roughness  = 0.45
+   truckModel.materials.FFEB3B.roughness = 0.45
 
    // return <Clone object={treeModel.scene} {...props} />
    return <Clone color={'red'} object={truckModel.scene} position={position} rotation={rotation} scale={scale} />

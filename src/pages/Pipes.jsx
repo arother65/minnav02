@@ -11,7 +11,7 @@
 // import * as THREE from 'three'
 import { useState, useRef, useEffect, forwardRef, createContext, useContext } from "react"
 import * as THREE from "three"
-import { RoundedBoxGeometry, Text } from "@react-three/drei"
+import { Text } from "@react-three/drei"
 
 // import * as THREE from 'three'
 
@@ -19,12 +19,11 @@ import { Canvas } from "@react-three/fiber"
 import { useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { Html } from "@react-three/drei"
-// import { useGLTF, Clone } from '@react-three/drei'
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
@@ -35,11 +34,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 // import "../components/styles.css"
 
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
-import { MetalRod } from './PartsTestground'
-// MetalRod from PartsTestground.jsx 
+import PlanetWithHole from '../components/PlanetWithHole'
 
-import CreateExtrudeGeometry from '../components/InstancedGeometry'
-// CreateExtrudeGeometry from InstancedGeometry.jsx
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
@@ -72,6 +68,11 @@ export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
    const ballRef = useRef(null)
+   let [noPoints, setNoPoints] = useState(0)
+
+   useEffect(() => {
+      // setNoPoints(0)
+   }, [noPoints])
 
    // 
    return (
@@ -114,13 +115,21 @@ export default function Pipes() {
                            className='m-1'
                            // disabled={disabled}
                            onClick={() => { }}>
-                           Create Balls
+                           New Game
                            {/* {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />} */}
                         </Button>
                      </div>
+
+                     {/** Anzeige des Spielstandes */}
+                     <Typography
+                        className='m-1 border border-success'
+                        color='success'
+                        variant='h2'
+                     >{noPoints}
+                     </Typography>
                   </Card>
 
-                  {/** Switches */}
+                  {/** Switches / Slider for restitution on Bumpers */}
                   <Card className='rounded shadow'>
                      {/** SWITCH for using Ball's Index */}
                      <FormGroup>
@@ -136,34 +145,6 @@ export default function Pipes() {
                               }} />
                         }
                            label="With Index" />
-                     </FormGroup>
-
-                     {/** SWITCH for using random camo mix */}
-                     <FormGroup>
-                        <FormControlLabel control={
-                           <Switch
-                              onChange={(e) => {
-                                 if (e.target.checked === true) {
-                                    // setCamoUsed(true)
-                                 }
-                                 else {
-                                    // setCamoUsed(false)
-                                 }
-                              }} />
-                        }
-                           label="With Camo" />
-                     </FormGroup>
-
-                     {/** SWITCH for custom camo mix */}
-                     <FormGroup >
-                        <FormControlLabel control={
-                           <Switch
-                              id='idSwitchMixCamo'
-                              onChange={(e) => {
-                              }
-                              } />
-                        }
-                           label="mix camo" />
                      </FormGroup>
                   </Card>
                </Box>
@@ -195,26 +176,34 @@ export default function Pipes() {
                         solverIterations={30}  // Low solver iterations = soft joints = slow response.
                         maxVelocityIterations={20}
                      >
+                        <Text
+                           position={[0, 5, 0]}
+                           fontSize={1.95}
+                           color="darkgreen"
+                           anchorX="center"
+                           anchorY="middle"
+                        >
+                           {noPoints}
+                        </Text>
 
                         <Playfield />
                         <Walls />
 
-                        <Flipper position={[-2.25, 0.7, 5.8]} side="left" />
-                        <Flipper position={[2.25, 0.7, 5.8]} side="right" />
+                        <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
+                        <Flipper position={[2.25, 0.8, 5.8]} side="right" />
 
                         <Ball ref={ballRef} position={[3.5, 0.45, 4]} />
 
                         {/** Bumper oben im Spielfeld */}
-                        <BumperWithLight position={[0, 0.35, -1]} />
+                        <BumperWithLight position={[0, 0.35, -5]} noPoints={noPoints} setNoPoints={setNoPoints} />
                         {/* <Bumper position={[0, 0.35, -1]} ballRef={ballRef} /> */}
 
-                        <BumperWithLight position={[-2, 0.35, -3]} />
-                        {/* <Bumper position={[-2, 0.35, -3]} ballRef={ballRef} /> */}
+                        <BumperWithLight position={[-2, 0.35, -4]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
 
-                        <BumperWithLight position={[3, 0.35, -3]} />
-                        {/* <Bumper position={[2, 0.35, -3]} ballRef={ballRef} /> */}
-
-                        {/** Bumper seitlich */}
+                        {/** Bumper weiter vorne */}
+                        <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} />
 
                         <ShooterLane x={3.5} />
                         <Plunger ballRef={ballRef} x={3.5} />
@@ -345,9 +334,6 @@ function Bumper({ ballRef, position }) {
                { x: -dz * 2, y: 0, z: dx * 2 },
                true
             )
-
-            // popup anzeigen...
-
          }}
       >
 
@@ -362,7 +348,7 @@ function Bumper({ ballRef, position }) {
    )
 }  // Bumper()
 
-function BumperWithLight({ position }) {
+function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints }) {
 
    const meshRef = useRef()
    const lightRef = useRef()
@@ -422,6 +408,8 @@ function BumperWithLight({ position }) {
                // ---- show value for hit / collision ---- 
                // spawnRef.current([position[0], position[1] + 1, position[2]], 100)  //?
                // setShowPopup(true)
+
+               setNoPoints(noPoints + 10)
 
             }}
          >
@@ -568,19 +556,29 @@ function Flipper({ position, side = "left", length = 2 }) {
 
                {/** works; capsuleGeometry, extrudeGeometry does not */}
                {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
-               <boxGeometry args={[length, 0.5, 0.35]} />
+
+               <boxGeometry args={[length, 0.7, 0.35]} />
 
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
 
-               <meshStandardMaterial color='yellow' metalness={0.85} roughness={0.5} />
+               <meshStandardMaterial color='orange' metalness={0.85} roughness={0.35} />
+
+               {/** LEFT == 1, RIGHT == -1 */}
+               {dir === 1 &&
+                  <PlanetWithHole position={[-1.1, 0.15, 0]} textureColors={['darkgreen', 'lightgreen', 'green']} />
+               }
+               {dir === -1 &&
+                  <PlanetWithHole position={[0.05, 0.15, 0]} textureColors={['red', 'darkred', 'pink']} />
+               }
+
             </mesh>
 
             <pointLight
                //   ref={lightRef}
                color="red"
-               intensity={0.75}
-               distance={3}
+               intensity={0.5}
+               distance={5}
                decay={0}
             />
 
