@@ -189,6 +189,7 @@ export default function Pipes() {
                         interpolate
                         colliders={false}
                         solverIterations={30}  // Low solver iterations = soft joints = slow response.
+                        maxVelocityIterations={20}
                      >
 
                         <Playfield />
@@ -223,7 +224,7 @@ export default function Pipes() {
                         <RigidBody type="fixed" colliders='hull' restitution={0.5}>
                            {/* <CreateExtrudeGeometry position={[-3.15, 0.65, 5]} rotation={[-0.5, 2, 0]} color={orange[100]} /> */}
 
-                           <mesh position={[-3.15, 0.75, 4.5]}  rotation={[0, -0.75, 0]}>
+                           <mesh position={[-3.15, 0.75, 4.5]} rotation={[0, -0.75, 0]}>
                               <ringGeometry args={[0.25, 0.8, 64]} />
                               <meshStandardMaterial
                                  color="red"
@@ -257,7 +258,7 @@ function Playfield() {
       >
          <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color="#0a5c3b" metalness={0.25} roughness={0.75}/>
+            <meshStandardMaterial color="#0a5c3b" metalness={0.25} roughness={0.75} />
          </mesh>
       </RigidBody>
    )
@@ -481,7 +482,7 @@ function Flipper({ position, side = "left", length = 2 }) {
       }
       const up = (e) => {
          e.code === key && (active.current = false)
-         // joint.current?.configureMotorVelocity(dir * -10, 10)
+         // joint.current?.configureMotorVelocity(dir * -1, 0)
       }
 
       window.addEventListener("keydown", down)
@@ -504,7 +505,7 @@ function Flipper({ position, side = "left", length = 2 }) {
          // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
          joint.current.configureMotorPosition(
             activeAngle,
-            500,   // stiffness
+            3000,   // stiffness, 3k - 4k
             10     // damping
          )
       } else {
@@ -528,7 +529,7 @@ function Flipper({ position, side = "left", length = 2 }) {
             ref={flipper}
             type="dynamic"
             colliders="cuboid"
-            restitution={0.75}
+            restitution={0.85}
             friction={0.1}
             angularDamping={2}
             linearDamping={1}
