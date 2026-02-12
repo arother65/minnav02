@@ -9,7 +9,9 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useRef, useEffect, forwardRef } from "react"
+import { useState, useRef, useEffect, forwardRef, createContext, useContext } from "react"
+import * as THREE from "three"
+import { Text } from "@react-three/drei"
 
 // import * as THREE from 'three'
 
@@ -186,7 +188,7 @@ export default function Pipes() {
                         timeStep="vary"
                         interpolate
                         colliders={false}
-                        solverIterations={12}
+                        solverIterations={30}  // Low solver iterations = soft joints = slow response.
                      >
 
                         <Playfield />
@@ -214,6 +216,8 @@ export default function Pipes() {
 
                         {/** Deckel der Bumper */}
                         <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} />
+
+                        {/* <ScorePopup position={[0, 5, 0]} value={100} onDone={(e) => { console.log('onDone...') }} /> */}
 
                      </Physics>
 
@@ -300,6 +304,9 @@ function Bumper({ ballRef, position }) {
                { x: -dz * 2, y: 0, z: dx * 2 },
                true
             )
+
+            // popup anzeigen...
+
          }}
       >
 
@@ -320,6 +327,12 @@ function BumperWithLight({ position }) {
    const lightRef = useRef()
    const flash = useRef(0)
 
+   //* for showing the score
+   // const [showPopup, setShowPopup] = useState(false)
+   // const ScoreContext = createContext()
+   // const useScore = () => useContext(ScoreContext)
+   // const spawnRef = useScore()
+
    // useFrame for flash-effect when a bumper is hit 
    useFrame((_, delta) => {
       if (!meshRef.current || !lightRef.current) return
@@ -334,64 +347,92 @@ function BumperWithLight({ position }) {
 
       // Light burst
       lightRef.current.intensity = intensity * 10
+
+      // show value when bumper is hit ?
+
    })
 
    return (
-      <RigidBody
-         type="fixed"
-         colliders={false}
-         position={position}
-         restitution={2}
-         friction={0}
-         onCollisionEnter={({ other }) => {
-            const ball = other.rigidBody
-            if (!ball) return
+      <>
+         <RigidBody
+            type="fixed"
+            colliders={false}
+            position={position}
+            restitution={2}
+            friction={0}
+            onCollisionEnter={({ other }) => {
+               const ball = other.rigidBody
+               if (!ball) return
 
-            // ---- PHYSICS IMPULSE ----
-            const ballPos = ball.translation()
-            const dx = ballPos.x - position[0]
-            const dz = ballPos.z - position[2]
-            const len = Math.sqrt(dx * dx + dz * dz) || 1
-            const force = 3
+               // ---- PHYSICS IMPULSE ----
+               const ballPos = ball.translation()
+               const dx = ballPos.x - position[0]
+               const dz = ballPos.z - position[2]
 
-            ball.applyImpulse(
-               { x: (dx / len) * force, y: 0, z: (dz / len) * force },
-               true
-            )
+               const len = Math.sqrt(dx * dx + dz * dz) || 1
+               const force = 2
 
-            ball.applyTorqueImpulse(
-               { x: -dz * 3, y: 0, z: dx * 3 },
-               true
-            )
+               ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
+               ball.applyTorqueImpulse({ x: -dz * 3, y: 0, z: dx * 3 }, true)
 
-            // ---- VISUAL FLASH ----
-            flash.current = 1
-         }}
-      >
-         <BallCollider args={[0.65]} />
+               // ---- VISUAL FLASH ----
+               flash.current = 1
 
-         <mesh ref={meshRef} castShadow>
-            <sphereGeometry args={[0.75, 64, 64]} />
-            <meshStandardMaterial
+               // ---- show value for hit / collision ---- 
+               // spawnRef.current([position[0], position[1] + 1, position[2]], 100)  //?
+               // setShowPopup(true)
+
+            }}
+         >
+            <BallCollider args={[0.65]} />
+
+            <mesh ref={meshRef} castShadow>
+               <sphereGeometry args={[0.75, 64, 64]} />
+               <meshStandardMaterial
+                  color="red"
+                  emissive="red"
+                  emissiveIntensity={0}
+                  metalness={0.9}
+                  roughness={0.4}
+               />
+            </mesh>
+
+            {/* Flash Light */}
+            <pointLight
+               ref={lightRef}
                color="red"
-               emissive="red"
-               emissiveIntensity={0}
-               metalness={0.9}
-               roughness={0.4}
+               intensity={0}
+               distance={4}
+               decay={2}
             />
-         </mesh>
 
-         {/* Flash Light */}
-         <pointLight
-            ref={lightRef}
-            color="red"
-            intensity={0}
-            distance={4}
-            decay={2}
-         />
-      </RigidBody>
+            {/* <Text fontSize={0.5}
+               anchorX="center"
+               anchorY="middle">
+               hit!
+            </Text> */}
+         </RigidBody>
+         {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
+      </>
    )
 }
+
+//*
+function flipperShape(length) {
+   const shape = new THREE.Shape()
+
+   const baseWidth = 0.5
+   const tipWidth = 0.35
+
+   shape.moveTo(0, -baseWidth / 2)
+   shape.lineTo(length * 0.8, -tipWidth / 2)
+   shape.quadraticCurveTo(length, 0, length * 0.8, tipWidth / 2)
+   shape.lineTo(0, baseWidth / 2)
+   shape.quadraticCurveTo(-0.3, 0, 0, -baseWidth / 2)
+
+   return shape
+}
+
 
 //*
 function Flipper({ position, side = "left", length = 2 }) {
@@ -415,8 +456,14 @@ function Flipper({ position, side = "left", length = 2 }) {
 
    // Keyboard controls
    useEffect(() => {
-      const down = (e) => e.code === key && (active.current = true)
-      const up = (e) => e.code === key && (active.current = false)
+      const down = (e) => {
+         e.code === key && (active.current = true)
+         // joint.current?.configureMotorVelocity(dir * 45, 64)
+      }
+      const up = (e) => {
+         e.code === key && (active.current = false)
+         // joint.current?.configureMotorVelocity(dir * -10, 0)
+      }
 
       window.addEventListener("keydown", down)
       window.addEventListener("keyup", up)
@@ -425,28 +472,30 @@ function Flipper({ position, side = "left", length = 2 }) {
          window.removeEventListener("keydown", down)
          window.removeEventListener("keyup", up)
       }
-   }, [key])
+   }, [key, joint, dir])
 
    // Motor control
    useFrame(() => {
       if (!joint.current) return
 
-      const restAngle = dir * -0.4
-      const activeAngle = dir * 0.7
+      const restAngle = dir * -0.3
+      const activeAngle = dir * 0.5
 
       if (active.current) {
          joint.current.configureMotorPosition(
             activeAngle,
-            200,   // stiffness
-            20     // damping
+            300,   // stiffness
+            10     // damping
          )
       } else {
          joint.current.configureMotorPosition(
             restAngle,
-            200,
-            20
+            300,
+            10
          )
       }
+
+
    })
 
    // joint.current.setLimits(dir * -0.4, dir * 0.7)
@@ -462,18 +511,30 @@ function Flipper({ position, side = "left", length = 2 }) {
             ref={flipper}
             type="dynamic"
             colliders="cuboid"
-            restitution={1}
-            friction={0.2}
-            angularDamping={0.8}
+            restitution={0.75}
+            friction={0.1}
+            angularDamping={2}
+            linearDamping={1}
+            // enabledTranslations={[false, false, false]}  {/** creates strange errors */}
+            enabledRotations={[false, true, false]}
+            canSleep={false}
+            mass={2.5}               // realistic inertia
          >
-            <mesh>
+            <mesh castShadow>
+
+               {/** works; capsuleGeometry, extrudeGeometry does not */}
                <boxGeometry args={[length, 0.35, 0.4]} />
+
+               {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
+               {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
+
                <meshStandardMaterial color={yellow[400]} metalness={0.85} roughness={0.25} />
             </mesh>
          </RigidBody>
       </>
    )
-}
+}  // Flipper()
+
 
 // function Ball({ position, ballRef }) {
 const Ball = forwardRef(({ position }, ref) => {
@@ -615,3 +676,143 @@ function Plunger({ ballRef, x = 2.5 }) {
       </RigidBody>
    )
 }
+
+
+//* Score and display
+function ScorePopup({ position, value, onDone }) {
+
+   const groupRef = useRef()
+   const [life, setLife] = useState(1) // 1 → 0 fade
+
+   useFrame((_, delta) => {
+      if (!groupRef.current) return
+
+      // Float upward
+      groupRef.current.position.y += delta * 2
+
+      // Slight scale pop
+      groupRef.current.scale.multiplyScalar(1 + delta * 0.6)
+
+      // Fade out
+      setLife((prev) => {
+         const next = prev - delta * 1.2
+         if (next <= 0) onDone()
+         return next
+      })
+
+      groupRef.current.children[0].material.opacity = life
+   })
+
+   return (
+      <group ref={groupRef} position={position}>
+         <Text
+            fontSize={0.5}
+            anchorX="center"
+            anchorY="middle"
+         >
+            {value}
+            <meshStandardMaterial
+               color="yellow"
+               transparent
+               opacity={life}
+               emissive="orange"
+               emissiveIntensity={5}
+            />
+         </Text>
+      </group>
+   )
+}
+
+/** ------------------------------------------------------------------------ */
+//* experimental 
+/** ------------------------------------------------------------------------ */
+
+function FlipperTemp({ position, side = "left", length = 2 }) {
+
+   const pivot = useRef()
+   const flipper = useRef()
+   const joint = useRef()
+
+   const dir = side === "left" ? 1 : -1
+   const key = side === "left" ? "ArrowLeft" : "ArrowRight"
+   const active = useRef(false)
+
+   /*
+     IMPORTANT:
+     - Use limits
+     - Use velocity motor (more stable than position motor for flippers)
+   */
+
+   useRevoluteJoint(
+      pivot,
+      flipper,
+      [
+         [0, 0, 0],
+         [-dir * length / 2, 0, 0],
+         [0, 1, 0]
+      ],
+      (j) => {
+         joint.current = j
+
+         // HARD LIMITS (prevents wobble)
+         j.setLimits(dir * -0.4, dir * 0.6)
+
+         // Enable motor
+         j.configureMotorVelocity(0, 0)
+      }
+   )
+
+   // Keyboard
+   useEffect(() => {
+      const down = (e) => e.code === key && (active.current = true)
+      const up = (e) => e.code === key && (active.current = false)
+
+      window.addEventListener("keydown", down)
+      window.addEventListener("keyup", up)
+
+      return () => {
+         window.removeEventListener("keydown", down)
+         window.removeEventListener("keyup", up)
+      }
+   }, [key])
+
+   // Motor control (velocity-based = MUCH more stable)
+   useFrame(() => {
+      if (!joint.current) return
+
+      const speed = active.current ? dir * 25 : dir * -20
+
+      joint.current.configureMotorVelocity(
+         speed,
+         2000 // MAX TORQUE — critical for no wobble
+      )
+   })
+
+   return (
+      <>
+         {/* Pivot */}
+         <RigidBody type="fixed" ref={pivot} position={position} />
+
+         {/* Flipper */}
+         <RigidBody
+            ref={flipper}
+            type="dynamic"
+            colliders="cuboid"
+            restitution={0.2}
+            friction={0.9}
+            angularDamping={4}      // kill oscillation
+            linearDamping={1}
+            canSleep={false}        // important
+         >
+            <mesh castShadow>
+               <boxGeometry args={[length, 0.35, 0.4]} />
+               <meshStandardMaterial
+                  color={yellow[400]}
+                  metalness={0.85}
+                  roughness={0.25}
+               />
+            </mesh>
+         </RigidBody>
+      </>
+   )
+}  // Flipper()
