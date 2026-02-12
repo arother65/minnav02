@@ -198,19 +198,19 @@ export default function Pipes() {
                         <Ball ref={ballRef} position={[3.5, 0.45, 4]} />
 
                         {/** Bumper oben im Spielfeld */}
-                        <Bumper position={[0, 0.35, -1]} ballRef={ballRef} />
-                        <Bumper position={[-2, 0.35, -3]} ballRef={ballRef} />
-                        <Bumper position={[2, 0.35, -3]} ballRef={ballRef} />
+                        <BumperWithLight position={[0, 0.35, -1]} />
+                        {/* <Bumper position={[0, 0.35, -1]} ballRef={ballRef} /> */}
+
+                        <BumperWithLight position={[-2, 0.35, -3]} />
+                        {/* <Bumper position={[-2, 0.35, -3]} ballRef={ballRef} /> */}
+
+                        <BumperWithLight position={[3, 0.35, -3]} />
+                        {/* <Bumper position={[2, 0.35, -3]} ballRef={ballRef} /> */}
 
                         {/** Bumper seitlich */}
-                        {/* <Bumper position={[3.5, 0.15, -2]} ballRef={ballRef} />  */}
-                        {/* <Bumper position={[-3.5, 0.55, 3]} ballRef={ballRef} /> */}
 
                         <ShooterLane x={3.5} />
                         <Plunger ballRef={ballRef} x={3.5} />
-
-                        {/* args = [1, 1, 1], radius = 0.15, position = [0, 0, 0], rotation = [0, 0, 0], color = 'white'  */}
-                        {/* <MetalRod args={[1, 1, 0]} position={[0, 2, 0]} /> */}
 
                         {/** Deckel der Bumper */}
                         <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} />
@@ -286,8 +286,8 @@ function Bumper({ ballRef, position }) {
             const dx = ballPos.x - position[0]
             const dz = ballPos.z - position[2]
             const length = Math.sqrt(dx * dx + dz * dz) || 1
-            
-            const force = 2.5
+
+            const force = 3
 
             // Radial outward impulse
             ball.applyImpulse(
@@ -310,6 +310,85 @@ function Bumper({ ballRef, position }) {
             <sphereGeometry args={[0.75, 64, 64]} />
             <meshStandardMaterial color={red[900]} metalness={0.95} roughness={0.45} />
          </mesh>
+      </RigidBody>
+   )
+}
+
+function BumperWithLight({ position }) {
+
+   const meshRef = useRef()
+   const lightRef = useRef()
+   const flash = useRef(0)
+
+   // useFrame for flash-effect when a bumper is hit 
+   useFrame((_, delta) => {
+      if (!meshRef.current || !lightRef.current) return
+
+      // Fade flash down over time
+      flash.current = Math.max(0, flash.current - delta * 4)
+
+      const intensity = flash.current
+
+      // Emissive glow
+      meshRef.current.material.emissiveIntensity = intensity * 3
+
+      // Light burst
+      lightRef.current.intensity = intensity * 10
+   })
+
+   return (
+      <RigidBody
+         type="fixed"
+         colliders={false}
+         position={position}
+         restitution={2}
+         friction={0}
+         onCollisionEnter={({ other }) => {
+            const ball = other.rigidBody
+            if (!ball) return
+
+            // ---- PHYSICS IMPULSE ----
+            const ballPos = ball.translation()
+            const dx = ballPos.x - position[0]
+            const dz = ballPos.z - position[2]
+            const len = Math.sqrt(dx * dx + dz * dz) || 1
+            const force = 3
+
+            ball.applyImpulse(
+               { x: (dx / len) * force, y: 0, z: (dz / len) * force },
+               true
+            )
+
+            ball.applyTorqueImpulse(
+               { x: -dz * 3, y: 0, z: dx * 3 },
+               true
+            )
+
+            // ---- VISUAL FLASH ----
+            flash.current = 1
+         }}
+      >
+         <BallCollider args={[0.65]} />
+
+         <mesh ref={meshRef} castShadow>
+            <sphereGeometry args={[0.75, 64, 64]} />
+            <meshStandardMaterial
+               color="red"
+               emissive="red"
+               emissiveIntensity={0}
+               metalness={0.9}
+               roughness={0.4}
+            />
+         </mesh>
+
+         {/* Flash Light */}
+         <pointLight
+            ref={lightRef}
+            color="red"
+            intensity={0}
+            distance={4}
+            decay={2}
+         />
       </RigidBody>
    )
 }
