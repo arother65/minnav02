@@ -358,8 +358,8 @@ function BumperWithLight({ position }) {
             type="fixed"
             colliders={false}
             position={position}
-            restitution={2}
-            friction={0}
+            restitution={0.95}
+            friction={0.05}
             onCollisionEnter={({ other }) => {
                const ball = other.rigidBody
                if (!ball) return
@@ -370,7 +370,7 @@ function BumperWithLight({ position }) {
                const dz = ballPos.z - position[2]
 
                const len = Math.sqrt(dx * dx + dz * dz) || 1
-               const force = 2
+               const force = 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
                ball.applyTorqueImpulse({ x: -dz * 3, y: 0, z: dx * 3 }, true)
@@ -433,7 +433,6 @@ function flipperShape(length) {
    return shape
 }
 
-
 //*
 function Flipper({ position, side = "left", length = 2 }) {
    const pivot = useRef()
@@ -462,7 +461,7 @@ function Flipper({ position, side = "left", length = 2 }) {
       }
       const up = (e) => {
          e.code === key && (active.current = false)
-         // joint.current?.configureMotorVelocity(dir * -10, 0)
+         // joint.current?.configureMotorVelocity(dir * -10, 10)
       }
 
       window.addEventListener("keydown", down)
@@ -482,24 +481,22 @@ function Flipper({ position, side = "left", length = 2 }) {
       const activeAngle = dir * 0.5
 
       if (active.current) {
+         // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
          joint.current.configureMotorPosition(
             activeAngle,
-            300,   // stiffness
+            500,   // stiffness
             10     // damping
          )
       } else {
          joint.current.configureMotorPosition(
             restAngle,
-            300,
+            500,
             10
          )
       }
-
-
-   })
+   })  // useFrame()
 
    // joint.current.setLimits(dir * -0.4, dir * 0.7)
-   // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
 
    return (
       <>
@@ -528,13 +525,21 @@ function Flipper({ position, side = "left", length = 2 }) {
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
 
-               <meshStandardMaterial color={yellow[400]} metalness={0.85} roughness={0.25} />
+               <meshStandardMaterial color='yellow' metalness={0.85} roughness={0.5} />
             </mesh>
+
+            <pointLight
+               //   ref={lightRef}
+               color="red"
+               intensity={0.75}
+               distance={3}
+               decay={0}
+            />
+
          </RigidBody>
       </>
    )
 }  // Flipper()
-
 
 // function Ball({ position, ballRef }) {
 const Ball = forwardRef(({ position }, ref) => {
@@ -542,10 +547,12 @@ const Ball = forwardRef(({ position }, ref) => {
    // console.log("ballRef:", ref)
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
-   /*    useEffect(() => {
-         ref.current?.applyImpulse({ x: 0, y: 0, z: -20 }, true)
-         // ref.current?.
-      }, [ref]) */
+   useEffect(() => {
+      setTimeout(() => {
+         ref.current?.setLinvel({ x: 0, y: 0, z: 0 }, true)
+         ref.current?.setAngvel({ x: 0, y: 0, z: 0 }, true)
+      }, 100)
+   }, [ref])
 
    return (
       <RigidBody
@@ -676,7 +683,6 @@ function Plunger({ ballRef, x = 2.5 }) {
       </RigidBody>
    )
 }
-
 
 //* Score and display
 function ScorePopup({ position, value, onDone }) {
