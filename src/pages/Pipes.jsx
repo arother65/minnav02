@@ -172,12 +172,16 @@ export default function Pipes() {
                <Box orientation='col' className='mt-4 bg-dark-subtle rounded'
                   sx={{ mt: 2, width: '85%', minHeight: '200px', border: '1px solid red' }}
                >
-                  <Canvas shadows camera={{ position: [1, 10, 1], fov: 100 }}
+                  <Canvas
+                     camera={{ position: [0, 12, 8], fov: 85 }}
+                     onCreated={({ camera }) => camera.lookAt(0, 0, 0)}
                      style={{
                         width: "86vw",
                         height: "100vh",
                         display: "block"
-                     }}>
+                     }}
+                     shadows
+                  >
                      <ambientLight intensity={0.85} />
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
@@ -254,11 +258,28 @@ function Playfield() {
       <RigidBody
          type="fixed"
          rotation={[-0.08, 0, 0]} // slope
-         colliders="cuboid"
+         colliders={false}
       >
+         {/* Floor */}
+         <CuboidCollider
+            args={[4.5, 0.225, 7]}   // half sizes!
+            position={[0, -0.4, 0]}
+            restitution={0.8}
+         />
          <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
             <meshStandardMaterial color="#0a5c3b" metalness={0.25} roughness={0.75} />
+         </mesh>
+
+         {/** Ceiling / Lid on playfield */}
+         <CuboidCollider
+            args={[4.5, 0.075, 7]}   // half sizes!
+            position={[0, 2.5, 0]}
+            restitution={0.1}
+         />
+         <mesh position={[0, 2.5, 0]} rotation={[0.05, 0, 0]}>
+            <boxGeometry args={[9, 0.15, 14]} />
+            <meshStandardMaterial color="lightblue" metalness={0} roughness={0.1} opacity={0.15} transparent />
          </mesh>
       </RigidBody>
    )
@@ -471,7 +492,12 @@ function Flipper({ position, side = "left", length = 2 }) {
          [0, 0, 0],                 // pivot local anchor
          [-dir * length / 2, 0, 0], // flipper local anchor
          [0, 1, 0]                  // hinge axis (Y axis)
-      ]
+      ],
+      //?: 
+      (j) => {
+         j.setLimits(dir * -0.35, dir * 0.6)
+         j.configureMotorVelocity(0, 0)
+      }
    )
 
    // Keyboard controls
@@ -541,7 +567,8 @@ function Flipper({ position, side = "left", length = 2 }) {
             <mesh castShadow>
 
                {/** works; capsuleGeometry, extrudeGeometry does not */}
-               <boxGeometry args={[length, 0.35, 0.4]} />
+               {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
+               <boxGeometry args={[length, 0.5, 0.35]} />
 
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
@@ -587,7 +614,7 @@ const Ball = forwardRef(({ position }, ref) => {
          angularDamping={0.05}
          position={position}
          mass={4}
-         ccd
+         ccd  // collision detection 
       >
          <BallCollider args={[0.35]} />
 
