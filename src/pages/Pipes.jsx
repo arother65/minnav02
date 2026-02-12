@@ -213,7 +213,7 @@ export default function Pipes() {
                         {/* <MetalRod args={[1, 1, 0]} position={[0, 2, 0]} /> */}
 
                         {/** Deckel der Bumper */}
-                        <CreateExtrudeGeometry position={[-0.25, 0.5, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} />
+                        <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} />
 
                      </Physics>
 
@@ -244,7 +244,7 @@ function Playfield() {
 function Walls() {
 
    const wall = (pos, size) => (
-      <RigidBody type="fixed" position={pos} colliders="cuboid" restitution={0.85} friction={0.05}>
+      <RigidBody type="fixed" position={pos} colliders="cuboid" restitution={0.65} friction={0.05}>
 
          {/* <CuboidCollider args={[0.5, 0.35, 0.5]} restitution={1.5} friction={0.05} /> */}
 
@@ -271,11 +271,35 @@ function Bumper({ ballRef, position }) {
          type="fixed"
          colliders={false}
          position={position}
-         // enabledTranslations={[true, false, true]}
-         restitution={1.5}
-         friction={0.01}
-         onCollision={() => { 
-            ballRef.current?.setAngvel({ x: -2, y: 0, z: -1 }, true) 
+         restitution={1}
+         friction={0.05}
+         // onCollision={() => {
+         //    ballRef.current?.setAngvel({ x: -2, y: 0, z: -1 }, true)
+         // }}
+         onCollisionEnter={({ other }) => {
+            const ball = other.rigidBody
+
+            if (!ball) return
+
+            // Direction from bumper to ball
+            const ballPos = ball.translation()
+            const dx = ballPos.x - position[0]
+            const dz = ballPos.z - position[2]
+            const length = Math.sqrt(dx * dx + dz * dz) || 1
+            
+            const force = 2.5
+
+            // Radial outward impulse
+            ball.applyImpulse(
+               { x: (dx / length) * force, y: 0, z: (dz / length) * force },
+               true
+            )
+
+            // Add spin based on direction
+            ball.applyTorqueImpulse(
+               { x: -dz * 2, y: 0, z: dx * 2 },
+               true
+            )
          }}
       >
 
@@ -374,13 +398,8 @@ function Flipper({ position, side = "left", length = 2 }) {
 
 // function Ball({ position, ballRef }) {
 const Ball = forwardRef(({ position }, ref) => {
-   // const [ref] = useSphere(() => ({
-   //    mass: 1,
-   //    position: position,
-   //    velocity: 2
-   // }))
 
-   console.log("ballRef:", ref)
+   // console.log("ballRef:", ref)
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
    /*    useEffect(() => {
@@ -393,18 +412,20 @@ const Ball = forwardRef(({ position }, ref) => {
          ref={ref}
          name='ball'
          type="dynamic"
-         colliders="ball"
+         colliders={false}
          restitution={0.85}
-         friction={0.5}
+         friction={0.15}
          linearDamping={0.05}
          angularDamping={0.05}
          position={position}
-         mass={2}
+         mass={4}
          ccd
       >
+         <BallCollider args={[0.35]} />
+
          <mesh castShadow>
             <sphereGeometry args={[0.35, 32, 32]} />
-            <meshStandardMaterial color={orange[500]} metalness={0.95} roughness={0.45} />
+            <meshStandardMaterial color='white' metalness={0.85} roughness={0.15} />
          </mesh>
       </RigidBody>
    )
@@ -450,7 +471,7 @@ function ShooterLane({ x = 2.5 }) {
 
 function Plunger({ ballRef, x = 2.5 }) {
 
-   console.log("ballRef in fn Plunger(): ", ballRef)
+   // console.log("ballRef in fn Plunger(): ", ballRef)
 
    const pulling = useRef(false)
    const power = useRef(0)
@@ -473,11 +494,19 @@ function Plunger({ ballRef, x = 2.5 }) {
          if (e.code === "ArrowDown") {
             pulling.current = false
 
-            // const impulse = Math.min(20, 8 + power.current * 14)
+            if (!ballRef.current) return
 
-            ballRef.current?.applyImpulse(
-               // { x: 0, y: 0, z: -impulse },
-               { x: -0.1, y: 0, z: -5 },
+            // const launchPower = 10 + power.current * 25 // zustark
+
+            // Forward impulse
+            ballRef.current.applyImpulse(
+               { x: 0, y: 0, z: -2 },
+               true
+            )
+
+            // Add proportional topspin
+            ballRef.current.applyTorqueImpulse(
+               { x: -2, y: 0, z: -1 },
                true
             )
             power.current = 0
@@ -493,12 +522,6 @@ function Plunger({ ballRef, x = 2.5 }) {
       }
    }, [ballRef])
 
-   useFrame((_, delta) => {
-      if (pulling.current) {
-         power.current = Math.min(1, power.current + delta)
-      }
-   })
-
    return (
       <RigidBody
          type="fixed"
@@ -507,7 +530,7 @@ function Plunger({ ballRef, x = 2.5 }) {
       >
          <mesh>
             <boxGeometry args={[0.4, 0.4, 0.4]} />
-            <meshStandardMaterial color={orange[200]} metalness={0.95} roughness={0.45} />
+            <meshStandardMaterial color='darkgrey' metalness={0.85} roughness={0.65} />
          </mesh>
          <MetalSpring position={[0, 0.15, -1]} rotation={[1.55, -0.15, 0]} color='red' helixCurve={curve} />
       </RigidBody>
