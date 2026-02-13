@@ -69,6 +69,8 @@ export default function Pipes() {
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
    const ballRef = useRef(null)
    let [noPoints, setNoPoints] = useState(0)
+   const [gameOver, setGameOver] = useState(false)
+
 
    useEffect(() => {
       // setNoPoints(0)
@@ -192,26 +194,31 @@ export default function Pipes() {
                         <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
                         <Flipper position={[2.25, 0.8, 5.8]} side="right" />
 
-                        <Ball ref={ballRef} position={[3.5, 0.45, 4]} />
+                        <Ball ref={ballRef} position={[3.5, 0.45, 4]}
+                           onOut={(e) => { setGameOver(true) }}
+                        />
 
                         {/** Bumper oben im Spielfeld */}
-                        <BumperWithLight position={[0, 0.35, -5]} noPoints={noPoints} setNoPoints={setNoPoints} />
-                        {/* <Bumper position={[0, 0.35, -1]} ballRef={ballRef} /> */}
-
-                        <BumperWithLight position={[-2, 0.35, -4]} noPoints={noPoints} setNoPoints={setNoPoints} />
-                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} />
 
                         {/** Bumper weiter vorne */}
+                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
                         <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
                         <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} />
 
                         <ShooterLane x={3.5} />
                         <Plunger ballRef={ballRef} x={3.5} />
 
-                        {/** Deckel der Bumper */}
-                        {/* <CreateExtrudeGeometry position={[-0.25, 1, -0.75]} rotation={[0, 0, -0.75]} color={orange[500]} /> */}
-
-                        {/* <ScorePopup position={[0, 5, 0]} value={100} onDone={(e) => { console.log('onDone...') }} /> */}
+                        {/** Texte oberhalb der Spielfläche */}
+                        {!gameOver &&
+                           <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!'
+                              onDone={(e) => { console.log('onDone...') }} />
+                        }
+                        {gameOver &&
+                           <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!'
+                              onDone={(e) => { console.log('onDone...') }} />
+                        }
 
                         {/** Abweiser unten links */}
                         <RigidBody type="fixed" colliders='hull' restitution={0.5}>
@@ -348,7 +355,7 @@ function Bumper({ ballRef, position }) {
    )
 }  // Bumper()
 
-function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints }) {
+function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoints = 10 }) {
 
    const meshRef = useRef()
    const lightRef = useRef()
@@ -375,9 +382,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints }) {
       // Light burst
       lightRef.current.intensity = intensity * 10
 
-      // show value when bumper is hit ?
-
-   })
+   })  // useFrame 
 
    return (
       <>
@@ -405,12 +410,8 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints }) {
                // ---- VISUAL FLASH ----
                flash.current = 1
 
-               // ---- show value for hit / collision ---- 
-               // spawnRef.current([position[0], position[1] + 1, position[2]], 100)  //?
-               // setShowPopup(true)
-
-               setNoPoints(noPoints + 10)
-
+               // ---- just count value for hit / collisions ---- 
+               setNoPoints(noPoints + bumpPoints)
             }}
          >
             <BallCollider args={[0.65]} />
@@ -434,12 +435,6 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints }) {
                distance={4}
                decay={2}
             />
-
-            {/* <Text fontSize={0.5}
-               anchorX="center"
-               anchorY="middle">
-               hit!
-            </Text> */}
          </RigidBody>
          {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
       </>
@@ -588,7 +583,7 @@ function Flipper({ position, side = "left", length = 2 }) {
 }  // Flipper()
 
 // function Ball({ position, ballRef }) {
-const Ball = forwardRef(({ position }, ref) => {
+const Ball = forwardRef(({ position, onOut }, ref) => {
 
    // console.log("ballRef:", ref)
 
@@ -600,6 +595,23 @@ const Ball = forwardRef(({ position }, ref) => {
       }, 100)
    }, [ref])
 
+   // Position des Balles, um Game Over festzustellen:
+   useFrame(() => {
+      if (!ref.current) return
+
+      const pos = ref.current.translation()
+
+      // Playfield bounds (must match your field size)
+      const X_LIMIT = 4.5  // x-wert des cuboidCollider für den Ball 
+      const Z_LIMIT = 7    // z-wert des cuboidCollider für den Ball
+      const Y_LIMIT = -5   // y-Wert, Ball fell through
+
+      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) {
+         onOut()
+      }
+   })
+
+   // 
    return (
       <RigidBody
          ref={ref}
@@ -736,7 +748,7 @@ function Plunger({ ballRef, x = 2.5 }) {
 /** ------------------------------------------------------------------------ */
 
 //* Score and display
-function ScorePopup({ position, value, onDone }) {
+function ScorePopup({ position, color = 'darkred', value, onDone }) {
 
    const groupRef = useRef()
    const [life, setLife] = useState(1) // 1 → 0 fade
@@ -745,14 +757,14 @@ function ScorePopup({ position, value, onDone }) {
       if (!groupRef.current) return
 
       // Float upward
-      groupRef.current.position.y += delta * 2
+      groupRef.current.position.y += delta * 0.5
 
       // Slight scale pop
-      groupRef.current.scale.multiplyScalar(1 + delta * 0.6)
+      groupRef.current.scale.multiplyScalar(1 + delta * 0.5)
 
-      // Fade out
+      // Fade out: Länge des Effektes in next
       setLife((prev) => {
-         const next = prev - delta * 1.2
+         const next = prev - delta * 0.5
          if (next <= 0) onDone()
          return next
       })
@@ -763,109 +775,19 @@ function ScorePopup({ position, value, onDone }) {
    return (
       <group ref={groupRef} position={position}>
          <Text
-            fontSize={0.5}
+            fontSize={1.5}
             anchorX="center"
             anchorY="middle"
          >
             {value}
             <meshStandardMaterial
-               color="yellow"
+               color={color}
                transparent
                opacity={life}
-               emissive="orange"
-               emissiveIntensity={5}
+               emissive="darkred"
+               emissiveIntensity={1}
             />
          </Text>
       </group>
    )
 }  // ScorePopup
-
-function FlipperTemp({ position, side = "left", length = 2 }) {
-
-   const pivot = useRef()
-   const flipper = useRef()
-   const joint = useRef()
-
-   const dir = side === "left" ? 1 : -1
-   const key = side === "left" ? "ArrowLeft" : "ArrowRight"
-   const active = useRef(false)
-
-   /*
-     IMPORTANT:
-     - Use limits
-     - Use velocity motor (more stable than position motor for flippers)
-   */
-
-   useRevoluteJoint(
-      pivot,
-      flipper,
-      [
-         [0, 0, 0],
-         [-dir * length / 2, 0, 0],
-         [0, 1, 0]
-      ],
-      (j) => {
-         joint.current = j
-
-         // HARD LIMITS (prevents wobble)
-         j.setLimits(dir * -0.4, dir * 0.6)
-
-         // Enable motor
-         j.configureMotorVelocity(0, 0)
-      }
-   )
-
-   // Keyboard
-   useEffect(() => {
-      const down = (e) => e.code === key && (active.current = true)
-      const up = (e) => e.code === key && (active.current = false)
-
-      window.addEventListener("keydown", down)
-      window.addEventListener("keyup", up)
-
-      return () => {
-         window.removeEventListener("keydown", down)
-         window.removeEventListener("keyup", up)
-      }
-   }, [key])
-
-   // Motor control (velocity-based = MUCH more stable)
-   useFrame(() => {
-      if (!joint.current) return
-
-      const speed = active.current ? dir * 25 : dir * -20
-
-      joint.current.configureMotorVelocity(
-         speed,
-         2000 // MAX TORQUE — critical for no wobble
-      )
-   })
-
-   return (
-      <>
-         {/* Pivot */}
-         <RigidBody type="fixed" ref={pivot} position={position} />
-
-         {/* Flipper */}
-         <RigidBody
-            ref={flipper}
-            type="dynamic"
-            colliders="cuboid"
-            restitution={0.2}
-            friction={0.9}
-            angularDamping={4}      // kill oscillation
-            linearDamping={1}
-            canSleep={false}        // important
-         >
-            <mesh castShadow>
-               <boxGeometry args={[length, 0.35, 0.4]} />
-               <meshStandardMaterial
-                  color={yellow[400]}
-                  metalness={0.85}
-                  roughness={0.25}
-               />
-            </mesh>
-         </RigidBody>
-      </>
-   )
-}  // Flipper()
