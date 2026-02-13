@@ -222,7 +222,7 @@ export default function Pipes() {
                            <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
                            <Flipper position={[2.25, 0.8, 5.8]} side="right" />
 
-                           <Ball ref={ballRef} position={[3.5, 0.45, 4]}
+                           <Ball ref={ballRef} position={[3.5, 0.35, 5]}
                               onOut={(e) => { setGameOver(true) }}
                            />
 
@@ -292,7 +292,7 @@ function Playfield() {
          />
          <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color="#0a5c3b" metalness={0.5} roughness={0.75}
+            <meshStandardMaterial color={green[500]} metalness={0.75} roughness={0.85}
             // emissive="#00ffcc"
             // emissiveIntensity={0.2} 
             />
@@ -459,6 +459,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                distance={4}
                decay={2}
             />
+            <pointLight color="green" intensity={0.95} distance={5} decay={0} />
          </RigidBody>
          {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
       </>
@@ -572,12 +573,10 @@ function Flipper({ position, side = "left", length = 2 }) {
             mass={1}               // realistic inertia
          >
             <mesh castShadow>
-
                {/** works; capsuleGeometry, extrudeGeometry does not */}
                {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
 
-               <boxGeometry args={[length, 0.8, 0.35]} />
-
+               <boxGeometry args={[length, 0.8, 0.2]} />
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
 
@@ -585,16 +584,20 @@ function Flipper({ position, side = "left", length = 2 }) {
 
                {/** LEFT == 1, RIGHT == -1 */}
                {dir === 1 &&
-                  <PlanetWithHole position={[-1.1, 0.15, 0]} textureColors={['darkgreen', 'lightgreen', 'green']} />
-
+                  <>
+                     {/* <PlanetWithHole position={[-1.175, 0.6, 0.13]}      rotation={[0, 0, -1.55]} textureColors={['darkgreen', 'lightgreen', 'green']} /> */}
+                     <HalvedSphere radius={0.35} position={[0.65, 0, 0]} rotation={[-1.55, 0, 0]} />
+                  </>
                }
                {dir === -1 &&
-                  <PlanetWithHole position={[0.05, 0.15, 0]} textureColors={['red', 'darkred', 'pink']} />
-
+                  <>
+                     {/* <PlanetWithHole position={[1.175, -0.5, 0.13]} rotation={[0, 0, 1.55]} textureColors={['red', 'darkred', 'pink']} /> */}
+                     <HalvedSphere radius={0.35} position={[-0.65, 0, 0]} rotation={[-1.55, 0, 0]} />
+                  </>
                }
             </mesh>
 
-            <pointLight color="red" intensity={0.5} distance={5} decay={0} />
+            <pointLight color="red" intensity={0.95} distance={5} decay={0} />
          </RigidBody>
       </>
    )
@@ -646,14 +649,15 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       >
          <BallCollider args={[0.35]} />
 
-         <mesh castShadow>
-            <sphereGeometry args={[0.35, 32, 32]} />
-            <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} />
+         <mesh castShadow >
+            <sphereGeometry args={[0.35, 64, 64]} />
+            <meshStandardMaterial color={green[500]} metalness={0.95} roughness={0.15} />
          </mesh>
       </RigidBody>
    )
 }) // Ball()
 
+//*
 function ShooterLane({ x = 2.5 }) {
 
    return (
@@ -662,8 +666,8 @@ function ShooterLane({ x = 2.5 }) {
          <RigidBody
             type="fixed"
             friction={0.05}
-            restitution={0.15}
-            position={[x, 0.15, 4.5]}
+            restitution={0.5}
+            position={[x, 0.15, 5]}
             rotation={[-0.15, 0, 0]}
             colliders="cuboid"
          >
@@ -674,17 +678,17 @@ function ShooterLane({ x = 2.5 }) {
          </RigidBody>
 
          {/* Left rail */}
-         <RigidBody type="fixed" position={[x - 0.55, 0.4, 5.5]} colliders="cuboid" restitution={0.15}>
+         <RigidBody type="fixed" position={[x - 0.55, 0.4, 6]} colliders="cuboid" restitution={0.5}>
             <mesh>
-               <boxGeometry args={[0.1, 0.8, 3]} />
+               <boxGeometry args={[0.1, 0.8, 2]} />
                <meshStandardMaterial color="lightgrey" />
             </mesh>
          </RigidBody>
 
          {/* Right rail */}
-         <RigidBody type="fixed" position={[x + 0.55, 0.4, 5.5]} colliders="cuboid" restitution={0.15}>
+         <RigidBody type="fixed" position={[x + 0.55, 0.4, 6]} colliders="cuboid" restitution={0.5}>
             <mesh>
-               <boxGeometry args={[0.1, 0.8, 3]} />
+               <boxGeometry args={[0.1, 0.8, 2]} />
                <meshStandardMaterial color="lightgrey" />
             </mesh>
          </RigidBody>
@@ -692,6 +696,7 @@ function ShooterLane({ x = 2.5 }) {
    )
 }  // ShooterLane()
 
+//*
 function Plunger({ ballRef, x = 2.5 }) {
 
    // console.log("ballRef in fn Plunger(): ", ballRef)
@@ -748,7 +753,7 @@ function Plunger({ ballRef, x = 2.5 }) {
    return (
       <RigidBody
          type="fixed"
-         position={[x, 0.55, 6.25]}
+         position={[x, 0.55, 6.75]}
          colliders="cuboid"
       >
          <mesh>
@@ -891,7 +896,7 @@ function LightSweep() {
 }
 
 //*
-function HalvedSphere({ position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
+function HalvedSphere({ radius = 0.55, position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
 
    return (
       <RigidBody type="fixed" colliders='hull' restitution={0.5}>
@@ -899,7 +904,7 @@ function HalvedSphere({ position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
          <mesh position={position} rotation={rotation}>
             <sphereGeometry
                args={[
-                  0.55,       // radius
+                  radius,       // radius
                   64,         // width segments
                   64,         // height segments
                   0,          // phiStart
@@ -908,7 +913,8 @@ function HalvedSphere({ position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
                   Math.PI / 2 // thetaLength (half sphere)
                ]}
             />
-            <meshStandardMaterial color={grey[500]} metalness={0.95} roughness={0.15} side={2} />
+            <meshStandardMaterial color={grey[100]} metalness={0.95} roughness={0.45} side={2} />
+            <pointLight color="white" intensity={0.5} distance={10} decay={0} />
          </mesh>
       </RigidBody>
    )

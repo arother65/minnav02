@@ -678,7 +678,6 @@ function CreateFence({ position = [0, 0, 0], rotation = [0, 0, 0], scale = 1 }) 
    return <Clone object={fenceModel.scene} position={position} rotation={rotation} scale={scale} />
 }  // CreateFence()
 
-
 //*
 function CorrugatedIron({ position = [0, 5, 0], restitution = 1, scale = 1 }) {
 
