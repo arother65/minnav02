@@ -1,6 +1,6 @@
 /**
  * 
- *  Stand: 10.02.2026
+ *  Stand: 13.02.2026
  * 
  */
 
@@ -9,16 +9,14 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useRef, useEffect, forwardRef, createContext, useContext } from "react"
+import { useState, useRef, useEffect, forwardRef } from "react"
 import * as THREE from "three"
-import { Text } from "@react-three/drei"
-
-// import * as THREE from 'three'
-
 import { Canvas } from "@react-three/fiber"
 import { useFrame } from "@react-three/fiber"
+
+import { Text } from "@react-three/drei"
 import { OrbitControls } from "@react-three/drei"
-import { Html } from "@react-three/drei"
+// import { Html } from "@react-three/drei"
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
@@ -63,8 +61,9 @@ function handleOnCollisionEnter(ref) {
 
 }  // Handler for Collision with a Bumper 
 
-
-//* Pipes page component
+/** ------------------------------------------------------------------------ */
+//    Pipes page component
+/** ------------------------------------------------------------------------ */
 export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
@@ -188,7 +187,7 @@ export default function Pipes() {
                      }}
                      shadows
                   >
-                     <ambientLight intensity={0.85} />
+                     <ambientLight intensity={0.35} />
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
@@ -202,16 +201,20 @@ export default function Pipes() {
                         maxVelocityIterations={20}
                      >
 
+                        {/* <LightSweep /> */}
+
                         <ArcadeIntro>
-                           <Text
-                              position={[0, 5, 0]}
-                              fontSize={1.95}
-                              color="darkgreen"
-                              anchorX="center"
-                              anchorY="middle"
-                           >
-                              {noPoints}
-                           </Text>
+                           <mesh>
+                              <Text
+                                 position={[0, 6, -5]}
+                                 fontSize={1.95}
+                                 anchorX="center"
+                                 anchorY="middle"
+                              >
+                                 {noPoints}
+                                 <meshStandardMaterial color={green[200]} metalness={0.95} roughness={0.65} />
+                              </Text>
+                           </mesh>
 
                            <Playfield />
                            <Walls />
@@ -244,25 +247,26 @@ export default function Pipes() {
                            }
 
                            {/** Abweiser unten links */}
-                           <RigidBody type="fixed" colliders='hull' restitution={0.5}>
-                              {/* <CreateExtrudeGeometry position={[-3.15, 0.65, 5]} rotation={[-0.5, 2, 0]} color={orange[100]} /> */}
-
-                              <mesh position={[-3.15, 0.75, 4.5]} rotation={[0, -0.75, 0]}>
+                           {/* <RigidBody type="fixed" colliders='hull' restitution={0.5}>
+                              <mesh position={[-3.15, 5, 4.5]} rotation={[0, -0.75, 0]}>
                                  <ringGeometry args={[0.25, 0.8, 64]} />
                                  <meshStandardMaterial
                                     color="red"
-                                    // emissive="orange"
-                                    // emissiveIntensity={0.5}
                                     metalness={0.95}
                                     roughness={0.45}
                                     side={THREE.DoubleSide}
                                  />
                               </mesh>
-                           </RigidBody>
+                           </RigidBody> */}
+
+                           <HalvedSphere position={[-3.35, 0.15, 4]} rotation={[0, 0, 0]} />
+                           <HalvedSphere position={[3, -0.65, -5]} rotation={[0, 0, 0]} />
+                           <HalvedSphere position={[-3.35, -0.75, -5.5]} rotation={[0, 0, 0]} />
 
                         </ArcadeIntro>
 
                      </Physics>
+
                      <OrbitControls />
                   </Canvas>
                </Box>
@@ -288,7 +292,10 @@ function Playfield() {
          />
          <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color="#0a5c3b" metalness={0.25} roughness={0.75} />
+            <meshStandardMaterial color="#0a5c3b" metalness={0.5} roughness={0.75}
+            // emissive="#00ffcc"
+            // emissiveIntensity={0.2} 
+            />
          </mesh>
 
          {/** Ceiling / Lid on playfield */}
@@ -569,7 +576,7 @@ function Flipper({ position, side = "left", length = 2 }) {
                {/** works; capsuleGeometry, extrudeGeometry does not */}
                {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
 
-               <boxGeometry args={[length, 0.7, 0.35]} />
+               <boxGeometry args={[length, 0.8, 0.35]} />
 
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
@@ -579,21 +586,15 @@ function Flipper({ position, side = "left", length = 2 }) {
                {/** LEFT == 1, RIGHT == -1 */}
                {dir === 1 &&
                   <PlanetWithHole position={[-1.1, 0.15, 0]} textureColors={['darkgreen', 'lightgreen', 'green']} />
+
                }
                {dir === -1 &&
                   <PlanetWithHole position={[0.05, 0.15, 0]} textureColors={['red', 'darkred', 'pink']} />
-               }
 
+               }
             </mesh>
 
-            <pointLight
-               //   ref={lightRef}
-               color="red"
-               intensity={0.5}
-               distance={5}
-               decay={0}
-            />
-
+            <pointLight color="red" intensity={0.5} distance={5} decay={0} />
          </RigidBody>
       </>
    )
@@ -647,7 +648,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
 
          <mesh castShadow>
             <sphereGeometry args={[0.35, 32, 32]} />
-            <meshStandardMaterial color='white' metalness={0.85} roughness={0.15} />
+            <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} />
          </mesh>
       </RigidBody>
    )
@@ -848,3 +849,67 @@ function ArcadeIntro({ children }) {
 
    return <group ref={group}>{children}</group>
 }  // ArcadeIntro()
+
+//*
+function LightSweep() {
+
+   const light = useRef()
+   const time = useRef(0)
+
+   useFrame((_, delta) => {
+      if (!light.current) return
+
+      time.current += delta
+      const t = time.current
+
+      const duration = 1.5
+
+      if (t < duration) {
+         const progress = t / duration
+
+         // Move left → right across playfield
+         light.current.position.x = -6 + progress * 12
+
+         // Slight intensity fade out
+         light.current.intensity = 4 * (1 - progress)
+      } else {
+         light.current.intensity = 0
+      }
+   })
+
+   return (
+      <spotLight
+         ref={light}
+         position={[0, 3, 0]}
+         angle={0.4}
+         penumbra={0.8}
+         intensity={4}
+         castShadow
+         color="#ffffff"
+      />
+   )
+}
+
+//*
+function HalvedSphere({ position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
+
+   return (
+      <RigidBody type="fixed" colliders='hull' restitution={0.5}>
+
+         <mesh position={position} rotation={rotation}>
+            <sphereGeometry
+               args={[
+                  0.55,       // radius
+                  64,         // width segments
+                  64,         // height segments
+                  0,          // phiStart
+                  Math.PI * 2,// phiLength (full around)
+                  0,          // thetaStart
+                  Math.PI / 2 // thetaLength (half sphere)
+               ]}
+            />
+            <meshStandardMaterial color={grey[500]} metalness={0.95} roughness={0.15} side={2} />
+         </mesh>
+      </RigidBody>
+   )
+}  // HalvedSphere()
