@@ -23,7 +23,8 @@ import { Html } from "@react-three/drei"
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Switch, Typography } from '@mui/material'
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography } 
+   from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
@@ -68,13 +69,19 @@ export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
    const ballRef = useRef(null)
-   let [noPoints, setNoPoints] = useState(0)
+   let   [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
+   const [bumperForce, setBumperForce] = useState(1.25)
 
+   //* event handler
+   function changeBumperForce(event) {
+      setBumperForce(event.target.value)
+   }  // handleChange() Slider-Components
 
-   useEffect(() => {
-      // setNoPoints(0)
-   }, [noPoints])
+   //*
+   // useEffect(() => {
+   //    console.log('Actual bumperForce: ', bumperForce)
+   // }, [noPoints, bumperForce])
 
    // 
    return (
@@ -134,7 +141,7 @@ export default function Pipes() {
                   {/** Switches / Slider for restitution on Bumpers */}
                   <Card className='rounded shadow'>
                      {/** SWITCH for using Ball's Index */}
-                     <FormGroup>
+                     {/* <FormGroup>
                         <FormControlLabel control={
                            <Switch
                               onChange={(e) => {
@@ -147,7 +154,23 @@ export default function Pipes() {
                               }} />
                         }
                            label="With Index" />
-                     </FormGroup>
+                     </FormGroup> */}
+
+                     <div className="row m-3 border border-info rounded">
+                        <h6>Adjust FORCE of bumpers: </h6>
+                        <Slider
+                           name='idBumperForce'
+                           aria-label="Slider for force"
+                           defaultValue={1.25}
+                           valueLabelDisplay="auto"
+                           step={0.05}
+                           min={0.85}
+                           max={3}
+                           onChange={changeBumperForce}
+                           value={bumperForce}
+                           disabled={false}
+                        />
+                     </div>
                   </Card>
                </Box>
 
@@ -199,25 +222,23 @@ export default function Pipes() {
                         />
 
                         {/** Bumper oben im Spielfeld */}
-                        <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} />
-                        <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                        <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                         {/** Bumper weiter vorne */}
-                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
-                        <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} />
-                        <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} />
+                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                        <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                        <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                         <ShooterLane x={3.5} />
                         <Plunger ballRef={ballRef} x={3.5} />
 
                         {/** Texte oberhalb der Spielfläche */}
                         {!gameOver &&
-                           <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!'
-                              onDone={(e) => { console.log('onDone...') }} />
+                           <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
                         }
                         {gameOver &&
-                           <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!'
-                              onDone={(e) => { console.log('onDone...') }} />
+                           <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
                         }
 
                         {/** Abweiser unten links */}
@@ -355,17 +376,11 @@ function Bumper({ ballRef, position }) {
    )
 }  // Bumper()
 
-function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoints = 10 }) {
+function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoints = 10, bumperForce = 0.9 }) {
 
    const meshRef = useRef()
    const lightRef = useRef()
    const flash = useRef(0)
-
-   //* for showing the score
-   // const [showPopup, setShowPopup] = useState(false)
-   // const ScoreContext = createContext()
-   // const useScore = () => useContext(ScoreContext)
-   // const spawnRef = useScore()
 
    // useFrame for flash-effect when a bumper is hit 
    useFrame((_, delta) => {
@@ -381,7 +396,6 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
 
       // Light burst
       lightRef.current.intensity = intensity * 10
-
    })  // useFrame 
 
    return (
@@ -390,7 +404,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
             type="fixed"
             colliders={false}
             position={position}
-            restitution={0.95}
+            restitution={0.85}
             friction={0.05}
             onCollisionEnter={({ other }) => {
                const ball = other.rigidBody
@@ -402,7 +416,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const dz = ballPos.z - position[2]
 
                const len = Math.sqrt(dx * dx + dz * dz) || 1
-               const force = 1.25
+               const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
                ball.applyTorqueImpulse({ x: -dz * 3, y: 0, z: dx * 3 }, true)
@@ -748,7 +762,7 @@ function Plunger({ ballRef, x = 2.5 }) {
 /** ------------------------------------------------------------------------ */
 
 //* Score and display
-function ScorePopup({ position, color = 'darkred', value, onDone }) {
+function ScorePopup({ position, color = 'darkred', value }) {
 
    const groupRef = useRef()
    const [life, setLife] = useState(1) // 1 → 0 fade
@@ -765,7 +779,6 @@ function ScorePopup({ position, color = 'darkred', value, onDone }) {
       // Fade out: Länge des Effektes in next
       setLife((prev) => {
          const next = prev - delta * 0.5
-         if (next <= 0) onDone()
          return next
       })
 
