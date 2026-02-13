@@ -23,7 +23,7 @@ import { Html } from "@react-three/drei"
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography } 
+import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
    from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
@@ -69,7 +69,7 @@ export default function Pipes() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
    const ballRef = useRef(null)
-   let   [noPoints, setNoPoints] = useState(0)
+   let [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
    const [bumperForce, setBumperForce] = useState(1.25)
 
@@ -201,65 +201,68 @@ export default function Pipes() {
                         solverIterations={30}  // Low solver iterations = soft joints = slow response.
                         maxVelocityIterations={20}
                      >
-                        <Text
-                           position={[0, 5, 0]}
-                           fontSize={1.95}
-                           color="darkgreen"
-                           anchorX="center"
-                           anchorY="middle"
-                        >
-                           {noPoints}
-                        </Text>
 
-                        <Playfield />
-                        <Walls />
+                        <ArcadeIntro>
+                           <Text
+                              position={[0, 5, 0]}
+                              fontSize={1.95}
+                              color="darkgreen"
+                              anchorX="center"
+                              anchorY="middle"
+                           >
+                              {noPoints}
+                           </Text>
 
-                        <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
-                        <Flipper position={[2.25, 0.8, 5.8]} side="right" />
+                           <Playfield />
+                           <Walls />
 
-                        <Ball ref={ballRef} position={[3.5, 0.45, 4]}
-                           onOut={(e) => { setGameOver(true) }}
-                        />
+                           <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
+                           <Flipper position={[2.25, 0.8, 5.8]} side="right" />
 
-                        {/** Bumper oben im Spielfeld */}
-                        <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                        <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <Ball ref={ballRef} position={[3.5, 0.45, 4]}
+                              onOut={(e) => { setGameOver(true) }}
+                           />
 
-                        {/** Bumper weiter vorne */}
-                        <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                        <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                        <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           {/** Bumper oben im Spielfeld */}
+                           <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
-                        <ShooterLane x={3.5} />
-                        <Plunger ballRef={ballRef} x={3.5} />
+                           {/** Bumper weiter vorne */}
+                           <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
-                        {/** Texte oberhalb der Spielfläche */}
-                        {!gameOver &&
-                           <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
-                        }
-                        {gameOver &&
-                           <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
-                        }
+                           <ShooterLane x={3.5} />
+                           <Plunger ballRef={ballRef} x={3.5} />
 
-                        {/** Abweiser unten links */}
-                        <RigidBody type="fixed" colliders='hull' restitution={0.5}>
-                           {/* <CreateExtrudeGeometry position={[-3.15, 0.65, 5]} rotation={[-0.5, 2, 0]} color={orange[100]} /> */}
+                           {/** Texte oberhalb der Spielfläche */}
+                           {!gameOver &&
+                              <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
+                           }
+                           {gameOver &&
+                              <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
+                           }
 
-                           <mesh position={[-3.15, 0.75, 4.5]} rotation={[0, -0.75, 0]}>
-                              <ringGeometry args={[0.25, 0.8, 64]} />
-                              <meshStandardMaterial
-                                 color="red"
-                                 // emissive="orange"
-                                 // emissiveIntensity={0.5}
-                                 metalness={0.95}
-                                 roughness={0.45}
-                                 side={THREE.DoubleSide}
-                              />
-                           </mesh>
-                        </RigidBody>
+                           {/** Abweiser unten links */}
+                           <RigidBody type="fixed" colliders='hull' restitution={0.5}>
+                              {/* <CreateExtrudeGeometry position={[-3.15, 0.65, 5]} rotation={[-0.5, 2, 0]} color={orange[100]} /> */}
+
+                              <mesh position={[-3.15, 0.75, 4.5]} rotation={[0, -0.75, 0]}>
+                                 <ringGeometry args={[0.25, 0.8, 64]} />
+                                 <meshStandardMaterial
+                                    color="red"
+                                    // emissive="orange"
+                                    // emissiveIntensity={0.5}
+                                    metalness={0.95}
+                                    roughness={0.45}
+                                    side={THREE.DoubleSide}
+                                 />
+                              </mesh>
+                           </RigidBody>
+
+                        </ArcadeIntro>
 
                      </Physics>
-
                      <OrbitControls />
                   </Canvas>
                </Box>
@@ -804,3 +807,44 @@ function ScorePopup({ position, color = 'darkred', value }) {
       </group>
    )
 }  // ScorePopup
+
+//*
+function ArcadeIntro({ children }) {
+
+   const group = useRef()
+   const time = useRef(0)
+
+   useFrame((_, delta) => {
+      if (!group.current) return
+
+      time.current += delta
+
+      const t = time.current
+
+      // Drop from above
+      const dropHeight = 6
+      const duration = 1.2
+
+      if (t < duration) {
+         const progress = t / duration
+
+         // Ease out cubic
+         const eased = 1 - Math.pow(1 - progress, 3)
+
+         group.current.position.y = dropHeight * (1 - eased)
+
+         // Quick spin while dropping
+         group.current.rotation.y = Math.PI * 2 * (1 - eased)
+
+         // Tiny tilt for arcade feel
+         group.current.rotation.x = 0.2 * (1 - eased)
+      } else {
+         // Bounce settle
+         const bounce = Math.sin((t - duration) * 12) * 0.05 * Math.exp(-(t - duration) * 3)
+         group.current.position.y = bounce
+         group.current.rotation.x = bounce * 0.5
+      }
+   })
+
+   return <group ref={group}>{children}</group>
+}  // ArcadeIntro()
