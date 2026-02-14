@@ -306,9 +306,9 @@ export default function AppBarTop() {
           <MenuItem
             sx={menuItemSx}
             onClick={() => {
-              fnNavigate('/Pipes')
+              fnNavigate('/FlipperGame')
             }}>
-            Pipes
+            Flipper
           </MenuItem>
 
           {/* <MenuItem

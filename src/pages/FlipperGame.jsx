@@ -62,25 +62,30 @@ function handleOnCollisionEnter(ref) {
 }  // Handler for Collision with a Bumper 
 
 /** ------------------------------------------------------------------------ */
-//    Pipes page component
+//    FlipperGame page component
 /** ------------------------------------------------------------------------ */
-export default function Pipes() {
+export default function FlipperGame() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
+
    const ballRef = useRef(null)
-   let [noPoints, setNoPoints] = useState(0)
+   const [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
    const [bumperForce, setBumperForce] = useState(1.25)
+   const [gameKey, setGameKey] = useState(0)
 
    //* event handler
    function changeBumperForce(event) {
       setBumperForce(event.target.value)
    }  // handleChange() Slider-Components
 
+   //* start / restart game
+   // const [gameKey, setGameKey] = useState(0)
+
    //*
-   // useEffect(() => {
-   //    console.log('Actual bumperForce: ', bumperForce)
-   // }, [noPoints, bumperForce])
+   useEffect(() => {
+      console.log('Actual bumperForce: ', bumperForce)
+   }, [noPoints, bumperForce, gameOver, gameKey])
 
    // 
    return (
@@ -122,7 +127,16 @@ export default function Pipes() {
                            color="success"
                            className='m-1'
                            // disabled={disabled}
-                           onClick={() => { }}>
+                           onClick={() => {
+                              if (gameKey === 0) {
+                                 setGameKey(1)
+                              }
+                              else {
+                                 setGameKey(0)
+                              }
+                              setGameOver(false)
+                              setNoPoints(0)
+                           }}>
                            New Game
                            {/* {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />} */}
                         </Button>
@@ -193,6 +207,7 @@ export default function Pipes() {
 
                      {/* <Physics gravity={[0, -9.81, 0]} > debug */}
                      <Physics
+                        key={gameKey}
                         gravity={[0, -9.81, 0]}
                         timeStep="vary"
                         interpolate
@@ -202,7 +217,6 @@ export default function Pipes() {
                      >
 
                         {/* <LightSweep /> */}
-
                         <ArcadeIntro>
                            <mesh>
                               <Text
@@ -219,11 +233,11 @@ export default function Pipes() {
                            <Playfield />
                            <Walls />
 
-                           <Flipper position={[-2.25, 0.8, 5.8]} side="left" />
-                           <Flipper position={[2.25, 0.8, 5.8]} side="right" />
+                           <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
+                           <Flipper position={[2.25, 0.9, 5.8]} side="right" />
 
                            <Ball ref={ballRef} position={[3.5, 0.35, 5]}
-                              onOut={(e) => { setGameOver(true) }}
+                              onOut={() => { setGameOver(true) }}
                            />
 
                            {/** Bumper oben im Spielfeld */}
@@ -239,10 +253,10 @@ export default function Pipes() {
                            <Plunger ballRef={ballRef} x={3.5} />
 
                            {/** Texte oberhalb der Spielfläche */}
-                           {!gameOver &&
+                           {( !gameOver ) && 
                               <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
                            }
-                           {gameOver &&
+                           { ( gameOver ) &&
                               <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
                            }
 
@@ -274,7 +288,7 @@ export default function Pipes() {
          </main>
       </>
    )
-}  // Pipes()
+}  // FlipperGame()
 
 //*
 function Playfield() {
@@ -336,56 +350,6 @@ function Walls() {
    )
 }  // Walls()
 
-function Bumper({ ballRef, position }) {
-
-   return (
-      <RigidBody
-         type="fixed"
-         colliders={false}
-         position={position}
-         restitution={1}
-         friction={0.05}
-         // onCollision={() => {
-         //    ballRef.current?.setAngvel({ x: -2, y: 0, z: -1 }, true)
-         // }}
-         onCollisionEnter={({ other }) => {
-            const ball = other.rigidBody
-
-            if (!ball) return
-
-            // Direction from bumper to ball
-            const ballPos = ball.translation()
-            const dx = ballPos.x - position[0]
-            const dz = ballPos.z - position[2]
-            const length = Math.sqrt(dx * dx + dz * dz) || 1
-
-            const force = 3
-
-            // Radial outward impulse
-            ball.applyImpulse(
-               { x: (dx / length) * force, y: 0, z: (dz / length) * force },
-               true
-            )
-
-            // Add spin based on direction
-            ball.applyTorqueImpulse(
-               { x: -dz * 2, y: 0, z: dx * 2 },
-               true
-            )
-         }}
-      >
-
-         <BallCollider args={[0.65]} />
-         {/* <CuboidCollider args={[0.35, 0.35, 0.35]} /> */}
-
-         <mesh castShadow>
-            <sphereGeometry args={[0.75, 64, 64]} />
-            <meshStandardMaterial color={red[900]} metalness={0.95} roughness={0.45} />
-         </mesh>
-      </RigidBody>
-   )
-}  // Bumper()
-
 function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoints = 10, bumperForce = 0.9 }) {
 
    const meshRef = useRef()
@@ -429,7 +393,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
-               ball.applyTorqueImpulse({ x: -dz * 3, y: 0, z: dx * 3 }, true)
+               ball.applyTorqueImpulse({ x: -dz * 3, y: -0.05, z: dx * 3 }, true)
 
                // ---- VISUAL FLASH ----
                flash.current = 1
@@ -438,7 +402,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                setNoPoints(noPoints + bumpPoints)
             }}
          >
-            <BallCollider args={[0.65]} />
+            <BallCollider args={[0.55]} />
 
             <mesh ref={meshRef} castShadow>
                <sphereGeometry args={[0.75, 64, 64]} />
@@ -487,10 +451,10 @@ function Flipper({ position, side = "left", length = 2 }) {
 
    const pivot = useRef()
    const flipper = useRef()
+   const active = useRef(false)
 
    const dir = side === "left" ? 1 : -1
    const key = side === "left" ? "ArrowLeft" : "ArrowRight"
-   const active = useRef(false)
 
    // Create hinge joint
    const joint = useRevoluteJoint(
@@ -532,21 +496,22 @@ function Flipper({ position, side = "left", length = 2 }) {
    useFrame(() => {
       if (!joint.current) return
 
-      const restAngle = dir * -0.3
-      const activeAngle = dir * 0.5
+      
+      const activeAngle = dir * 0.75
+const restAngle = dir * -0.25
 
       if (active.current) {
          // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
          joint.current.configureMotorPosition(
             activeAngle,
-            3000,   // stiffness, 3k - 4k
-            10     // damping
+            4000,   // stiffness, 3k - 4k
+            50      // damping
          )
       } else {
          joint.current.configureMotorPosition(
             restAngle,
             500,
-            10
+            50
          )
       }
    })  // useFrame()
@@ -576,11 +541,11 @@ function Flipper({ position, side = "left", length = 2 }) {
                {/** works; capsuleGeometry, extrudeGeometry does not */}
                {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
 
-               <boxGeometry args={[length, 0.8, 0.2]} />
+               <boxGeometry args={[length, 0.95, 0.2, 32, 32, 32]} />
                {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
                {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
 
-               <meshStandardMaterial color='orange' metalness={0.85} roughness={0.35} />
+               <meshStandardMaterial color='orange' metalness={0.95} roughness={0.45} />
 
                {/** LEFT == 1, RIGHT == -1 */}
                {dir === 1 &&
@@ -613,7 +578,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       setTimeout(() => {
          ref.current?.setLinvel({ x: 0, y: 0, z: 0 }, true)
          ref.current?.setAngvel({ x: 0, y: 0, z: 0 }, true)
-      }, 100)
+      }, 1000)
    }, [ref])
 
    // Position des Balles, um Game Over festzustellen:
@@ -800,6 +765,8 @@ function ScorePopup({ position, color = 'darkred', value }) {
             fontSize={1.5}
             anchorX="center"
             anchorY="middle"
+            outlineWidth={0.05}
+            outlineColor="black"
          >
             {value}
             <meshStandardMaterial
@@ -914,7 +881,7 @@ function HalvedSphere({ radius = 0.55, position = [0, 0.15, 0], rotation = [0, 0
                ]}
             />
             <meshStandardMaterial color={grey[100]} metalness={0.95} roughness={0.45} side={2} />
-            <pointLight color="white" intensity={0.5} distance={10} decay={0} />
+            <pointLight color="white" intensity={0.25} distance={10} decay={0} />
          </mesh>
       </RigidBody>
    )

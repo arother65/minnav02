@@ -1,5 +1,5 @@
 /** 
- *  Stand: 08.01.2026
+ *  Stand: 14.02.2026
  * 
  *  ? ThemeProvider, Layout-file (innerhalb von BrowserRouter) verwenden für alle "children" = verwendete components
 */
@@ -35,7 +35,7 @@ import LegoTestground from './pages/LegoTestground'
 import Mario3D from './pages/Mario3D'
 import NodeBox from './pages/NodeBox'
 import Colliders from './pages/Colliders'
-import Pipes    from './pages/Pipes'
+import FlipperGame    from './pages/FlipperGame'
 
 import About from './pages/About'
 import NotFound404 from './pages/404'
@@ -73,7 +73,7 @@ export default function AppRouter() {
         <Route path="/Puzzle3D" element={<Puzzle3D />} />
         <Route path="/NodeBox" element={<NodeBox />} />
         <Route path="/Colliders" element={<Colliders />} />
-        <Route path="/Pipes" element={<Pipes />} />
+        <Route path="/FlipperGame" element={<FlipperGame />} />
 
         <Route path="/about" element={<About />} />
 
