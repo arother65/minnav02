@@ -16,6 +16,7 @@ import { useFrame } from "@react-three/fiber"
 
 import { Text } from "@react-three/drei"
 import { OrbitControls } from "@react-three/drei"
+import { useTexture, useGLTF } from '@react-three/drei'
 // import { Html } from "@react-three/drei"
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
@@ -86,6 +87,12 @@ export default function FlipperGame() {
    useEffect(() => {
       console.log('Actual bumperForce: ', bumperForce)
    }, [noPoints, bumperForce, gameOver, gameKey])
+
+   //* texture and model preloads:
+   useGLTF.preload('/textures/cardboard.png')
+   useGLTF.preload('/textures/wood.jpg')
+   useGLTF.preload('/textures/rust/speckled-rust_albedo.png')
+
 
    // 
    return (
@@ -230,7 +237,7 @@ export default function FlipperGame() {
                               </Text>
                            </mesh>
 
-                           <Playfield />
+                           <Playfield texture={''} />
                            <Walls />
 
                            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
@@ -253,10 +260,10 @@ export default function FlipperGame() {
                            <Plunger ballRef={ballRef} x={3.5} />
 
                            {/** Texte oberhalb der Spielfläche */}
-                           {( !gameOver ) && 
+                           {(!gameOver) &&
                               <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
                            }
-                           { ( gameOver ) &&
+                           {(gameOver) &&
                               <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
                            }
 
@@ -278,7 +285,6 @@ export default function FlipperGame() {
                            <HalvedSphere position={[-3.35, -0.75, -5.5]} rotation={[0, 0, 0]} />
 
                         </ArcadeIntro>
-
                      </Physics>
 
                      <OrbitControls />
@@ -291,7 +297,13 @@ export default function FlipperGame() {
 }  // FlipperGame()
 
 //*
-function Playfield() {
+function Playfield({ texture = 'none' }) {
+
+   // let textureCardboard = useTexture('/textures/cardboard.png')
+   // let textureWood = useTexture('/textures/wood.jpg')
+
+   let textureRust = useTexture('/textures/rust/speckled-rust_albedo.png')
+
    return (
       <RigidBody
          type="fixed"
@@ -302,11 +314,11 @@ function Playfield() {
          <CuboidCollider
             args={[4.5, 0.225, 7]}   // half sizes!
             position={[0, -0.4, 0]}
-            restitution={0.8}
+            restitution={0.1}
          />
          <mesh position={[0, -0.4, 0]} receiveShadow >
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color={green[500]} metalness={0.75} roughness={0.85}
+            <meshStandardMaterial color={green[100]} map={textureRust} metalness={0.15} roughness={0.5}
             // emissive="#00ffcc"
             // emissiveIntensity={0.2} 
             />
@@ -352,13 +364,14 @@ function Walls() {
 
 function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoints = 10, bumperForce = 0.9 }) {
 
-   const meshRef = useRef()
+   const bumperBodyRef = useRef()
+   const bumperTopRef = useRef()
    const lightRef = useRef()
    const flash = useRef(0)
 
    // useFrame for flash-effect when a bumper is hit 
    useFrame((_, delta) => {
-      if (!meshRef.current || !lightRef.current) return
+      if (!bumperBodyRef.current || !lightRef.current) return
 
       // Fade flash down over time
       flash.current = Math.max(0, flash.current - delta * 4)
@@ -366,7 +379,8 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
       const intensity = flash.current
 
       // Emissive glow
-      meshRef.current.material.emissiveIntensity = intensity * 3
+      bumperBodyRef.current.material.emissiveIntensity = intensity * 3
+      bumperTopRef.current.material.emissiveIntensity = intensity * 3
 
       // Light burst
       lightRef.current.intensity = intensity * 10
@@ -402,18 +416,39 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                setNoPoints(noPoints + bumpPoints)
             }}
          >
-            <BallCollider args={[0.55]} />
+            <BallCollider args={[0.45]} />
 
-            <mesh ref={meshRef} castShadow>
-               <sphereGeometry args={[0.75, 64, 64]} />
-               <meshStandardMaterial
-                  color="red"
-                  emissive="red"
-                  emissiveIntensity={0}
-                  metalness={0.9}
-                  roughness={0.4}
-               />
-            </mesh>
+            <group>
+               {/** Body of the bumper */}
+               <mesh ref={bumperBodyRef} castShadow>
+                  <sphereGeometry args={[0.75, 64, 64]} />
+                  <meshStandardMaterial
+                     color="red"
+                     emissive="red"
+                     emissiveIntensity={0}
+                     metalness={0.9}
+                     roughness={0.4}
+                  />
+               </mesh>
+               {/** Ring on top of the bumper */}
+               <mesh ref={bumperTopRef} position={[0, 0.65, 0]} rotation={[1.55, 0, 0]} castShadow>
+                  <torusGeometry
+                     args={[
+                        0.45, // INNER ring radius
+                        0.15, // OUTER tube radius = metal thickness
+                        32,   // radial segments (low = sharp edge)
+                        32,   // tubular segments
+                     ]}
+                  />
+                  <meshStandardMaterial
+                     color="orange"
+                     emissive="orange"
+                     emissiveIntensity={0}
+                     metalness={0.9}
+                     roughness={0.4}
+                  />
+               </mesh>
+            </group>
 
             {/* Flash Light */}
             <pointLight
@@ -423,7 +458,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                distance={4}
                decay={2}
             />
-            <pointLight color="green" intensity={0.95} distance={5} decay={0} />
+            {/* <pointLight color="green" intensity={0.95} distance={5} decay={0} /> */}
          </RigidBody>
          {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
       </>
@@ -496,9 +531,9 @@ function Flipper({ position, side = "left", length = 2 }) {
    useFrame(() => {
       if (!joint.current) return
 
-      
+
       const activeAngle = dir * 0.75
-const restAngle = dir * -0.25
+      const restAngle = dir * -0.25
 
       if (active.current) {
          // joint.current.configureMotorPosition(targetAngle, stiffness, damping)
