@@ -24,6 +24,10 @@ import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } fr
 import { useNavigate } from 'react-router-dom'
 import { AppBar, ButtonGroup, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
    from '@mui/material'
+import { Fab, Menu, MenuItem } from "@mui/material"   
+// import Fab from '@mui/material/Fab'
+
+import AddIcon from '@mui/icons-material/Add'
 import HomeIcon from '@mui/icons-material/Home'
 
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
@@ -81,9 +85,6 @@ export default function FlipperGame() {
       setBumperForce(event.target.value)
    }  // handleChange() Slider-Components
 
-   //* start / restart game
-   // const [gameKey, setGameKey] = useState(0)
-
    //*
    useEffect(() => {
       console.log('Actual bumperForce: ', bumperForce)
@@ -93,6 +94,11 @@ export default function FlipperGame() {
    useGLTF.preload('/textures/cardboard.png')
    useGLTF.preload('/textures/wood.jpg')
    useGLTF.preload('/textures/rust/speckled-rust_albedo.png')
+
+   // FAB-button with menu
+  const [anchorEl, setAnchorEl] = useState(null)
+  const handleClick = (event) => { setAnchorEl(event.currentTarget) }
+  const handleClose = () => { setAnchorEl(null) }
 
    // 
    return (
@@ -158,7 +164,7 @@ export default function FlipperGame() {
                      </Typography>
                   </Card>
 
-                  {/** Switches / Slider for restitution on Bumpers */}
+                  {/** Switches / Slider for restitution on Bumpers, Textures */}
                   <Card className='rounded shadow'>
                      <div className="row m-3 border border-info rounded">
                         <h6>Adjust FORCE of bumpers: </h6>
@@ -183,24 +189,45 @@ export default function FlipperGame() {
                            <Button id='idBtnRust' variant='contained'
                               onClick={() => {
                                  setTexture('Rust')
-                              }} disabled>
+                              }}>
                               Rust
                            </Button>
                            <Button id='idBtnWood' variant='contained'
                               onClick={() => {
                                  setTexture('Wood')
                               }}
-                              disabled>
+                           >
                               Wood
                            </Button>
                            <Button id='idBtnCardBoard' variant='contained'
                               onClick={() => {
                                  setTexture('Cardboard')
                               }}
-                              disabled>
+                           >
                               Cardboard
                            </Button>
                         </ButtonGroup>
+
+                        <Fab color="primary" aria-label="add"  onClick={handleClick}>
+                           <AddIcon />
+                        </Fab>
+                        <Menu
+                           anchorEl={anchorEl}
+                           open={Boolean(anchorEl)}
+                           onClose={handleClose}
+                           anchorOrigin={{
+                              vertical: "top",
+                              horizontal: "right",
+                           }}
+                           transformOrigin={{
+                              vertical: "bottom",
+                              horizontal: "right",
+                           }}
+                        >
+                           <MenuItem onClick={handleClose}>Option 1</MenuItem>
+                           <MenuItem onClick={handleClose}>Option 2</MenuItem>
+                           <MenuItem onClick={handleClose}>Option 3</MenuItem>
+                        </Menu>
                      </div>
                   </Card>
                </Box>
@@ -223,7 +250,7 @@ export default function FlipperGame() {
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
-                     {/* <Physics gravity={[0, -9.81, 0]} > debug */}
+                     {/* <Physics */}
                      <Physics
                         key={gameKey}
                         gravity={[0, -9.81, 0]}
@@ -232,6 +259,7 @@ export default function FlipperGame() {
                         colliders={false}
                         solverIterations={30}  // Low solver iterations = soft joints = slow response.
                         maxVelocityIterations={20}
+                     // debug
                      >
 
                         {/* <LightSweep /> */}
@@ -254,9 +282,7 @@ export default function FlipperGame() {
                            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
                            <Flipper position={[2.25, 0.9, 5.8]} side="right" />
 
-                           <Ball ref={ballRef} position={[3.5, 0.3, 5]}
-                              onOut={() => { setGameOver(true) }}
-                           />
+                           <Ball ref={ballRef} position={[3.5, 0.3, 5]} onOut={() => { setGameOver(true) }} />
 
                            {/** Bumper oben im Spielfeld */}
                            <BumperWithLight position={[0, 0.65, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
@@ -305,20 +331,23 @@ export default function FlipperGame() {
 function Playfield({ texture = '' }) {
 
    let meshTexture = null
+   let meshTextureRust = useTexture('/textures/rust/speckled-rust_albedo.png')
+   let meshTextureWood = useTexture('/textures/wood.jpg')
+   let meshTextureCardboard = useTexture('/textures/cardboard.png')
 
-   // switch (texture) {
-   //    case 'Rust':
-   //       meshTexture = useTexture('/textures/rust/speckled-rust_albedo.png')
-   //       break;
-   //    case 'Wood':
-   //       meshTexture = useTexture('/textures/wood.jpg')
-   //       break;
-   //    case 'Cardboard':
-   //       meshTexture = useTexture('/textures/cardboard.png')
-   //       break;
-   //    default:
-   //       break;
-   // }
+   switch (texture) {
+      case 'Rust':
+         meshTexture = meshTextureRust
+         break;
+      case 'Wood':
+         meshTexture = meshTextureWood
+         break;
+      case 'Cardboard':
+         meshTexture = meshTextureCardboard
+         break;
+      default:
+         break;
+   }
 
    // useEffect(() => { },
    //    [meshTexture])
@@ -871,6 +900,7 @@ function ArcadeIntro({ children }) {
 
          // Tiny tilt for arcade feel
          group.current.rotation.x = 0.2 * (1 - eased)
+
       } else {
          // Bounce settle
          const bounce = Math.sin((t - duration) * 12) * 0.05 * Math.exp(-(t - duration) * 3)
@@ -931,7 +961,7 @@ function HalvedSphere({
 }) {
 
    const rigidRef = useRef()
-   
+
    // useEffect(() => {
    //    const timer = setTimeout(() => {
    //       if (rigidRef.current) {
