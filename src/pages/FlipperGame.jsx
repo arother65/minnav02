@@ -9,23 +9,18 @@
 /** ------------------------------------------------------------------------ */
 
 // import * as THREE from 'three'
-import { useState, useRef, useEffect, forwardRef } from "react"
+import { useState, useRef, useEffect, useMemo, forwardRef } from "react"
 import * as THREE from "three"
-import { Canvas } from "@react-three/fiber"
-import { useFrame } from "@react-three/fiber"
+import { Canvas, useFrame } from "@react-three/fiber"
 
-import { Text } from "@react-three/drei"
-import { OrbitControls } from "@react-three/drei"
-import { useTexture, useGLTF } from '@react-three/drei'
+import { OrbitControls, Text, useTexture, useGLTF } from "@react-three/drei"
 // import { Html } from "@react-three/drei"
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, ButtonGroup, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
-   from '@mui/material'
+import { AppBar, ButtonGroup, IconButton, Toolbar, Tooltip, Box, Card, Button, Slider, Switch, Typography } from '@mui/material'
 import { Fab, Menu, MenuItem } from "@mui/material"
-// import Fab from '@mui/material/Fab'
 
 import AddIcon from '@mui/icons-material/Add'
 import HomeIcon from '@mui/icons-material/Home'
@@ -36,15 +31,11 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 //    Imports for customer components
 /** ------------------------------------------------------------------------ */
 // import "../components/styles.css"
-
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
-// import PlanetWithHole from '../components/PlanetWithHole'
-// import DodecahedronGroup from '../components/DodecahedronGroup'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
 /** ------------------------------------------------------------------------ */
-
 
 /** ------------------------------------------------------------------------ */
 //    Local components / functions
@@ -105,8 +96,7 @@ export default function FlipperGame() {
    //*
    useEffect((e) => {
       console.log('Actual bumperForce: ', bumperForce)
-      // setGameOver(e.current.value)
-
+      // setGameOver(e.current.value 
    }, [noPoints, bumperForce, gameOver, gameKey, texture, arcadeIntro])
 
    //* texture and model preloads:
@@ -295,6 +285,16 @@ export default function FlipperGame() {
 //*
 function FlipperScene({ stateData }) {
 
+   const trackPoints = [
+      new THREE.Vector3(3.45, 0.05, 4.995),    // entry
+      new THREE.Vector3(3.45, 0.15, 4.5),      // climb
+      new THREE.Vector3(3, 0.45, -5),     // peak
+      new THREE.Vector3(0, 0.15, -6.5),    // drop
+      // new THREE.Vector3(0, 5, -7),    // curve right
+      // new THREE.Vector3(-2, 5, -8),   // curve left
+      // new THREE.Vector3(-3, 3, -7.5)     // exit
+   ]
+
    if (stateData.arcadeIntro) {
       return (
          <ArcadeIntro>
@@ -376,9 +376,6 @@ function FlipperScene({ stateData }) {
 
             <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setGameOver(true) }} />
 
-            {/** DodecahedronGroup */}
-            {/* <DodecahedronGroup />  */}
-
             {/** Bumper oben im Spielfeld */}
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
@@ -395,6 +392,9 @@ function FlipperScene({ stateData }) {
 
             <ShooterLane x={3.5} />
             <Plunger ballRef={stateData.ballRef} x={3.5} />
+
+            {/**  */}
+            <RollerCoasterTrack points={trackPoints}/>
 
             {/** Texte oberhalb der Spielfläche */}
             {
@@ -888,20 +888,17 @@ function Plunger({ ballRef, x = 2.5 }) {
       const up = (e) => {
          if (e.code === "ArrowDown") {
             pulling.current = false
-
             if (!ballRef.current) return
-
-            // const launchPower = 10 + power.current * 25 // zustark
 
             // Forward impulse
             ballRef.current.applyImpulse(
-               { x: -0.5, y: 0, z: -0.5 },
+               { x: -1, y: 0, z: -3 },
                true
             )
 
             // Add proportional topspin
             ballRef.current.applyTorqueImpulse(
-               { x: -2.5, y: 0, z: -1.5 },
+               { x: -0.5, y: 0, z: -0.5 },
                true
             )
             power.current = 0
@@ -931,7 +928,6 @@ function Plunger({ ballRef, x = 2.5 }) {
       </RigidBody>
    )
 }  // Plunger()
-
 
 /** ------------------------------------------------------------------------ */
 //* experimental 
@@ -1215,3 +1211,76 @@ function Hole({ position = [0, 0, 0] }) {
       </RigidBody>
    )
 }  // Hole for the playfield
+
+//*
+function RollerCoasterTrack({
+   points = [],
+   segments = 200,
+   width = 2
+}) {
+
+   const curveData = useMemo(() => {
+      const curve = new THREE.CatmullRomCurve3(points)
+      const divisions = segments
+
+      const data = []
+
+      for (let i = 0; i < divisions; i++) {
+         const t1 = i / divisions
+         const t2 = (i + 1) / divisions
+
+         const p1 = curve.getPoint(t1)
+         const p2 = curve.getPoint(t2)
+
+         const midpoint = new THREE.Vector3()
+            .addVectors(p1, p2)
+            .multiplyScalar(0.5)
+
+         const direction = new THREE.Vector3()
+            .subVectors(p2, p1)
+
+         const length = direction.length()
+
+         const quaternion = new THREE.Quaternion()
+         quaternion.setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0),
+            direction.clone().normalize()
+         )
+
+         data.push({
+            position: midpoint,
+            quaternion,
+            length
+         })
+      }
+
+      return data
+   }, [points, segments])
+
+   return (
+      <RigidBody type="fixed" colliders={false}>
+         {curveData.map((segment, i) => (
+            <group key={i}>
+               <mesh
+                  position={segment.position}
+                  quaternion={segment.quaternion}
+               >
+                  <boxGeometry args={[width, segment.length, 0.3]} />
+                  <meshStandardMaterial
+                     color="orange"
+                     metalness={0.85}
+                     roughness={0.325}
+                  />
+               </mesh>
+
+               <CuboidCollider
+                  args={[width / 2, segment.length / 2, 0.15]}
+                  position={segment.position}
+                  quaternion={segment.quaternion}
+                  friction={0.15}
+               />
+            </group>
+         ))}
+      </RigidBody>
+   )
+}
