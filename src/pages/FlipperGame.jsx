@@ -285,13 +285,18 @@ export default function FlipperGame() {
                            <Ball ref={ballRef} position={[3.5, 0.3, 5]} onOut={() => { setGameOver(true) }} />
 
                            {/** Bumper oben im Spielfeld */}
-                           <BumperWithLight position={[0, 0.65, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2, 0.65, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0.25, 0.75, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2, 0.75, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           
+                           <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+                           <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+                           <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                            {/** Bumper weiter vorne */}
-                           <BumperWithLight position={[3, 0.65, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[0, 0.65, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2, 0.65, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[3.75, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0.25, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0.25, 0.75, 2]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2.5, 0.75, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                            <ShooterLane x={3.5} />
                            <Plunger ballRef={ballRef} x={3.5} />
@@ -310,10 +315,7 @@ export default function FlipperGame() {
                            <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
                            <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
 
-                           {/** Abweiser hinten */}
-                           <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
-                           <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
-                           <BumperWithLight position={[2.95, 0.65, -4.25]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+
 
                         </ArcadeIntro>
                      </Physics>
