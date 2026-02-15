@@ -38,9 +38,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 // import "../components/styles.css"
 
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
-import PlanetWithHole from '../components/PlanetWithHole'
-import DodecahedronGroup from '../components/DodecahedronGroup'
-import { redirect } from "react-router"
+// import PlanetWithHole from '../components/PlanetWithHole'
+// import DodecahedronGroup from '../components/DodecahedronGroup'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
@@ -87,8 +86,10 @@ export default function FlipperGame() {
    }  // handleChange() Slider-Components
 
    //*
-   useEffect(() => {
+   useEffect((e) => {
       console.log('Actual bumperForce: ', bumperForce)
+      // setGameOver(e.current.value)
+
    }, [noPoints, bumperForce, gameOver, gameKey, texture])
 
    //* texture and model preloads:
@@ -299,8 +300,8 @@ export default function FlipperGame() {
                            {/** Bumper weiter vorne */}
                            <BumperWithLight position={[3.75, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
                            <BumperWithLight position={[0.25, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[0.25, 0.75, 2]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2.5, 0.75, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0.25, 0.75, 1.75]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                            <ShooterLane x={3.5} />
                            <Plunger ballRef={ballRef} x={3.5} />
@@ -363,21 +364,27 @@ function Playfield({ texture = '' }) {
          colliders={false}
       >
          {/** Decoration on the lower edge of the playfield */}
-         <mesh position={[-3, 3.5, -7]} receiveShadow>
-            <dodecahedronGeometry args={[0.95]} />
-            <meshStandardMaterial metalness={0} roughness={0.15} color={red[500]} opacity={0.75} transparent />
-            <pointLight color="red" intensity={0.95} distance={5} decay={0} />
-         </mesh>
-         <mesh position={[0, 3.5, -7]} receiveShadow>
-            <dodecahedronGeometry args={[0.95]} />
-            <meshStandardMaterial metalness={0} roughness={0.15} color={yellow[500]} opacity={0.75} transparent />
-            <pointLight color="yellow" intensity={0.95} distance={5} decay={0} />
-         </mesh>
-         <mesh position={[3, 3.5, -7]} receiveShadow>
-            <dodecahedronGeometry args={[0.95]} />
-            <meshStandardMaterial metalness={0} roughness={0.15} color={green[500]} opacity={0.75} transparent />
-            <pointLight color="green" intensity={0.95} distance={5} decay={0} />
-         </mesh>
+         <group name='grpDecoTop'>
+            <mesh position={[-3, 3.5, -7]} receiveShadow>
+               <dodecahedronGeometry args={[0.95]} />
+               <meshStandardMaterial metalness={0} roughness={0.15} color={red[500]} emissive="red" opacity={0.75} transparent
+                  emissiveIntensity={0}
+               />
+               <pointLight color="red" intensity={0} distance={4} decay={0} />
+            </mesh>
+            <mesh position={[0, 3.5, -7]} receiveShadow>
+               <dodecahedronGeometry args={[0.95]} />
+               <meshStandardMaterial metalness={0} roughness={0.15} color={yellow[500]} emissive="yellow" opacity={0.75} transparent 
+                  emissiveIntensity={0} />
+               <pointLight color="yellow" intensity={0} distance={4} decay={0} />
+            </mesh>
+            <mesh position={[3, 3.5, -7]} receiveShadow>
+               <dodecahedronGeometry args={[0.95]} />
+               <meshStandardMaterial metalness={0} roughness={0.15} color={green[500]} emissive="green" opacity={0.75} transparent 
+                  emissiveIntensity={0} />
+               <pointLight color="green" intensity={0} distance={4} decay={0} />
+            </mesh>
+         </group>
 
          {/* Floor */}
          <CuboidCollider
@@ -393,6 +400,7 @@ function Playfield({ texture = '' }) {
                metalness={meshTexture ? 0.15 : 0.5}
                roughness={meshTexture ? 0.45 : 0.45}
             />
+            <Hole position={[-2.25, 0.15, 4]} />
          </mesh>
 
          {/** Ceiling / Lid on playfield */}
@@ -486,6 +494,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                // ---- just count value for hit / collisions ---- 
                setNoPoints(noPoints + bumpPoints)
             }}
+            ccd
          >
             <BallCollider args={[0.65]} />
 
@@ -634,12 +643,13 @@ function Flipper({ position, side = "left", length = 2 }) {
             colliders="cuboid"
             restitution={0.85}
             friction={0.1}
-            angularDamping={2}
-            linearDamping={1}
+            angularDamping={1}
+            linearDamping={0.5}
             // enabledTranslations={[false, false, false]}  {/** creates strange errors */}
             enabledRotations={[false, true, false]}
             canSleep={false}
-            mass={1}               // realistic inertia
+            mass={2}               // realistic inertia
+         // ccd
          >
             <mesh castShadow>
                {/** works; capsuleGeometry, extrudeGeometry does not */}
@@ -721,7 +731,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
 
          <mesh castShadow >
             <sphereGeometry args={[0.35, 64, 64]} />
-            <meshStandardMaterial color={green[400]} metalness={0.95} roughness={0.15} />
+            <meshStandardMaterial color={green[500]} metalness={0.95} roughness={0.15} />
          </mesh>
       </RigidBody>
    )
@@ -896,6 +906,7 @@ function ArcadeIntro({ children }) {
    const time = useRef(0)
 
    useFrame((_, delta) => {
+
       if (!group.current) return
 
       time.current += delta
@@ -904,7 +915,7 @@ function ArcadeIntro({ children }) {
 
       // Drop from above
       const dropHeight = 6
-      const duration = 1.2
+      const duration = 1.75
 
       if (t < duration) {
          const progress = t / duration
@@ -919,6 +930,11 @@ function ArcadeIntro({ children }) {
 
          // Tiny tilt for arcade feel
          group.current.rotation.x = 0.2 * (1 - eased)
+
+         // group.current.material.emissiveIntensity = 3
+         // let actGrp = group.current.getObjectByName('grpDecoTop')
+         // actGrp.children[0].material.emissiveIntensity = 3
+         // actGrp.children[0].material.intensity = 1.5
 
       } else {
          // Bounce settle
@@ -1048,3 +1064,64 @@ function Tube({ position = [0, 0.35, 0], rotation = [0, 0, 0] }) {
       </RigidBody>
    )
 }  // Tube()
+
+//*
+function Hole({ position = [0, 0, 0] }) {
+
+   const ballRef = useRef(null)
+   const timeoutRef = useRef(null)
+
+   const handleEnter = (payload) => {
+
+      const body = payload.rigidBodyObject
+      if (!body || timeoutRef.current) return
+
+      ballRef.current = body
+
+      // Freeze ball
+      body.setLinvel({ x: 0, y: 0, z: 0 }, true)
+      body.setAngvel({ x: 0, y: 0, z: 0 }, true)
+      body.setGravityScale(0, true)
+
+      // Hold for 2 seconds
+      timeoutRef.current = setTimeout(() => {
+         if (!ballRef.current) return
+
+         // Re-enable gravity
+         ballRef.current.setGravityScale(1, true)
+
+         // Apply impulse upward + forward
+         ballRef.current.applyImpulse(
+            { x: 0, y: 5, z: -3 },
+            true
+         )
+
+         // Apply torque for spin
+         ballRef.current.applyTorqueImpulse(
+            { x: 2, y: 0, z: 0 },
+            true
+         )
+
+         timeoutRef.current = null
+         ballRef.current = null
+      }, 2000)
+   }
+
+   return (
+      <RigidBody type="fixed" position={position} colliders={false}>
+         {/* Visual hole */}
+         <mesh>
+            <cylinderGeometry args={[0.6, 0.6, 0.2, 32]} />
+            <meshStandardMaterial color="orange" />
+         </mesh>
+
+         {/* Sensor area */}
+         <CuboidCollider
+            args={[0.6, 0.2, 0.6]}
+            position={position}
+            sensor
+            onIntersectionEnter={handleEnter}
+         />
+      </RigidBody>
+   )
+}  // Hole for the playfield
