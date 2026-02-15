@@ -22,7 +22,7 @@ import { useTexture, useGLTF } from '@react-three/drei'
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
 import { useNavigate } from 'react-router-dom'
-import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
+import { AppBar, ButtonGroup, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
    from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
@@ -72,8 +72,9 @@ export default function FlipperGame() {
    const ballRef = useRef(null)
    const [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
-   const [bumperForce, setBumperForce] = useState(1.25)
+   const [bumperForce, setBumperForce] = useState(1.5)
    const [gameKey, setGameKey] = useState(0)
+   const [texture, setTexture] = useState('')
 
    //* event handler
    function changeBumperForce(event) {
@@ -86,13 +87,12 @@ export default function FlipperGame() {
    //*
    useEffect(() => {
       console.log('Actual bumperForce: ', bumperForce)
-   }, [noPoints, bumperForce, gameOver, gameKey])
+   }, [noPoints, bumperForce, gameOver, gameKey, texture])
 
    //* texture and model preloads:
    useGLTF.preload('/textures/cardboard.png')
    useGLTF.preload('/textures/wood.jpg')
    useGLTF.preload('/textures/rust/speckled-rust_albedo.png')
-
 
    // 
    return (
@@ -160,36 +160,47 @@ export default function FlipperGame() {
 
                   {/** Switches / Slider for restitution on Bumpers */}
                   <Card className='rounded shadow'>
-                     {/** SWITCH for using Ball's Index */}
-                     {/* <FormGroup>
-                        <FormControlLabel control={
-                           <Switch
-                              onChange={(e) => {
-                                 if (e.target.checked === true) {
-                                    // setIndexUsed(true)
-                                 }
-                                 else {
-                                    // setIndexUsed(false)
-                                 }
-                              }} />
-                        }
-                           label="With Index" />
-                     </FormGroup> */}
-
                      <div className="row m-3 border border-info rounded">
                         <h6>Adjust FORCE of bumpers: </h6>
                         <Slider
                            name='idBumperForce'
                            aria-label="Slider for force"
-                           defaultValue={1.25}
+                           defaultValue={1.5}
                            valueLabelDisplay="auto"
                            step={0.05}
-                           min={0.85}
-                           max={3}
+                           min={0.95}
+                           max={2}
                            onChange={changeBumperForce}
                            value={bumperForce}
                            disabled={false}
                         />
+                     </div>
+
+                     {/** BUTTONGROUP for changing the playfield's texture */}
+                     <div className="row m-1 border border-info rounded">
+                        <h6>Adjust Texture: </h6>
+                        <ButtonGroup variant="contained" aria-label="Basic button group">
+                           <Button id='idBtnRust' variant='contained'
+                              onClick={() => {
+                                 setTexture('Rust')
+                              }} disabled>
+                              Rust
+                           </Button>
+                           <Button id='idBtnWood' variant='contained'
+                              onClick={() => {
+                                 setTexture('Wood')
+                              }}
+                              disabled>
+                              Wood
+                           </Button>
+                           <Button id='idBtnCardBoard' variant='contained'
+                              onClick={() => {
+                                 setTexture('Cardboard')
+                              }}
+                              disabled>
+                              Cardboard
+                           </Button>
+                        </ButtonGroup>
                      </div>
                   </Card>
                </Box>
@@ -237,24 +248,24 @@ export default function FlipperGame() {
                               </Text>
                            </mesh>
 
-                           <Playfield texture={''} />
+                           <Playfield texture={texture} />
                            <Walls />
 
                            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
                            <Flipper position={[2.25, 0.9, 5.8]} side="right" />
 
-                           <Ball ref={ballRef} position={[3.5, 0.35, 5]}
+                           <Ball ref={ballRef} position={[3.5, 0.3, 5]}
                               onOut={() => { setGameOver(true) }}
                            />
 
                            {/** Bumper oben im Spielfeld */}
-                           <BumperWithLight position={[0, 0.25, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2, 0.25, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0, 0.65, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2, 0.65, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                            {/** Bumper weiter vorne */}
-                           <BumperWithLight position={[3, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[0, 0.35, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2, 0.35, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[3, 0.65, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[0, 0.65, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
+                           <BumperWithLight position={[-2, 0.65, 0]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                            <ShooterLane x={3.5} />
                            <Plunger ballRef={ballRef} x={3.5} />
@@ -268,21 +279,15 @@ export default function FlipperGame() {
                            }
 
                            {/** Abweiser unten links */}
-                           {/* <RigidBody type="fixed" colliders='hull' restitution={0.5}>
-                              <mesh position={[-3.15, 5, 4.5]} rotation={[0, -0.75, 0]}>
-                                 <ringGeometry args={[0.25, 0.8, 64]} />
-                                 <meshStandardMaterial
-                                    color="red"
-                                    metalness={0.95}
-                                    roughness={0.45}
-                                    side={THREE.DoubleSide}
-                                 />
-                              </mesh>
-                           </RigidBody> */}
+                           <HalvedSphere position={[-3.75, 0.85, 2.5]} rotation={[1.55, 0, 1]} />
+                           <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
+                           <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
+                           <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
 
-                           <HalvedSphere position={[-3.35, 0.15, 4]} rotation={[0, 0, 0]} />
-                           <HalvedSphere position={[3, -0.65, -5]} rotation={[0, 0, 0]} />
-                           <HalvedSphere position={[-3.35, -0.75, -5.5]} rotation={[0, 0, 0]} />
+                           {/** Abweiser hinten */}
+                           <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+                           <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+                           <BumperWithLight position={[2.95, 0.65, -4.25]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
 
                         </ArcadeIntro>
                      </Physics>
@@ -297,41 +302,57 @@ export default function FlipperGame() {
 }  // FlipperGame()
 
 //*
-function Playfield({ texture = 'none' }) {
+function Playfield({ texture = '' }) {
 
-   // let textureCardboard = useTexture('/textures/cardboard.png')
-   // let textureWood = useTexture('/textures/wood.jpg')
+   let meshTexture = null
 
-   let textureRust = useTexture('/textures/rust/speckled-rust_albedo.png')
+   // switch (texture) {
+   //    case 'Rust':
+   //       meshTexture = useTexture('/textures/rust/speckled-rust_albedo.png')
+   //       break;
+   //    case 'Wood':
+   //       meshTexture = useTexture('/textures/wood.jpg')
+   //       break;
+   //    case 'Cardboard':
+   //       meshTexture = useTexture('/textures/cardboard.png')
+   //       break;
+   //    default:
+   //       break;
+   // }
+
+   // useEffect(() => { },
+   //    [meshTexture])
 
    return (
       <RigidBody
          type="fixed"
-         rotation={[-0.08, 0, 0]} // slope
+         rotation={[-0.025, 0, 0]} // slope
          colliders={false}
       >
          {/* Floor */}
          <CuboidCollider
-            args={[4.5, 0.225, 7]}   // half sizes!
-            position={[0, -0.4, 0]}
-            restitution={0.1}
+            args={[4.5, 0.2, 7]}   // half sizes!
+            position={[0, 0, 0]}
+            restitution={0.15}
          />
-         <mesh position={[0, -0.4, 0]} receiveShadow >
+         <mesh position={[0, 0, 0]} receiveShadow>
             <boxGeometry args={[9, 0.45, 14]} />
-            <meshStandardMaterial color={green[100]} map={textureRust} metalness={0.15} roughness={0.5}
-            // emissive="#00ffcc"
-            // emissiveIntensity={0.2} 
+            <meshStandardMaterial
+               color={meshTexture ? green[100] : green[200]}
+               map={meshTexture ? meshTexture : null}
+               metalness={meshTexture ? 0.15 : 0.5}
+               roughness={meshTexture ? 0.45 : 0.45}
             />
          </mesh>
 
          {/** Ceiling / Lid on playfield */}
          <CuboidCollider
-            args={[4.5, 0.075, 7]}   // half sizes!
+            args={[4.5, 0.25, 7]}   // half sizes!
             position={[0, 2.5, 0]}
             restitution={0.1}
          />
-         <mesh position={[0, 2.5, 0]} rotation={[0.05, 0, 0]}>
-            <boxGeometry args={[9, 0.15, 14]} />
+         <mesh position={[0, 2.65, 0]} rotation={[0.025, 0, 0]}>
+            <boxGeometry args={[9, 0.5, 14]} />
             <meshStandardMaterial color="lightblue" metalness={0} roughness={0.1} opacity={0.15} transparent />
          </mesh>
       </RigidBody>
@@ -392,7 +413,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
             type="fixed"
             colliders={false}
             position={position}
-            restitution={0.85}
+            restitution={0.95}
             friction={0.05}
             onCollisionEnter={({ other }) => {
                const ball = other.rigidBody
@@ -407,7 +428,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
-               ball.applyTorqueImpulse({ x: -dz * 3, y: -0.05, z: dx * 3 }, true)
+               ball.applyTorqueImpulse({ x: -dz * 10, y: 0, z: dx * 10 }, true)
 
                // ---- VISUAL FLASH ----
                flash.current = 1
@@ -416,7 +437,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                setNoPoints(noPoints + bumpPoints)
             }}
          >
-            <BallCollider args={[0.45]} />
+            <BallCollider args={[0.65]} />
 
             <group>
                {/** Body of the bumper */}
@@ -613,7 +634,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       setTimeout(() => {
          ref.current?.setLinvel({ x: 0, y: 0, z: 0 }, true)
          ref.current?.setAngvel({ x: 0, y: 0, z: 0 }, true)
-      }, 1000)
+      }, 2000)
    }, [ref])
 
    // Position des Balles, um Game Over festzustellen:
@@ -625,7 +646,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       // Playfield bounds (must match your field size)
       const X_LIMIT = 4.5  // x-wert des cuboidCollider für den Ball 
       const Z_LIMIT = 7    // z-wert des cuboidCollider für den Ball
-      const Y_LIMIT = -5   // y-Wert, Ball fell through
+      const Y_LIMIT = -1   // y-Wert, Ball fell through
 
       if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) {
          onOut()
@@ -639,19 +660,20 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
          name='ball'
          type="dynamic"
          colliders={false}
-         restitution={0.85}
-         friction={0.15}
+         restitution={0.75}
+         friction={0.05}
          linearDamping={0.05}
          angularDamping={0.05}
          position={position}
-         mass={4}
+         mass={5}
          ccd  // collision detection 
+      // gravityScale={0.95}  // soll versinken des balls verhindern 
       >
          <BallCollider args={[0.35]} />
 
          <mesh castShadow >
             <sphereGeometry args={[0.35, 64, 64]} />
-            <meshStandardMaterial color={green[500]} metalness={0.95} roughness={0.15} />
+            <meshStandardMaterial color={green[400]} metalness={0.95} roughness={0.15} />
          </mesh>
       </RigidBody>
    )
@@ -667,18 +689,18 @@ function ShooterLane({ x = 2.5 }) {
             type="fixed"
             friction={0.05}
             restitution={0.5}
-            position={[x, 0.15, 5]}
+            position={[x, 0.5, 6]}
             rotation={[-0.15, 0, 0]}
             colliders="cuboid"
          >
             <mesh receiveShadow>
-               <boxGeometry args={[0.9, 0.05, 4]} />
+               <boxGeometry args={[0.75, 0.01, 2]} />
                <meshStandardMaterial color="grey" />
             </mesh>
          </RigidBody>
 
          {/* Left rail */}
-         <RigidBody type="fixed" position={[x - 0.55, 0.4, 6]} colliders="cuboid" restitution={0.5}>
+         <RigidBody type="fixed" position={[x - 0.55, 0.65, 6]} colliders="cuboid" restitution={0.5}>
             <mesh>
                <boxGeometry args={[0.1, 0.8, 2]} />
                <meshStandardMaterial color="lightgrey" />
@@ -686,12 +708,15 @@ function ShooterLane({ x = 2.5 }) {
          </RigidBody>
 
          {/* Right rail */}
-         <RigidBody type="fixed" position={[x + 0.55, 0.4, 6]} colliders="cuboid" restitution={0.5}>
+         <RigidBody type="fixed" position={[x + 0.55, 0.65, 6]} colliders="cuboid" restitution={0.5}>
             <mesh>
                <boxGeometry args={[0.1, 0.8, 2]} />
                <meshStandardMaterial color="lightgrey" />
             </mesh>
          </RigidBody>
+
+         {/** tube in front of lane */}
+         <Tube position={[x, 0.75, 5.5]} rotation={[0, 1.55, 0]} />
       </>
    )
 }  // ShooterLane()
@@ -728,13 +753,13 @@ function Plunger({ ballRef, x = 2.5 }) {
 
             // Forward impulse
             ballRef.current.applyImpulse(
-               { x: 0, y: 0, z: -2 },
+               { x: -0.5, y: 0, z: -0.5 },
                true
             )
 
             // Add proportional topspin
             ballRef.current.applyTorqueImpulse(
-               { x: -2, y: 0, z: -1 },
+               { x: -2.5, y: 0, z: -1.5 },
                true
             )
             power.current = 0
@@ -898,10 +923,27 @@ function LightSweep() {
 }
 
 //*
-function HalvedSphere({ radius = 0.55, position = [0, 0.15, 0], rotation = [0, 0, 0] }) {
+function HalvedSphere({
+   radius = 0.55,
+   position = [0, 0.15, 0],
+   rotation = [0, 0, 0],
+   releaseAfter = 3000 // milliseconds
+}) {
+
+   const rigidRef = useRef()
+   
+   // useEffect(() => {
+   //    const timer = setTimeout(() => {
+   //       if (rigidRef.current) {
+   //          rigidRef.current.setBodyType("dynamic", true)
+   //       }
+   //    }, releaseAfter)
+
+   //    return () => clearTimeout(timer)
+   // }, [releaseAfter])  // so laßen sich die collider verschieben, der Ball wird nicht gefangen
 
    return (
-      <RigidBody type="fixed" colliders='hull' restitution={0.5}>
+      <RigidBody ref={rigidRef} type="fixed" colliders='hull' restitution={0.5}>
 
          <mesh position={position} rotation={rotation}>
             <sphereGeometry
@@ -921,3 +963,39 @@ function HalvedSphere({ radius = 0.55, position = [0, 0.15, 0], rotation = [0, 0
       </RigidBody>
    )
 }  // HalvedSphere()
+
+//*
+function Tube({ position = [0, 0.35, 0], rotation = [0, 0, 0] }) {
+
+   const length = 1  //Breite des Bogens / Länge des Rohres
+   const halfWidth = length / 2.5
+
+   const radius = 1.5;
+   const arc = radius - Math.sqrt(radius * radius - halfWidth * halfWidth);
+
+   const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-length / 2.5, 0, 0),  // x, y, z
+      new THREE.Vector3(0, arc, 0),  // rotation of the arc
+      new THREE.Vector3(length / 2.5, 0, 0)
+   )
+
+
+   // const geometry = new THREE.TubeGeometry(
+   //   curve,
+   //   tubularSegments,
+   //   tubeRadius,
+   //   radialSegments,
+   //   closed
+   // );
+
+   return (
+      <RigidBody type='fixed' position={position} rotation={rotation} colliders='cuboid'>
+         <mesh receiveShadow>
+
+            <tubeGeometry args={[curve, 32, 0.5, 32, true]} />
+            {/* <meshStandardMaterial color="#444" metalness={0.85} roughness={0.45} /> */}
+            <meshStandardMaterial color="red" metalness={0.85} roughness={0.25} />
+         </mesh>
+      </RigidBody>
+   )
+}  // Tube()

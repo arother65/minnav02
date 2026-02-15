@@ -325,7 +325,6 @@ export default function PartsTestground() {
                            />
                         </group> */}
 
-
                         {/* Ground */}
                         {/* <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                            <planeGeometry args={[20, 20]} />
