@@ -15,7 +15,7 @@ import "./styles.css"
 import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/material/colors"
 
 //*
-function Dodecahedron({ time, ...props }) {
+export function Dodecahedron({ time, ...props }) {
 
   const ref = useRef()
 
@@ -42,8 +42,7 @@ function Dodecahedron({ time, ...props }) {
       <mesh>
         <dodecahedronGeometry args={[0.95]} />
 
-        {/* <meshStandardMaterial roughness={0.5} emissive="#404057" color={props.color} /> */}
-        
+        {/* <meshStandardMaterial roughness={0.5} emissive="#404057" color={props.color} /> */}     
         <meshStandardMaterial metalness={0.75} roughness={0.1} color={props.color} opacity={0.85} transparent/>
         
         <Html distanceFactor={10}>

@@ -24,7 +24,7 @@ import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } fr
 import { useNavigate } from 'react-router-dom'
 import { AppBar, ButtonGroup, IconButton, Toolbar, Tooltip, Box, Card, Button, FormGroup, FormControlLabel, Slider, Switch, Typography }
    from '@mui/material'
-import { Fab, Menu, MenuItem } from "@mui/material"   
+import { Fab, Menu, MenuItem } from "@mui/material"
 // import Fab from '@mui/material/Fab'
 
 import AddIcon from '@mui/icons-material/Add'
@@ -39,7 +39,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
 import PlanetWithHole from '../components/PlanetWithHole'
-
+import DodecahedronGroup from '../components/DodecahedronGroup'
+import { redirect } from "react-router"
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
@@ -96,9 +97,9 @@ export default function FlipperGame() {
    useGLTF.preload('/textures/rust/speckled-rust_albedo.png')
 
    // FAB-button with menu
-  const [anchorEl, setAnchorEl] = useState(null)
-  const handleClick = (event) => { setAnchorEl(event.currentTarget) }
-  const handleClose = () => { setAnchorEl(null) }
+   const [anchorEl, setAnchorEl] = useState(null)
+   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
+   const handleClose = () => { setAnchorEl(null) }
 
    // 
    return (
@@ -208,7 +209,7 @@ export default function FlipperGame() {
                            </Button>
                         </ButtonGroup>
 
-                        <Fab color="primary" aria-label="add"  onClick={handleClick}>
+                        <Fab color="primary" aria-label="add" onClick={handleClick}>
                            <AddIcon />
                         </Fab>
                         <Menu
@@ -284,10 +285,13 @@ export default function FlipperGame() {
 
                            <Ball ref={ballRef} position={[3.5, 0.3, 5]} onOut={() => { setGameOver(true) }} />
 
+                           {/** DodecahedronGroup */}
+                           {/* <DodecahedronGroup />  */}
+
                            {/** Bumper oben im Spielfeld */}
                            <BumperWithLight position={[0.25, 0.75, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
                            <BumperWithLight position={[-2, 0.75, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           
+
                            <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
                            <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
                            <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
@@ -314,8 +318,6 @@ export default function FlipperGame() {
                            <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
                            <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
                            <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
-
-
 
                         </ArcadeIntro>
                      </Physics>
@@ -360,6 +362,23 @@ function Playfield({ texture = '' }) {
          rotation={[-0.025, 0, 0]} // slope
          colliders={false}
       >
+         {/** Decoration on the lower edge of the playfield */}
+         <mesh position={[-3, 3.5, -7]} receiveShadow>
+            <dodecahedronGeometry args={[0.95]} />
+            <meshStandardMaterial metalness={0} roughness={0.15} color={red[500]} opacity={0.75} transparent />
+            <pointLight color="red" intensity={0.95} distance={5} decay={0} />
+         </mesh>
+         <mesh position={[0, 3.5, -7]} receiveShadow>
+            <dodecahedronGeometry args={[0.95]} />
+            <meshStandardMaterial metalness={0} roughness={0.15} color={yellow[500]} opacity={0.75} transparent />
+            <pointLight color="yellow" intensity={0.95} distance={5} decay={0} />
+         </mesh>
+         <mesh position={[3, 3.5, -7]} receiveShadow>
+            <dodecahedronGeometry args={[0.95]} />
+            <meshStandardMaterial metalness={0} roughness={0.15} color={green[500]} opacity={0.75} transparent />
+            <pointLight color="green" intensity={0.95} distance={5} decay={0} />
+         </mesh>
+
          {/* Floor */}
          <CuboidCollider
             args={[4.5, 0.2, 7]}   // half sizes!
@@ -384,7 +403,7 @@ function Playfield({ texture = '' }) {
          />
          <mesh position={[0, 2.65, 0]} rotation={[0.025, 0, 0]}>
             <boxGeometry args={[9, 0.5, 14]} />
-            <meshStandardMaterial color="lightblue" metalness={0} roughness={0.1} opacity={0.15} transparent />
+            <meshStandardMaterial color="lightblue" metalness={0} roughness={0.15} opacity={0.15} transparent />
          </mesh>
       </RigidBody>
    )
@@ -510,9 +529,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                distance={4}
                decay={2}
             />
-            {/* <pointLight color="green" intensity={0.95} distance={5} decay={0} /> */}
          </RigidBody>
-         {/* { showPopup && <ScorePopup position={[0, 3, 0]} value={10} onDone={() => { }} /> } */}
       </>
    )
 }  // BumperWithLight
