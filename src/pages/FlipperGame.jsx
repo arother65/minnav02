@@ -79,6 +79,23 @@ export default function FlipperGame() {
    const [bumperForce, setBumperForce] = useState(1.5)
    const [gameKey, setGameKey] = useState(0)
    const [texture, setTexture] = useState('')
+   const [arcadeIntro, setArcadeIntro] = useState(false)
+
+   // object holding all state-variables or constants
+   const stateData = {
+      ballRef: ballRef,
+      noPoints: noPoints,
+      gameOver: gameOver,
+      bumperForce: bumperForce,
+      gameKey: gameKey,
+      texture: texture,
+      arcadeIntro: arcadeIntro,
+      setNoPoints: setNoPoints,
+      setGameOver: setGameOver,
+      setBumperForce: setBumperForce,
+      setGameKey: setGameKey,
+      setTexture: setTexture
+   }  // stateData
 
    //* event handler
    function changeBumperForce(event) {
@@ -90,7 +107,7 @@ export default function FlipperGame() {
       console.log('Actual bumperForce: ', bumperForce)
       // setGameOver(e.current.value)
 
-   }, [noPoints, bumperForce, gameOver, gameKey, texture])
+   }, [noPoints, bumperForce, gameOver, gameKey, texture, arcadeIntro])
 
    //* texture and model preloads:
    useGLTF.preload('/textures/cardboard.png')
@@ -263,64 +280,7 @@ export default function FlipperGame() {
                         maxVelocityIterations={20}
                      // debug
                      >
-
-                        {/* <LightSweep /> */}
-                        <ArcadeIntro>
-                           <mesh>
-                              <Text
-                                 position={[0, 6, -5]}
-                                 fontSize={1.95}
-                                 anchorX="center"
-                                 anchorY="middle"
-                              >
-                                 {noPoints}
-                                 <meshStandardMaterial color={green[200]} metalness={0.95} roughness={0.65} />
-                              </Text>
-                           </mesh>
-
-                           <Playfield texture={texture} />
-                           <Walls />
-
-                           <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
-                           <Flipper position={[2.25, 0.9, 5.8]} side="right" />
-
-                           <Ball ref={ballRef} position={[3.5, 0.3, 5]} onOut={() => { setGameOver(true) }} />
-
-                           {/** DodecahedronGroup */}
-                           {/* <DodecahedronGroup />  */}
-
-                           {/** Bumper oben im Spielfeld */}
-                           <BumperWithLight position={[0.25, 0.75, -5]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-2, 0.75, -4]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-
-                           <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
-                           <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
-                           <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-
-                           {/** Bumper weiter vorne */}
-                           <BumperWithLight position={[3.75, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[0.25, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[0.25, 0.75, 1.75]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-                           <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={noPoints} setNoPoints={setNoPoints} bumperForce={bumperForce} />
-
-                           <ShooterLane x={3.5} />
-                           <Plunger ballRef={ballRef} x={3.5} />
-
-                           {/** Texte oberhalb der Spielfläche */}
-                           {(!gameOver) &&
-                              <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
-                           }
-                           {(gameOver) &&
-                              <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
-                           }
-
-                           {/** Abweiser unten links */}
-                           <HalvedSphere position={[-3.75, 0.85, 2.5]} rotation={[1.55, 0, 1]} />
-                           <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
-                           <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
-                           <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
-
-                        </ArcadeIntro>
+                        <FlipperScene stateData={stateData} />
                      </Physics>
 
                      <OrbitControls />
@@ -331,6 +291,130 @@ export default function FlipperGame() {
       </>
    )
 }  // FlipperGame()
+
+//*
+function FlipperScene({ stateData }) {
+
+   if (stateData.arcadeIntro) {
+      return (
+         <ArcadeIntro>
+            <mesh>
+               <Text
+                  position={[0, 6, -5]}
+                  fontSize={1.95}
+                  anchorX="center"
+                  anchorY="middle"
+               >
+                  {stateData.noPoints}
+                  <meshStandardMaterial color={green[200]} metalness={0.95} roughness={0.65} />
+               </Text>
+            </mesh>
+
+            <Playfield texture={stateData.texture} />
+            <Walls />
+
+            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
+            <Flipper position={[2.25, 0.9, 5.8]} side="right" />
+
+            <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setGameOver(true) }} />
+
+            {/** DodecahedronGroup */}
+            {/* <DodecahedronGroup />  */}
+
+            {/** Bumper oben im Spielfeld */}
+            <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+            <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+            <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            {/** Bumper weiter vorne */}
+            <BumperWithLight position={[3.75, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[0.25, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[0.25, 0.75, 1.75]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            <ShooterLane x={3.5} />
+            <Plunger ballRef={stateData.ballRef} x={3.5} />
+
+            {/** Texte oberhalb der Spielfläche */}
+            {(!stateData.gameOver) &&
+               <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
+            }
+            {(stateData.gameOver) &&
+               <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
+            }
+
+            {/** Abweiser unten links */}
+            <HalvedSphere position={[-3.75, 0.85, 2.5]} rotation={[1.55, 0, 1]} />
+            <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
+            <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
+            <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
+         </ArcadeIntro>
+      )
+   } else {
+      return (
+         <>
+            < mesh >
+               <Text
+                  position={[0, 6, -5]}
+                  fontSize={1.95}
+                  anchorX="center"
+                  anchorY="middle"
+               >
+                  {stateData.noPoints}
+                  <meshStandardMaterial color={green[200]} metalness={0.95} roughness={0.65} />
+               </Text>
+            </mesh >
+
+            <Playfield texture={stateData.texture} />
+            <Walls />
+
+            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
+            <Flipper position={[2.25, 0.9, 5.8]} side="right" />
+
+            <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setGameOver(true) }} />
+
+            {/** DodecahedronGroup */}
+            {/* <DodecahedronGroup />  */}
+
+            {/** Bumper oben im Spielfeld */}
+            <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+            <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+            <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            {/** Bumper weiter vorne */}
+            <BumperWithLight position={[3.75, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[0.25, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[0.25, 0.75, 1.75]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
+            <ShooterLane x={3.5} />
+            <Plunger ballRef={stateData.ballRef} x={3.5} />
+
+            {/** Texte oberhalb der Spielfläche */}
+            {
+               (!stateData.gameOver) &&
+               <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
+            }
+            {
+               (stateData.gameOver) &&
+               <ScorePopup position={[0, 4.5, -1]} color={red[500]} value='Game over!' />
+            }
+
+            {/** Abweiser unten links */}
+            <HalvedSphere position={[-3.75, 0.85, 2.5]} rotation={[1.55, 0, 1]} />
+            <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
+            <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
+            <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
+         </>
+      )
+   }
+}  // 
 
 //*
 function Playfield({ texture = '' }) {
@@ -374,13 +458,13 @@ function Playfield({ texture = '' }) {
             </mesh>
             <mesh position={[0, 3.5, -7]} receiveShadow>
                <dodecahedronGeometry args={[0.95]} />
-               <meshStandardMaterial metalness={0} roughness={0.15} color={yellow[500]} emissive="yellow" opacity={0.75} transparent 
+               <meshStandardMaterial metalness={0} roughness={0.15} color={yellow[500]} emissive="yellow" opacity={0.75} transparent
                   emissiveIntensity={0} />
                <pointLight color="yellow" intensity={0} distance={4} decay={0} />
             </mesh>
             <mesh position={[3, 3.5, -7]} receiveShadow>
                <dodecahedronGeometry args={[0.95]} />
-               <meshStandardMaterial metalness={0} roughness={0.15} color={green[500]} emissive="green" opacity={0.75} transparent 
+               <meshStandardMaterial metalness={0} roughness={0.15} color={green[500]} emissive="green" opacity={0.75} transparent
                   emissiveIntensity={0} />
                <pointLight color="green" intensity={0} distance={4} decay={0} />
             </mesh>
@@ -909,8 +993,10 @@ function ArcadeIntro({ children }) {
 
       if (!group.current) return
 
-      time.current += delta
+      // deco-group positioned on top of playfield
+      let actGrp = group.current.getObjectByName('grpDecoTop')
 
+      time.current += delta
       const t = time.current
 
       // Drop from above
@@ -931,16 +1017,20 @@ function ArcadeIntro({ children }) {
          // Tiny tilt for arcade feel
          group.current.rotation.x = 0.2 * (1 - eased)
 
-         // group.current.material.emissiveIntensity = 3
-         // let actGrp = group.current.getObjectByName('grpDecoTop')
+         //* illumminate deco-objects
          // actGrp.children[0].material.emissiveIntensity = 3
          // actGrp.children[0].material.intensity = 1.5
+         // ...children[1], children[2]
 
       } else {
          // Bounce settle
          const bounce = Math.sin((t - duration) * 12) * 0.05 * Math.exp(-(t - duration) * 3)
          group.current.position.y = bounce
          group.current.rotation.x = bounce * 0.5
+
+         //* switch off illumination for deco-objects
+         // actGrp.children[0].material.emissiveIntensity = 0
+         // actGrp.children[0].material.intensity = 0
       }
    })
 
