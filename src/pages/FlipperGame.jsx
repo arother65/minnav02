@@ -68,9 +68,9 @@ export default function FlipperGame() {
    const [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
    const [bumperForce, setBumperForce] = useState(1.5)
-   const [gameKey, setGameKey] = useState(0)
    const [texture, setTexture] = useState('')
    const [arcadeIntro, setArcadeIntro] = useState(false)
+   const [physicsKey, setPhysicsKey] = useState(0)  // for resetting physics state  
 
    // object holding all state-variables or constants
    const stateData = {
@@ -78,14 +78,13 @@ export default function FlipperGame() {
       noPoints: noPoints,
       gameOver: gameOver,
       bumperForce: bumperForce,
-      gameKey: gameKey,
       texture: texture,
       arcadeIntro: arcadeIntro,
       setNoPoints: setNoPoints,
       setGameOver: setGameOver,
       setBumperForce: setBumperForce,
-      setGameKey: setGameKey,
-      setTexture: setTexture
+      setTexture: setTexture,
+      setPhysicsKey: setPhysicsKey
    }  // stateData
 
    //* event handler
@@ -97,7 +96,7 @@ export default function FlipperGame() {
    useEffect((e) => {
       console.log('Actual bumperForce: ', bumperForce)
       // setGameOver(e.current.value 
-   }, [noPoints, bumperForce, gameOver, gameKey, texture, arcadeIntro])
+   }, [noPoints, bumperForce, gameOver, texture, arcadeIntro, physicsKey])
 
    //* texture and model preloads:
    useGLTF.preload('/textures/cardboard.png')
@@ -148,16 +147,10 @@ export default function FlipperGame() {
                            id='idBtn'
                            color="success"
                            className='m-1'
-                           // disabled={disabled}
                            onClick={() => {
-                              if (gameKey === 0) {
-                                 setGameKey(1)
-                              }
-                              else {
-                                 setGameKey(0)
-                              }
                               setGameOver(false)
                               setNoPoints(0)
+                              setPhysicsKey(1)
                            }}>
                            New Game
                            {/* {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />} */}
@@ -261,7 +254,7 @@ export default function FlipperGame() {
 
                      {/* <Physics */}
                      <Physics
-                        key={gameKey}
+                        key={physicsKey}
                         gravity={[0, -9.81, 0]}
                         timeStep="vary"
                         interpolate
@@ -383,7 +376,7 @@ function FlipperScene({ stateData }) {
             <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
             <Flipper position={[2.25, 0.9, 5.8]} side="right" />
 
-            <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setGameOver(true) }} />
+            <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setPhysicsKey(0); stateData.setGameOver(true) }} />
 
             {/** Bumper oben im Spielfeld */}
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
@@ -415,6 +408,8 @@ function FlipperScene({ stateData }) {
                   color="#666"
                   metalness={0.7}
                   roughness={0.3}
+               // emissive="black"
+               // emissiveIntensity={0.5}
                />
             </mesh>
             <mesh position={[3.5, 0.95, 4]}>
@@ -423,9 +418,11 @@ function FlipperScene({ stateData }) {
                   args={[0.75, 0.15, 16, 64]}
                />
                <meshStandardMaterial
-                  color="#666"
+                  color="grey"
                   metalness={0.7}
                   roughness={0.3}
+               // emissive="lightgrey"
+               // emissiveIntensity={0.75}
                />
             </mesh>
             <mesh position={[3.5, 0.95, 3.5]}>
@@ -434,11 +431,14 @@ function FlipperScene({ stateData }) {
                   args={[0.75, 0.2, 16, 64]}
                />
                <meshStandardMaterial
-                  color="cyan"
+                  color="darkgrey"
                   metalness={0.7}
                   roughness={0.3}
-                  // transparent
-                  // opacity={0.75}
+               // emissive="darkblue"
+               // emissiveIntensity={1}
+               // color="white"
+               // transparent
+               // opacity={0.75}
                />
             </mesh>
 
@@ -836,9 +836,7 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       const Z_LIMIT = 7    // z-wert des cuboidCollider für den Ball
       const Y_LIMIT = -1   // y-Wert, Ball fell through
 
-      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) {
-         onOut()
-      }
+      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) { onOut() }
    })
 
    // 
@@ -877,8 +875,8 @@ function ShooterLane({ x = 2.5 }) {
             type="fixed"
             friction={0.05}
             restitution={0.5}
-            position={[x, 0.5, 6]}
-            rotation={[-0.15, 0, 0]}
+            position={[x, 0.45, 6]}
+            rotation={[-0.05, 0, 0]}
             colliders="cuboid"
          >
             <mesh receiveShadow>
@@ -917,10 +915,13 @@ function Plunger({ ballRef, x = 2.5 }) {
    const pulling = useRef(false)
    const power = useRef(0)
 
+   const springRef = useRef()
+   const boxRef = useRef()
+
    const curve = new HelixCurve({
-      radius: 0.25,  // DURCHMESSER, außen der gesamten Feder
-      turns: 8,  // ANZAHL der Wicklungen
-      height: 0.75,  // LÄNGE der zu erzeugenden Feder
+      radius: 0.2,  // DURCHMESSER, außen der gesamten Feder
+      turns: 6,  // ANZAHL der Wicklungen
+      height: 0.65,  // LÄNGE der zu erzeugenden Feder
 
       // offset: (i / strands) * Math.PI * 2,
       offset: 0  // verschiebt die Feder in deren Längsachse
@@ -938,13 +939,13 @@ function Plunger({ ballRef, x = 2.5 }) {
 
             // Forward impulse
             ballRef.current.applyImpulse(
-               { x: -0.15, y: 0, z: -5 },
+               { x: -0.15, y: 0, z: -4 },
                true
             )
 
             // Add proportional topspin
             ballRef.current.applyTorqueImpulse(
-               { x: -0.25, y: 0, z: -0.25 },
+               { x: -0.15, y: 0, z: -0.15 },
                true
             )
             power.current = 0
@@ -963,14 +964,68 @@ function Plunger({ ballRef, x = 2.5 }) {
    return (
       <RigidBody
          type="fixed"
-         position={[x, 0.55, 6.75]}
+         position={[x, 0.65, 6.75]}
+
          colliders="cuboid"
+         onClick={() => {
+            if (!ballRef.current) return
+            if (!boxRef.current) return
+            if (!springRef.current) return
+
+            //* Hammer und Feder animieren
+            // console.log(boxRef, springRef)
+
+            // boxRef.current.rotation[2] = [Math.PI / 2] 
+            // boxRef.current.up = { x: 0, y: 0, z: -5 }
+
+            console.log(boxRef.current.rotation)
+            console.log(springRef.current.scale)
+
+            // boxRef.current.rotation = { isEuler: true, _x: 0, _y: 0, _z: 0, _order: 'XYZ', x: 0, y: 0, z: -2 }
+            // let springScale = springRef.current.scale.y
+
+            if (boxRef.current.rotation.x === 0) {
+
+               boxRef.current.rotation.set(Math.PI / 2, 0, 0)  // nach vorne klappen 
+               springRef.current.scale.set(1, 1, 2)  // Feder nach vorne animieren
+
+               setTimeout(() => {
+                  boxRef.current.rotation.set(0, 0, 0)  // zurücksetzen auf Ausgangswert 
+                  springRef.current.scale.set(1, 1, 1)
+               }, 500)
+            }
+
+            // else {
+            //    boxRef.current.rotation.set(0, 0, 0)  // zurücksetzen auf Ausgangswert 
+            //    springRef.current.scale.set(1, 1, 1)
+            // }
+
+            console.log(boxRef.current.position)
+            // boxRef.current.position.set(boxRef.current.position[0], boxRef.current.position[1] + 0.5, boxRef.current.position[2] + 0.5)
+
+            // box.position.y -= 0.35
+
+            // ballRef.current.applyImpulse(
+            //    { x: -0.1, y: 0, z: -2.5 },
+            //    true
+            // )
+         }}
       >
-         <mesh>
-            <boxGeometry args={[0.4, 0.4, 0.4]} />
+         <mesh ref={boxRef}>
+            <boxGeometry
+               args={[0.4, 0.85, 0.4]}
+               // position={[x, 1.15, 6.95]}
+               rotation={[0, 0, -2]} />
+
             <meshStandardMaterial color='darkgrey' metalness={0.85} roughness={0.65} />
          </mesh>
-         <MetalSpring position={[0, 0.15, -1]} rotation={[1.55, -0.15, 0]} color='red' helixCurve={curve} />
+         <mesh ref={springRef}>
+            <MetalSpring
+               helixCurve={curve}
+               position={[0, 0.15, -0.75]}
+               rotation={[1.55, -0.15, 0]}
+               color='red' />
+         </mesh>
       </RigidBody>
    )
 }  // Plunger()
