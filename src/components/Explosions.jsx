@@ -37,7 +37,7 @@ function ExplodingCannonBall({ position, color, noFragments }) {
       <Fragment
         key={i}
         velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-        color={color} 
+        color={color}
       />
     ))
   }
@@ -134,24 +134,6 @@ function Ground() {
   )
 }  // Ground()
 
-//* main component
-export function Explosions() {
-  return (
-    <div className="w-full h-screen">
-      <Canvas camera={{ position: [4, 3, 4], fov: 60 }}>
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 5, 5]} />
-
-        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50} />
-        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120} />
-        <ExplodingCannonBall position={[-15, -1, 0]} color="darkblue" noFragments={10} />
-
-        <OrbitControls />
-      </Canvas>
-    </div>
-  )
-}  // Explosions()
-
 //*
 export function ExplodingWall() {
 
@@ -172,3 +154,22 @@ export function ExplodingWall() {
     </div>
   )
 }  // ExplodingWall()
+
+//* main component
+export function Explosions() {
+  return (
+    <div className="w-full h-screen">
+      <Canvas camera={{ position: [4, 3, 4], fov: 60 }}>
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 5, 5]} />
+
+        <ExplodingCannonBall position={[2, 0, 0]} color="darkgreen" noFragments={50} />
+        <ExplodingCannonBall position={[-5, -1, 0]} color="darkred" noFragments={120} />
+        <ExplodingCannonBall position={[-15, -1, 0]} color="darkblue" noFragments={10} />
+
+        <OrbitControls />
+      </Canvas>
+    </div>
+  )
+}  // Explosions()
+

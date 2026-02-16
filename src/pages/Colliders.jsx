@@ -144,19 +144,32 @@ function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
    )
 }  // Fragment()
 
-function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
+export function ExplodingBox({ position = [0, 0, 0], color = orange[500], exploded = false }) {
 
-   const [exploded, setExploded] = useState(false)
+   const [explodedState, setExploded] = useState(exploded)
+   const [hitCount, setHitCount] = useState(0)
+
+   useEffect(() => { 
+      if (explodedState) {
+         // Reset hitCount when exploded
+         setHitCount(0)
+      }
+   }, [hitCount, explodedState])  
 
    // 
-   if (!exploded) {
+   if (!explodedState) {
       return (
-         <RigidBody position={position} mass={10} >
+         <RigidBody position={position} mass={5} >
             <CuboidCollider
                args={[0.5, 0.5, 0.5]}
                // sensor
-               onCollisionEnter={(e) => {
-                  setExploded(true)
+
+               onCollisionEnter={() => {
+                  if (hitCount < 3) {
+                     setHitCount(hitCount + 1)
+                  } else {
+                     setTimeout(() => { setExploded(true) }, 2000)
+                  }
                }}
             />
             <mesh>
@@ -167,7 +180,7 @@ function ExplodingBox({ position = [0, 0, 0], color = orange[500] }) {
       )
    }  // not exploded
 
-   if (exploded) {
+   if (explodedState) {
       return (
          Array.from({ length: 80 }).map((_, i) => (
             <Fragment

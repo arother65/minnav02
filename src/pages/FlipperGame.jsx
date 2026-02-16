@@ -32,6 +32,8 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 /** ------------------------------------------------------------------------ */
 // import "../components/styles.css"
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
+import { ExplodingBox } from './Colliders'
+
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations
@@ -441,6 +443,9 @@ function FlipperScene({ stateData }) {
                // opacity={0.75}
                />
             </mesh>
+
+            {/** ExplodingBox geht zu früh in Rauch auf... */}
+            {/* <ExplodingBox position = {[0, 0.35, 4]} color = {red[500]}/> */}
 
             {/** Texte oberhalb der Spielfläche */}
             {
@@ -910,8 +915,6 @@ function ShooterLane({ x = 2.5 }) {
 //*
 function Plunger({ ballRef, x = 2.5 }) {
 
-   // console.log("ballRef in fn Plunger(): ", ballRef)
-
    const pulling = useRef(false)
    const power = useRef(0)
 
@@ -1024,7 +1027,7 @@ function Plunger({ ballRef, x = 2.5 }) {
                helixCurve={curve}
                position={[0, 0.15, -0.75]}
                rotation={[1.55, -0.15, 0]}
-               color='red' />
+               color={red[200]} />
          </mesh>
       </RigidBody>
    )
