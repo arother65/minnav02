@@ -287,13 +287,22 @@ function FlipperScene({ stateData }) {
 
    const trackPoints = [
       new THREE.Vector3(3.45, 0.05, 4.995),    // entry
-      new THREE.Vector3(3.45, 0.15, 4.5),      // climb
-      new THREE.Vector3(3, 0.45, -5),     // peak
-      new THREE.Vector3(0, 0.15, -6.5),    // drop
+      new THREE.Vector3(3.45, 0.45, 2),      // climb
+      // new THREE.Vector3(0, 0.95, -2.5),     // peak
+      // new THREE.Vector3(0, 0.75, -3.5),    // drop
       // new THREE.Vector3(0, 5, -7),    // curve right
-      // new THREE.Vector3(-2, 5, -8),   // curve left
+      new THREE.Vector3(-2, 5, -8),   // curve left
       // new THREE.Vector3(-3, 3, -7.5)     // exit
-   ]
+   ]  // data for RollerCoasterTrack 
+
+   const tubeTrackPoints = [
+      new THREE.Vector3(0, 2, 5),
+      new THREE.Vector3(0, 5, 0),
+      new THREE.Vector3(0, 8, -5),
+      // new THREE.Vector3(3, 4, -12),
+      // new THREE.Vector3(-3, 6, -18),
+      // new THREE.Vector3(0, 3, -25)
+   ]  // data for TubeTrack
 
    if (stateData.arcadeIntro) {
       return (
@@ -356,7 +365,7 @@ function FlipperScene({ stateData }) {
    } else {
       return (
          <>
-            < mesh >
+            <mesh>
                <Text
                   position={[0, 6, -5]}
                   fontSize={1.95}
@@ -380,8 +389,8 @@ function FlipperScene({ stateData }) {
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
-            <HalvedSphere position={[3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
-            <HalvedSphere position={[-3.25, 0.15, -5.95]} rotation={[0, 0, 0]} />
+            <HalvedSphere position={[3.5, 0.15, -6]} rotation={[0, 0, 0]} />
+            <HalvedSphere position={[-3.5, 0.15, -6]} rotation={[0, 0, 0]} />
             <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             {/** Bumper weiter vorne */}
@@ -394,7 +403,44 @@ function FlipperScene({ stateData }) {
             <Plunger ballRef={stateData.ballRef} x={3.5} />
 
             {/**  */}
-            <RollerCoasterTrack points={trackPoints}/>
+            {/* <RollerCoasterTrack points={trackPoints}/> */}
+
+            {/* <TubeTrack points={tubeTrackPoints} />  */}
+            <mesh position={[3.5, 1, 4.5]}>
+               <torusGeometry
+                  // args={[tubeRadius, 0.05, 8, radialSegments]}
+                  args={[0.75, 0.05, 16, 64]}
+               />
+               <meshStandardMaterial
+                  color="#666"
+                  metalness={0.7}
+                  roughness={0.3}
+               />
+            </mesh>
+            <mesh position={[3.5, 0.95, 4]}>
+               <torusGeometry
+                  // args={[tubeRadius, 0.05, 8, radialSegments]}
+                  args={[0.75, 0.15, 16, 64]}
+               />
+               <meshStandardMaterial
+                  color="#666"
+                  metalness={0.7}
+                  roughness={0.3}
+               />
+            </mesh>
+            <mesh position={[3.5, 0.95, 3.5]}>
+               <torusGeometry
+                  // args={[tubeRadius, 0.05, 8, radialSegments]}
+                  args={[0.75, 0.2, 16, 64]}
+               />
+               <meshStandardMaterial
+                  color="cyan"
+                  metalness={0.7}
+                  roughness={0.3}
+                  // transparent
+                  // opacity={0.75}
+               />
+            </mesh>
 
             {/** Texte oberhalb der Spielfläche */}
             {
@@ -414,7 +460,7 @@ function FlipperScene({ stateData }) {
          </>
       )
    }
-}  // 
+}  // FlipperScene()
 
 //*
 function Playfield({ texture = '' }) {
@@ -570,7 +616,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
-               ball.applyTorqueImpulse({ x: -dz * 10, y: 0, z: dx * 10 }, true)
+               ball.applyTorqueImpulse({ x: -dz * 5, y: 0, z: dx * 5 }, true)
 
                // ---- VISUAL FLASH ----
                flash.current = 1
@@ -725,10 +771,10 @@ function Flipper({ position, side = "left", length = 2 }) {
             ref={flipper}
             type="dynamic"
             colliders="cuboid"
-            restitution={0.85}
+            restitution={0.9}
             friction={0.1}
-            angularDamping={1}
-            linearDamping={0.5}
+            angularDamping={0.5}
+            linearDamping={0.25}
             // enabledTranslations={[false, false, false]}  {/** creates strange errors */}
             enabledRotations={[false, true, false]}
             canSleep={false}
@@ -892,13 +938,13 @@ function Plunger({ ballRef, x = 2.5 }) {
 
             // Forward impulse
             ballRef.current.applyImpulse(
-               { x: -1, y: 0, z: -3 },
+               { x: -0.15, y: 0, z: -5 },
                true
             )
 
             // Add proportional topspin
             ballRef.current.applyTorqueImpulse(
-               { x: -0.5, y: 0, z: -0.5 },
+               { x: -0.25, y: 0, z: -0.25 },
                true
             )
             power.current = 0
@@ -1216,7 +1262,7 @@ function Hole({ position = [0, 0, 0] }) {
 function RollerCoasterTrack({
    points = [],
    segments = 200,
-   width = 2
+   width = 1.5
 }) {
 
    const curveData = useMemo(() => {
@@ -1279,6 +1325,86 @@ function RollerCoasterTrack({
                   quaternion={segment.quaternion}
                   friction={0.15}
                />
+            </group>
+         ))}
+      </RigidBody>
+   )
+}
+
+//*
+function TubeTrack({
+   points = [],
+   tubularSegments = 5,
+   radius = 2,
+   tubeRadius = 1.5,
+   radialSegments = 64
+}) {
+
+   const segments = useMemo(() => {
+      const curve = new THREE.CatmullRomCurve3(points)
+      const data = []
+
+      for (let i = 0; i < tubularSegments; i++) {
+
+         const t = i / tubularSegments
+         const nextT = (i + 1) / tubularSegments
+
+         const center = curve.getPoint(t)
+         const next = curve.getPoint(nextT)
+
+         const tangent = new THREE.Vector3()
+            .subVectors(next, center)
+            .normalize()
+
+         const quaternion = new THREE.Quaternion()
+         quaternion.setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0),
+            tangent
+         )
+
+         data.push({ center, quaternion })
+      }
+
+      return data
+   }, [points, tubularSegments])
+
+   return (
+      <RigidBody type="fixed" colliders={false} rotation={[1, 0, 0]}>
+
+         {segments.map((seg, i) => (
+            <group
+               key={i}
+               position={seg.center}
+               quaternion={seg.quaternion}
+            >
+               {/* Ring of colliders */}
+               {Array.from({ length: radialSegments }).map((_, j) => {
+                  const angle = (j / radialSegments) * Math.PI * 2
+
+                  const x = Math.cos(angle) * tubeRadius
+                  const z = Math.sin(angle) * tubeRadius
+
+                  return (
+                     <CuboidCollider
+                        key={j}
+                        args={[0.2, 0.5, 0.2]}
+                        position={[x, 0, z]}
+                        friction={0.4}
+                     />
+                  )
+               })}  {/**  Array.from() */}
+
+               {/* Optional visible tube */}
+               <mesh>
+                  <torusGeometry
+                     args={[tubeRadius, 0.05, 8, radialSegments]}
+                  />
+                  <meshStandardMaterial
+                     color="#666"
+                     metalness={0.7}
+                     roughness={0.3}
+                  />
+               </mesh>
             </group>
          ))}
       </RigidBody>
