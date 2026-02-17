@@ -384,8 +384,9 @@ function FlipperScene({ stateData }) {
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
-            <HalvedSphere position={[3.5, 0.15, -6]} rotation={[0, 0, 0]} />
-            <HalvedSphere position={[-3.5, 0.15, -6]} rotation={[0, 0, 0]} />
+            {/* <HalvedSphere position={[3.5, 0.15, -6]} rotation={[0, 0, 0]} /> */}
+            {/* <HalvedSphere position={[-3.5, 0.15, -6]} rotation={[0, 0, 0]} /> */}
+
             <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             {/** Bumper weiter vorne */}
@@ -400,49 +401,14 @@ function FlipperScene({ stateData }) {
             {/**  */}
             {/* <RollerCoasterTrack points={trackPoints}/> */}
 
-            {/* <TubeTrack points={tubeTrackPoints} />  */}
-            <mesh position={[3.5, 1, 4.5]}>
-               <torusGeometry
-                  // args={[tubeRadius, 0.05, 8, radialSegments]}
-                  args={[0.75, 0.05, 16, 64]}
-               />
-               <meshStandardMaterial
-                  color="#666"
-                  metalness={0.7}
-                  roughness={0.3}
-               // emissive="black"
-               // emissiveIntensity={0.5}
-               />
-            </mesh>
-            <mesh position={[3.5, 0.95, 4]}>
-               <torusGeometry
-                  // args={[tubeRadius, 0.05, 8, radialSegments]}
-                  args={[0.75, 0.15, 16, 64]}
-               />
-               <meshStandardMaterial
-                  color="grey"
-                  metalness={0.7}
-                  roughness={0.3}
-               // emissive="lightgrey"
-               // emissiveIntensity={0.75}
-               />
-            </mesh>
-            <mesh position={[3.5, 0.95, 3.5]}>
-               <torusGeometry
-                  // args={[tubeRadius, 0.05, 8, radialSegments]}
-                  args={[0.75, 0.2, 16, 64]}
-               />
-               <meshStandardMaterial
-                  color="darkgrey"
-                  metalness={0.7}
-                  roughness={0.3}
-               // emissive="darkblue"
-               // emissiveIntensity={1}
-               // color="white"
-               // transparent
-               // opacity={0.75}
-               />
-            </mesh>
+            {/* <TubeTrack points={tubeTrackPoints} />  Rings vor dem Plunger*/}
+            <RubberRing position={[3.5, 0.95, 4.5]} args={[0.75, 0.05, 16, 64]} color="#666" />
+            <RubberRing position={[3.5, 0.95, 4]} args={[0.75, 0.15, 16, 64]} color="grey" />
+            <RubberRing position={[3.5, 0.95, 3.5]} args={[0.75, 0.2, 16, 64]} color="darkgrey" />
+
+            {/** Ringe im hinteren Bereich */}
+            <RubberRing position={[3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
+            <RubberRing position={[-3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
 
             {/** ExplodingBox geht zu früh in Rauch auf... */}
             {/* <ExplodingBox position = {[0, 0.35, 4]} color = {red[500]}/> */}
@@ -1468,3 +1434,49 @@ function TubeTrack({
       </RigidBody>
    )
 }
+
+//*
+function RubberRing({ position = [0, 0, 0], rotation = [0, 0, 0], args = [0.75, 0.05, 16, 64], color = '#666', withCollider = false }) {
+
+   if (withCollider) {
+      return (
+         <RigidBody
+            position={position}
+            rotation={rotation}
+            type="fixed"
+            colliders="cuboid" >
+
+            {/* <mesh position={position} rotation={rotation}> */}
+            <mesh>
+               <torusGeometry
+                  // args={[tubeRadius, 0.05, 8, radialSegments]}
+                  args={args}
+               />
+               <meshStandardMaterial
+                  color={color}
+                  metalness={0.7}
+                  roughness={0.3}
+               // emissive="black"
+               // emissiveIntensity={0.5}
+               />
+            </mesh>
+         </RigidBody>
+      )
+   }
+
+   return (
+      <mesh position={position} rotation={rotation}>
+         <torusGeometry
+            // args={[tubeRadius, 0.05, 8, radialSegments]}
+            args={args}
+         />
+         <meshStandardMaterial
+            color={color}
+            metalness={0.7}
+            roughness={0.3}
+         // emissive="black"
+         // emissiveIntensity={0.5}
+         />
+      </mesh>
+   )
+}  // RubberRing()
