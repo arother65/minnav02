@@ -67,6 +67,7 @@ export default function FlipperGame() {
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
    const ballRef = useRef(null)
+
    const [noPoints, setNoPoints] = useState(0)
    const [gameOver, setGameOver] = useState(false)
    const [bumperForce, setBumperForce] = useState(1.5)
@@ -254,7 +255,9 @@ export default function FlipperGame() {
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
-                     {/* <Physics */}
+                     {/* <Physics 
+                     Changing physicsKey completely destroys and remounts the Rapier physics world
+                     */}
                      <Physics
                         key={physicsKey}
                         gravity={[0, -9.81, 0]}
@@ -362,32 +365,8 @@ function FlipperScene({ stateData }) {
    } else {
       return (
          <>
-            <group>
-               <mesh>
-                  {/* <Html>
-                  <Card position={[0, 6, -5]}>
-                     <Typography variant="h2" color={green[800]} align="center">{stateData.noPoints}</Typography>
-                  </Card>
-               </Html> */}
-                  <Text
-                     position={[0, 6, -5]}
-                     fontSize={1.95}
-                     anchorX="center"
-                     anchorY="middle"
-                     outlineWidth={0.15}
-                     outlineColor={orange[200]}
-                  >
-                     {stateData.noPoints}
-                     <meshStandardMaterial color={green[800]} metalness={0.85} roughness={0.35} />
-                  </Text>
-               </mesh >
-               <mesh  position={[0, 6, -5.75]}>
-                  {/** args={[width, height, depth]} */}
-                  <RoundedBox args={[6, 2, 1]} radius={0.25} smoothness={4} >
-                     <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} opacity={0.95} transparent />
-                  </RoundedBox>
-               </mesh>
-            </group>
+            {/** Display for points */}
+            <PointsDisplay noPoints={stateData.noPoints} />
 
             {/** Spielfeld */}
             <Playfield texture={stateData.texture} />
@@ -809,29 +788,34 @@ function Flipper({ position, side = "left", length = 2 }) {
 // function Ball({ position, ballRef }) {
 const Ball = forwardRef(({ position, stateData }, ref) => {
 
-   // console.log("ballRef:", ref)
-
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
    useEffect(() => {
-      setTimeout(() => {
-         ref.current?.setLinvel({ x: 0, y: 0, z: 1 }, true)
-         ref.current?.setAngvel({ x: 0, y: 0, z: 1 }, true)
-      }, 2000)
-   }, [ref])
-
-   // Position des Balles, um Game Over festzustellen:
-   useFrame(() => {
       if (!ref.current) return
 
-      const pos = ref.current.translation()
+      const timer = setTimeout(() => {
+         ref.current.wakeUp()
+         ref.current.setLinvel({ x: 0, y: 0, z: -1 }, true)
+         ref.current.setAngvel({ x: 0, y: 0, z: 2 }, true)
+      }, 2000)
+
+      return () => clearTimeout(timer)
+   }, [ref])
+
+   // Position des Balles ermitteln, um Game Over festzustellen:
+   useFrame(() => {
+      // if (!ref.current) return
+      if (!ref.current?.isValid()) return
+
+      const pos = ref.current.translation()  // aktuelle Position des Balles 
 
       // Playfield bounds (must match your field size)
-      const X_LIMIT = 4.5  // x-wert des cuboidCollider für den Ball 
-      const Z_LIMIT = 7    // z-wert des cuboidCollider für den Ball
-      const Y_LIMIT = -1   // y-Wert, Ball fell through
+      const X_LIMIT = 4.5    // x-wert des cuboidCollider für den Ball 
+      const Y_LIMIT = -0.5   // y-Wert, Ball fell through
+      const Z_LIMIT = 7      // z-wert des cuboidCollider für den Ball
 
-      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) {
-         stateData.setPhysicsKey(0)
+      if (Math.abs(pos.x) > X_LIMIT || pos.y < Y_LIMIT || Math.abs(pos.z) > Z_LIMIT ) {
+         ref.current = null  // Ball-Referenz zurücksetzen  //???
+         stateData.setPhysicsKey(prev => prev + 1)  // Physics World neu starten, um "toten" Ball zu entfernen 
          stateData.setGameOver(true)
       }
    })
@@ -923,23 +907,26 @@ function Plunger({ ballRef, x = 2.5 }) {
    })
 
    useEffect(() => {
+
       const down = (e) => {
+         if (!ballRef.current) return
          if (e.code === "ArrowDown") pulling.current = true
       }
 
       const up = (e) => {
+         if (!ballRef.current) return
+
          if (e.code === "ArrowDown") {
             pulling.current = false
-            if (!ballRef.current) return
 
             // Forward impulse
-            ballRef.current.applyImpulse(
+            ballRef.current?.applyImpulse(
                { x: -0.15, y: 0, z: -4 },
                true
             )
 
             // Add proportional topspin
-            ballRef.current.applyTorqueImpulse(
+            ballRef.current?.applyTorqueImpulse(
                { x: -0.15, y: 0, z: -0.15 },
                true
             )
@@ -958,7 +945,7 @@ function Plunger({ ballRef, x = 2.5 }) {
 
    return (
       <RigidBody
-         type="fixed"
+         type="fixed" 
          position={[x, 0.65, 6.75]}
 
          colliders="cuboid"
@@ -968,11 +955,6 @@ function Plunger({ ballRef, x = 2.5 }) {
             if (!springRef.current) return
 
             //* Hammer und Feder animieren
-            // console.log(boxRef, springRef)
-
-            // boxRef.current.rotation[2] = [Math.PI / 2] 
-            // boxRef.current.up = { x: 0, y: 0, z: -5 }
-
             console.log(boxRef.current.rotation)
             console.log(springRef.current.scale)
 
@@ -1545,3 +1527,35 @@ function HalfBentTube({ position = [0, 0, 0], rotation = [0, 0, 0], gameOver = f
    )
 }
 
+//*
+function PointsDisplay({ noPoints }) {
+
+   return (
+      <group position={[0, 1, -0.25]}>
+         <mesh>
+            {/* <Html>
+                  <Card position={[0, 6, -5]}>
+                     <Typography variant="h2" color={green[800]} align="center">{stateData.noPoints}</Typography>
+                  </Card>
+               </Html> */}
+            <Text
+               position={[0, 6, -5.2]}
+               fontSize={1.95}
+               anchorX="center"
+               anchorY="middle"
+               outlineWidth={0.15}
+               outlineColor={orange[200]}
+            >
+               {noPoints}
+               <meshStandardMaterial color={green[800]} metalness={0.85} roughness={0.35} />
+            </Text>
+         </mesh >
+         <mesh position={[0, 6, -5.75]}>
+            {/** args={[width, height, depth]} */}
+            <RoundedBox args={[6, 2.25, 1]} radius={0.25} smoothness={4} >
+               <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} opacity={0.95} transparent />
+            </RoundedBox>
+         </mesh>
+      </group>
+   )
+}
