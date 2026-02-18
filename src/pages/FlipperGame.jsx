@@ -13,8 +13,7 @@ import { useState, useRef, useEffect, useMemo, forwardRef } from "react"
 import * as THREE from "three"
 import { Canvas, useFrame } from "@react-three/fiber"
 
-import { OrbitControls, Text, useTexture, useGLTF } from "@react-three/drei"
-// import { Html } from "@react-three/drei"
+import { OrbitControls, Text, useTexture, useGLTF, Html } from "@react-three/drei"
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
@@ -299,6 +298,8 @@ function FlipperScene({ stateData }) {
       // new THREE.Vector3(0, 3, -25)
    ]  // data for TubeTrack
 
+   let tubeRef = useRef()
+
    if (stateData.arcadeIntro) {
       return (
          <ArcadeIntro>
@@ -361,14 +362,21 @@ function FlipperScene({ stateData }) {
       return (
          <>
             <mesh>
+               {/* <Html>
+                  <Card position={[0, 6, -5]}>
+                     <Typography variant="h2" color={green[800]} align="center">{stateData.noPoints}</Typography>
+                  </Card>
+               </Html> */}
                <Text
                   position={[0, 6, -5]}
                   fontSize={1.95}
                   anchorX="center"
                   anchorY="middle"
+                  outlineWidth={0.05}
+                  outlineColor={orange[500]}
                >
                   {stateData.noPoints}
-                  <meshStandardMaterial color={green[200]} metalness={0.95} roughness={0.65} />
+                  <meshStandardMaterial color={green[600]} metalness={0.95} roughness={0.25} />
                </Text>
             </mesh >
 
@@ -378,7 +386,7 @@ function FlipperScene({ stateData }) {
             <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
             <Flipper position={[2.25, 0.9, 5.8]} side="right" />
 
-            <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} onOut={() => { stateData.setPhysicsKey(0); stateData.setGameOver(true) }} />
+            {(!stateData.gameOver) && <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} stateData={stateData} />}
 
             {/** Bumper oben im Spielfeld */}
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
@@ -428,6 +436,11 @@ function FlipperScene({ stateData }) {
             <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
             <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
             <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
+
+            <HalfBentTube ref={tubeRef}
+               position={[0, 1.75, -6.95]}
+               rotation={[0, 0, 0]}
+               gameOver={stateData.gameOver} />
          </>
       )
    }
@@ -608,7 +621,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                      emissive="red"
                      emissiveIntensity={0}
                      metalness={0.9}
-                     roughness={0.4}
+                     roughness={0.25}
                   />
                </mesh>
                {/** Ring on top of the bumper */}
@@ -784,15 +797,15 @@ function Flipper({ position, side = "left", length = 2 }) {
 }  // Flipper()
 
 // function Ball({ position, ballRef }) {
-const Ball = forwardRef(({ position, onOut }, ref) => {
+const Ball = forwardRef(({ position, stateData }, ref) => {
 
    // console.log("ballRef:", ref)
 
    // so wird der Impuls nicht bei jedem Render erneut erzeugt:
    useEffect(() => {
       setTimeout(() => {
-         ref.current?.setLinvel({ x: 0, y: 0, z: 0 }, true)
-         ref.current?.setAngvel({ x: 0, y: 0, z: 0 }, true)
+         ref.current?.setLinvel({ x: 0, y: 0, z: 1 }, true)
+         ref.current?.setAngvel({ x: 0, y: 0, z: 1 }, true)
       }, 2000)
    }, [ref])
 
@@ -807,7 +820,10 @@ const Ball = forwardRef(({ position, onOut }, ref) => {
       const Z_LIMIT = 7    // z-wert des cuboidCollider für den Ball
       const Y_LIMIT = -1   // y-Wert, Ball fell through
 
-      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) { onOut() }
+      if (Math.abs(pos.x) > X_LIMIT || Math.abs(pos.z) > Z_LIMIT || pos.y < Y_LIMIT) {
+         stateData.setPhysicsKey(0)
+         stateData.setGameOver(true)
+      }
    })
 
    // 
@@ -1480,3 +1496,42 @@ function RubberRing({ position = [0, 0, 0], rotation = [0, 0, 0], args = [0.75, 
       </mesh>
    )
 }  // RubberRing()
+
+//*
+function HalfBentTube({ position = [0, 0, 0], rotation = [0, 0, 0], gameOver = false }) {
+
+   // Create a half-circle curve
+   const curve = new THREE.CatmullRomCurve3(
+      Array.from({ length: 50 }, (_, i) => {
+         const t = (i / 49) * Math.PI // 0 → 180°
+         const radius = 5  // inner radius of the curve
+
+         return new THREE.Vector3(
+            Math.cos(t) * radius,
+            Math.sin(t) * radius,
+            0
+         )
+      })
+   )
+
+   const geometry = new THREE.TubeGeometry(
+      curve,
+      100,   // tubular segments
+      0.5,   // tube radius
+      32,    // radial segments
+      false  // closed
+   )
+
+   return (
+      <mesh geometry={geometry} position={position} rotation={rotation}>
+         <meshStandardMaterial color={gameOver ? red[500] : green[500]}
+            emissive={gameOver ? red[500] : null}
+            emissiveIntensity={gameOver ? 0.95 : null}
+            metalness={0.95}
+            roughness={0.25}
+            opacity={0.85}
+            transparent />
+      </mesh>
+   )
+}
+
