@@ -14,6 +14,7 @@ import * as THREE from "three"
 import { Canvas, useFrame } from "@react-three/fiber"
 
 import { OrbitControls, Text, useTexture, useGLTF, Html } from "@react-three/drei"
+import { RoundedBox } from "@react-three/drei"
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
@@ -361,25 +362,34 @@ function FlipperScene({ stateData }) {
    } else {
       return (
          <>
-            <mesh>
-               {/* <Html>
+            <group>
+               <mesh>
+                  {/* <Html>
                   <Card position={[0, 6, -5]}>
                      <Typography variant="h2" color={green[800]} align="center">{stateData.noPoints}</Typography>
                   </Card>
                </Html> */}
-               <Text
-                  position={[0, 6, -5]}
-                  fontSize={1.95}
-                  anchorX="center"
-                  anchorY="middle"
-                  outlineWidth={0.05}
-                  outlineColor={orange[500]}
-               >
-                  {stateData.noPoints}
-                  <meshStandardMaterial color={green[600]} metalness={0.95} roughness={0.25} />
-               </Text>
-            </mesh >
+                  <Text
+                     position={[0, 6, -5]}
+                     fontSize={1.95}
+                     anchorX="center"
+                     anchorY="middle"
+                     outlineWidth={0.15}
+                     outlineColor={orange[200]}
+                  >
+                     {stateData.noPoints}
+                     <meshStandardMaterial color={green[800]} metalness={0.85} roughness={0.35} />
+                  </Text>
+               </mesh >
+               <mesh  position={[0, 6, -5.75]}>
+                  {/** args={[width, height, depth]} */}
+                  <RoundedBox args={[6, 2, 1]} radius={0.25} smoothness={4} >
+                     <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} opacity={0.95} transparent />
+                  </RoundedBox>
+               </mesh>
+            </group>
 
+            {/** Spielfeld */}
             <Playfield texture={stateData.texture} />
             <Walls />
 
