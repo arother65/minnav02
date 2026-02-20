@@ -15,6 +15,8 @@ import { Canvas, useFrame } from "@react-three/fiber"
 
 import { OrbitControls, Text, useTexture, useGLTF, Html } from "@react-three/drei"
 import { RoundedBox } from "@react-three/drei"
+import { Trail, Float, Line, Sphere, Stars } from '@react-three/drei'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
 
@@ -32,7 +34,7 @@ import { blue, brown, green, grey, orange, purple, red, yellow } from "@mui/mate
 /** ------------------------------------------------------------------------ */
 // import "../components/styles.css"
 import MetalSpring, { HelixCurve } from '../components/MetalSpring'
-import { ExplodingBox } from './Colliders'
+// import { ExplodingBox } from './Colliders'
 
 
 /** ------------------------------------------------------------------------ */
@@ -153,7 +155,7 @@ export default function FlipperGame() {
                            onClick={() => {
                               setGameOver(false)
                               setNoPoints(0)
-                              setPhysicsKey(1)
+                              setPhysicsKey(prev => prev + 1)  // changing physicsKey remounts the Physics component and thus resets the physics world 
                            }}>
                            New Game
                            {/* {enableCircularProgress && <CircularProgress className='m-1' size={20} color="success" />} */}
@@ -165,6 +167,7 @@ export default function FlipperGame() {
                         className='m-1 border border-success'
                         color='success'
                         variant='h2'
+                        sx={{ textAlign: 'center' }}
                      >{noPoints}
                      </Typography>
                   </Card>
@@ -186,20 +189,24 @@ export default function FlipperGame() {
                            disabled={false}
                         />
                      </div>
+                  </Card>
 
-                     {/** BUTTONGROUP for changing the playfield's texture */}
+                  {/** BUTTONGROUP for changing the playfield's texture */}
+                  <Card className='rounded shadow'>
                      <div className="row m-1 border border-info rounded">
                         <h6>Adjust Texture: </h6>
                         <ButtonGroup variant="contained" aria-label="Basic button group">
                            <Button id='idBtnRust' variant='contained'
                               onClick={() => {
                                  setTexture('Rust')
+                                 setPhysicsKey(prev => prev + 1)
                               }}>
                               Rust
                            </Button>
                            <Button id='idBtnWood' variant='contained'
                               onClick={() => {
                                  setTexture('Wood')
+                                 setPhysicsKey(prev => prev + 1)
                               }}
                            >
                               Wood
@@ -207,6 +214,7 @@ export default function FlipperGame() {
                            <Button id='idBtnCardBoard' variant='contained'
                               onClick={() => {
                                  setTexture('Cardboard')
+                                 setPhysicsKey(prev => prev + 1)
                               }}
                            >
                               Cardboard
@@ -302,8 +310,6 @@ function FlipperScene({ stateData }) {
       // new THREE.Vector3(0, 3, -25)
    ]  // data for TubeTrack
 
-   let tubeRef = useRef()
-
    if (stateData.arcadeIntro) {
       return (
          <ArcadeIntro>
@@ -365,15 +371,24 @@ function FlipperScene({ stateData }) {
    } else {
       return (
          <>
+
+            {/* <EffectComposer>
+               <Bloom mipmapBlur luminanceThreshold={1} radius={0.7} />
+            </EffectComposer> */}
+            {/* <Electron position={[0, 5, -7]} rotation={[0, 0, 0]} /> */}
+            {/* <Float speed={4} rotationIntensity={1} floatIntensity={2}>
+               <Electron position={[0, 5, -7]} rotation={[0, 0, 0]} />
+            </Float> */}
+
             {/** Display for points */}
-            <PointsDisplay noPoints={stateData.noPoints} />
+            <PointsDisplay noPoints={stateData.noPoints} gameOver={stateData.gameOver} />
 
             {/** Spielfeld */}
             <Playfield texture={stateData.texture} />
             <Walls />
 
-            <Flipper position={[-2.25, 0.9, 5.8]} side="left" />
-            <Flipper position={[2.25, 0.9, 5.8]} side="right" />
+            <Flipper position={[-2.25, 0.95, 5.8]} side="left" />
+            <Flipper position={[2.25, 0.95, 5.8]} side="right" />
 
             {(!stateData.gameOver) && <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} stateData={stateData} />}
 
@@ -381,15 +396,14 @@ function FlipperScene({ stateData }) {
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
-            {/* <HalvedSphere position={[3.5, 0.15, -6]} rotation={[0, 0, 0]} /> */}
-            {/* <HalvedSphere position={[-3.5, 0.15, -6]} rotation={[0, 0, 0]} /> */}
-
-            <BumperWithLight position={[2.95, 0.75, -4.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            {/** Bumper im Spielfeld hinten rechts  */}
+            <BumperWithLight position={[5.25, 0.75, -6.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             {/** Bumper weiter vorne */}
-            <BumperWithLight position={[3.75, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[3.75, 0.75, -3]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[0.25, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[0.25, 0.75, 1.75]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+
             <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             <ShooterLane x={3.5} />
@@ -398,17 +412,17 @@ function FlipperScene({ stateData }) {
             {/**  */}
             {/* <RollerCoasterTrack points={trackPoints}/> */}
 
-            {/* <TubeTrack points={tubeTrackPoints} />  Rings vor dem Plunger*/}
+            {/* Ringe vor der Feder des Plunger*/}
             <RubberRing position={[3.5, 0.95, 4.5]} args={[0.75, 0.05, 16, 64]} color="#666" />
             <RubberRing position={[3.5, 0.95, 4]} args={[0.75, 0.15, 16, 64]} color="grey" />
             <RubberRing position={[3.5, 0.95, 3.5]} args={[0.75, 0.2, 16, 64]} color="darkgrey" />
 
             {/** Ringe im hinteren Bereich */}
-            <RubberRing position={[3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
             <RubberRing position={[-3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
 
-            {/** ExplodingBox geht zu früh in Rauch auf... */}
-            {/* <ExplodingBox position = {[0, 0.35, 4]} color = {red[500]}/> */}
+            {/** Ring im Spielfeldbereich hinten rechts */}
+            <RubberRing position={[4.75, 0.95, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
+            <RubberRing position={[6.75, 0.95, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
 
             {/** Texte oberhalb der Spielfläche */}
             {
@@ -425,11 +439,6 @@ function FlipperScene({ stateData }) {
             <HalvedSphere position={[-3.5, 0.85, 3.5]} rotation={[1.55, 0, 1]} />
             <HalvedSphere position={[-3.35, 0.9, 4.5]} rotation={[1.55, 0, 0.95]} />
             <HalvedSphere position={[-2.85, 0.9, 5]} rotation={[1.55, 0, 0.9]} />
-
-            <HalfBentTube ref={tubeRef}
-               position={[0, 1.75, -6.95]}
-               rotation={[0, 0, 0]}
-               gameOver={stateData.gameOver} />
          </>
       )
    }
@@ -456,9 +465,6 @@ function Playfield({ texture = '' }) {
       default:
          break;
    }
-
-   // useEffect(() => { },
-   //    [meshTexture])
 
    return (
       <RigidBody
@@ -491,12 +497,12 @@ function Playfield({ texture = '' }) {
 
          {/* Floor */}
          <CuboidCollider
-            args={[4.5, 0.2, 7]}   // half sizes!
+            args={[5, 0.225, 7.5]}   // half sizes!
             position={[0, 0, 0]}
             restitution={0.15}
          />
          <mesh position={[0, 0, 0]} receiveShadow>
-            <boxGeometry args={[9, 0.45, 14]} />
+            <boxGeometry args={[10, 0.45, 15]} />
             <meshStandardMaterial
                color={meshTexture ? green[100] : green[200]}
                map={meshTexture ? meshTexture : null}
@@ -504,6 +510,22 @@ function Playfield({ texture = '' }) {
                roughness={meshTexture ? 0.45 : 0.45}
             />
             <Hole position={[-2.25, 0.15, 4]} />
+         </mesh>
+
+         {/** zone upper right */}
+         <CuboidCollider
+            args={[2.75, 0.05, 3.75]}   // half sizes of the geometry used
+            position={[5.5, 0.05, 7.5]}
+            restitution={0.1}
+         />
+         <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
+            <boxGeometry args={[5, 0.4, 7.5]} />
+            <meshStandardMaterial
+               color={meshTexture ? red[100] : red[500]}
+               map={meshTexture ? meshTexture : null}
+               metalness={meshTexture ? 0.15 : 0.5}
+               roughness={meshTexture ? 0.25 : 0.15}
+            />
          </mesh>
 
          {/** Ceiling / Lid on playfield */}
@@ -516,6 +538,7 @@ function Playfield({ texture = '' }) {
             <boxGeometry args={[9, 0.5, 14]} />
             <meshStandardMaterial color="lightblue" metalness={0} roughness={0.15} opacity={0.15} transparent />
          </mesh>
+
       </RigidBody>
    )
 }  // PlayField()
@@ -523,13 +546,12 @@ function Playfield({ texture = '' }) {
 function Walls() {
 
    const wall = (pos, size) => (
-      <RigidBody type="fixed" position={pos} colliders="cuboid" restitution={0.65} friction={0.05}>
+      <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders="cuboid" restitution={0.65} friction={0.05}>
 
          {/* <CuboidCollider args={[0.5, 0.35, 0.5]} restitution={1.5} friction={0.05} /> */}
-
          <mesh>
             <boxGeometry args={size} />
-            <meshStandardMaterial color="lightgreen" opacity={0.25} transparent />
+            <meshStandardMaterial color="lightgreen" opacity={0.5} transparent />
          </mesh>
       </RigidBody>
    )
@@ -538,8 +560,23 @@ function Walls() {
       <>
          {/**   pos,            size      */}
          {wall([-4.5, 0.75, 0], [0.3, 3, 14])}
-         {wall([4.5, 0.75, 0], [0.3, 3, 14])}
-         {wall([0, 0.75, -7], [9, 3, 0.3])}
+
+         {wall([4.5, 0.75, 2], [0.3, 3, 10])}
+
+         {/** Rückwand Hauptfeld */}
+         {wall([-0.75, 0.75, -7], [7, 3, 0.3])}
+
+         {/** Umrandung vorne rechts */}
+         {wall([6.15, 0.75, -3.5], [3.75, 3, 0.3])}
+         {/** Umrandung hinten rechts */}
+         {wall([5.5, 0.75, -11], [5, 3, 0.3])}
+         {/** Umrandung hinten links */}
+         {wall([3, 0.75, -9], [0.3, 3, 4])}
+         {/** Umrandung hinten links */}
+         {wall([3, 0.75, -9], [0.3, 3, 4])}
+         {/** Umrandung hinten rechts außen */}
+         {wall([8, 0.75, -7.25], [0.3, 3, 7])}
+
       </>
    )
 }  // Walls()
@@ -736,14 +773,14 @@ function Flipper({ position, side = "left", length = 2 }) {
 
    return (
       <>
-         {/* Invisible fixed pivot */}
+         {/* Invisible fixed pivot / axis*/}
          <RigidBody type="fixed" ref={pivot} position={position} />
 
          {/* Flipper */}
          <RigidBody
             ref={flipper}
             type="dynamic"
-            colliders="cuboid"
+            colliders="hull"  // using trimesh causes error
             restitution={0.9}
             friction={0.1}
             angularDamping={0.5}
@@ -756,13 +793,15 @@ function Flipper({ position, side = "left", length = 2 }) {
          >
             <mesh castShadow>
                {/** works; capsuleGeometry, extrudeGeometry does not */}
-               {/* <boxGeometry args={[length, 0.35, 0.4, 32, 32, 32]} /> */}
-
-               <boxGeometry args={[length, 0.95, 0.2, 32, 32, 32]} />
-               {/* <capsuleGeometry args={[0.2, length - 0.4, 16, 32]} rotation={[Math.PI / 2, 0, 0]}/> */}
-               {/* <extrudeGeometry args={[flipperShape(length), { depth: 0.4, bevelEnabled: false }]} /> */}
+               <boxGeometry args={[length, 0.95, 0.15, 32, 32, 32]} />
 
                <meshStandardMaterial color='orange' metalness={0.95} roughness={0.45} />
+
+               {/* <RoundedBox args={[4, 1.25, 1]} radius={0.25} smoothness={4}></RoundedBox> */}
+
+               {/* <RoundedBox args={[4, 1.25, 1]} radius={0.25} smoothness={4} >
+                  <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} opacity={0.95} transparent />
+               </RoundedBox> */}
 
                {/** LEFT == 1, RIGHT == -1 */}
                {dir === 1 &&
@@ -796,7 +835,7 @@ const Ball = forwardRef(({ position, stateData }, ref) => {
          ref.current.wakeUp()
          ref.current.setLinvel({ x: 0, y: 0, z: -1 }, true)
          ref.current.setAngvel({ x: 0, y: 0, z: 2 }, true)
-      }, 2000)
+      }, 3000)
 
       return () => clearTimeout(timer)
    }, [ref])
@@ -809,11 +848,11 @@ const Ball = forwardRef(({ position, stateData }, ref) => {
       const pos = ref.current.translation()  // aktuelle Position des Balles 
 
       // Playfield bounds (must match your field size)
-      const X_LIMIT = 4.5    // x-wert des cuboidCollider für den Ball 
+      const X_LIMIT = 10    // x-wert des cuboidCollider für den Ball 
       const Y_LIMIT = -0.5   // y-Wert, Ball fell through
-      const Z_LIMIT = 7      // z-wert des cuboidCollider für den Ball
+      const Z_LIMIT = 15      // z-wert des cuboidCollider für den Ball
 
-      if (Math.abs(pos.x) > X_LIMIT || pos.y < Y_LIMIT || Math.abs(pos.z) > Z_LIMIT ) {
+      if (Math.abs(pos.x) > X_LIMIT || pos.y < Y_LIMIT || Math.abs(pos.z) > Z_LIMIT) {
          ref.current = null  // Ball-Referenz zurücksetzen  //???
          stateData.setPhysicsKey(prev => prev + 1)  // Physics World neu starten, um "toten" Ball zu entfernen 
          stateData.setGameOver(true)
@@ -945,7 +984,7 @@ function Plunger({ ballRef, x = 2.5 }) {
 
    return (
       <RigidBody
-         type="fixed" 
+         type="fixed"
          position={[x, 0.65, 6.75]}
 
          colliders="cuboid"
@@ -1520,18 +1559,24 @@ function HalfBentTube({ position = [0, 0, 0], rotation = [0, 0, 0], gameOver = f
             emissive={gameOver ? red[500] : null}
             emissiveIntensity={gameOver ? 0.95 : null}
             metalness={0.95}
-            roughness={0.25}
-            opacity={0.85}
+            roughness={0.35}
+            opacity={gameOver ? 0.65 : 0.85}
             transparent />
       </mesh>
    )
 }
 
 //*
-function PointsDisplay({ noPoints }) {
+function PointsDisplay({ noPoints, gameOver }) {
+
+   let tubeRef = useRef()
 
    return (
       <group position={[0, 1, -0.25]}>
+         <HalfBentTube ref={tubeRef}
+            position={[0, 1.5, -6.95]}
+            rotation={[0, 0, 0]}
+            gameOver={gameOver} />
          <mesh>
             {/* <Html>
                   <Card position={[0, 6, -5]}>
@@ -1544,18 +1589,41 @@ function PointsDisplay({ noPoints }) {
                anchorX="center"
                anchorY="middle"
                outlineWidth={0.15}
-               outlineColor={orange[200]}
+               outlineColor={orange[100]}
             >
                {noPoints}
-               <meshStandardMaterial color={green[800]} metalness={0.85} roughness={0.35} />
+               <meshStandardMaterial color={green[900]} metalness={0.75} roughness={0.45} />
             </Text>
          </mesh >
          <mesh position={[0, 6, -5.75]}>
             {/** args={[width, height, depth]} */}
             <RoundedBox args={[6, 2.25, 1]} radius={0.25} smoothness={4} >
-               <meshStandardMaterial color={green[100]} metalness={0.85} roughness={0.35} opacity={0.95} transparent />
+               <meshStandardMaterial color={green[500]} metalness={0.95} roughness={0.35} opacity={0.85} transparent />
             </RoundedBox>
          </mesh>
+      </group>
+   )
+}
+
+//*
+function Electron({ radius = 2.75, speed = 6, position, rotation }) {
+   const ref = useRef()
+
+   useFrame((state) => {
+      const t = state.clock.getElapsedTime() * speed
+      ref.current.position.set(Math.sin(t) * radius, (Math.cos(t) * radius * Math.atan(t)) / Math.PI / 1.25, 0)
+
+      // ref.current.position.set(position[0], position[1], position[2])
+   })
+
+   return (
+      <group position={position} rotation={rotation}>
+         <Trail local width={5} length={10} color={new THREE.Color(2, 1, 10)} attenuation={(t) => t * t}>
+            <mesh ref={ref} >
+               <sphereGeometry args={[0.55]} position={[0, 5, -5]} />
+               <meshBasicMaterial color={[10, 1, 10]} toneMapped={false} />
+            </mesh>
+         </Trail>
       </group>
    )
 }
