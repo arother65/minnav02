@@ -513,22 +513,22 @@ function Playfield({ texture = '' }) {
          </mesh>
 
          {/** zone upper right */}
-         <CuboidCollider
-            args={[2.75, 0.05, 3.75]}   // half sizes of the geometry used
-            position={[5.5, 0.05, 7.5]}
-            restitution={0.1}
-         />
-         <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
-            <boxGeometry args={[5, 0.4, 7.5]} />
-            <meshStandardMaterial
-               color={meshTexture ? red[100] : red[500]}
-               map={meshTexture ? meshTexture : null}
-               metalness={meshTexture ? 0.15 : 0.5}
-               roughness={meshTexture ? 0.25 : 0.15}
+            <CuboidCollider
+               args={[2.5, 0.2, 3.75]}   // half sizes of the geometry used
+               position={[5.5, 0.05, -7.25]}  // must match with position of the mesh 
+               restitution={0.15}
             />
-         </mesh>
+            <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
+               <boxGeometry args={[5, 0.4, 7.5]} />
+               <meshStandardMaterial
+                  color={meshTexture ? red[100] : red[500]}
+                  map={meshTexture ? meshTexture : null}
+                  metalness={meshTexture ? 0.15 : 0.5}
+                  roughness={meshTexture ? 0.25 : 0.15}
+               />
+            </mesh>
 
-         {/** Ceiling / Lid on playfield */}
+         {/** Ceiling / Lid on main playfield */}
          <CuboidCollider
             args={[4.5, 0.25, 7]}   // half sizes!
             position={[0, 2.5, 0]}
@@ -537,6 +537,17 @@ function Playfield({ texture = '' }) {
          <mesh position={[0, 2.65, 0]} rotation={[0.025, 0, 0]}>
             <boxGeometry args={[9, 0.5, 14]} />
             <meshStandardMaterial color="lightblue" metalness={0} roughness={0.15} opacity={0.15} transparent />
+         </mesh>
+
+         {/** Ceiling / Lid on playfield upper right*/}
+         <CuboidCollider
+            args={[2.5, 0.25, 3.65]}   // half sizes!
+            position={[6, 2.5, -5]}
+            restitution={0.1}
+         />
+         <mesh position={[5.5, 2.65, -7.25]} rotation={[0.025, 0, 0]}>
+            <boxGeometry args={[5, 0.5, 7.5]} />
+            <meshStandardMaterial color="red" metalness={0} roughness={0.15} opacity={0.15} transparent />
          </mesh>
 
       </RigidBody>
@@ -549,6 +560,7 @@ function Walls() {
       <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders="cuboid" restitution={0.65} friction={0.05}>
 
          {/* <CuboidCollider args={[0.5, 0.35, 0.5]} restitution={1.5} friction={0.05} /> */}
+
          <mesh>
             <boxGeometry args={size} />
             <meshStandardMaterial color="lightgreen" opacity={0.5} transparent />
@@ -576,7 +588,6 @@ function Walls() {
          {wall([3, 0.75, -9], [0.3, 3, 4])}
          {/** Umrandung hinten rechts außen */}
          {wall([8, 0.75, -7.25], [0.3, 3, 7])}
-
       </>
    )
 }  // Walls()
@@ -848,9 +859,9 @@ const Ball = forwardRef(({ position, stateData }, ref) => {
       const pos = ref.current.translation()  // aktuelle Position des Balles 
 
       // Playfield bounds (must match your field size)
-      const X_LIMIT = 10    // x-wert des cuboidCollider für den Ball 
-      const Y_LIMIT = -0.5   // y-Wert, Ball fell through
-      const Z_LIMIT = 15      // z-wert des cuboidCollider für den Ball
+      const X_LIMIT = 20    // x-wert des cuboidCollider für den Ball 
+      const Y_LIMIT = -1.25   // y-Wert, Ball fell through
+      const Z_LIMIT = 22      // z-wert des cuboidCollider für den Ball
 
       if (Math.abs(pos.x) > X_LIMIT || pos.y < Y_LIMIT || Math.abs(pos.z) > Z_LIMIT) {
          ref.current = null  // Ball-Referenz zurücksetzen  //???
