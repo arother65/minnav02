@@ -16,6 +16,7 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { OrbitControls, Text, useTexture, useGLTF, Html } from "@react-three/drei"
 import { RoundedBox } from "@react-three/drei"
 import { Trail, Float, Line, Sphere, Stars } from '@react-three/drei'
+import { Text3D } from "@react-three/drei"
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
@@ -383,6 +384,10 @@ function FlipperScene({ stateData }) {
             {/** Display for points */}
             <PointsDisplay noPoints={stateData.noPoints} gameOver={stateData.gameOver} />
 
+            {/* <Text3D font="/fonts/helvetiker_regular.typeface.json" position={[0, 5, 0]} rotation={[0, 0, 0]}>
+               R3F 3d Text 
+            </Text3D> */}
+
             {/** Spielfeld */}
             <Playfield texture={stateData.texture} />
             <Walls />
@@ -397,7 +402,8 @@ function FlipperScene({ stateData }) {
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             {/** Bumper im Spielfeld hinten rechts  */}
-            <BumperWithLight position={[5.25, 0.75, -6.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[5.95, 0.75, -5.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
+            <BumperWithLight position={[6.05, 0.75, -8.25]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
             {/** Bumper weiter vorne */}
             <BumperWithLight position={[3.75, 0.75, -3]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
@@ -406,23 +412,23 @@ function FlipperScene({ stateData }) {
 
             <BumperWithLight position={[-3.5, 0.75, -1]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
 
-            <ShooterLane x={3.5} />
-            <Plunger ballRef={stateData.ballRef} x={3.5} />
-
             {/**  */}
             {/* <RollerCoasterTrack points={trackPoints}/> */}
 
+            <ShooterLane x={3.5} />
+            <Plunger ballRef={stateData.ballRef} x={3.5} />
+
             {/* Ringe vor der Feder des Plunger*/}
-            <RubberRing position={[3.5, 0.95, 4.5]} args={[0.75, 0.05, 16, 64]} color="#666" />
-            <RubberRing position={[3.5, 0.95, 4]} args={[0.75, 0.15, 16, 64]} color="grey" />
-            <RubberRing position={[3.5, 0.95, 3.5]} args={[0.75, 0.2, 16, 64]} color="darkgrey" />
+            <RubberRing position={[3.5, 0.95, 4.95]} args={[0.75, 0.05, 16, 64]} color="#666" />
+            <RubberRing position={[3.5, 0.95, 5.10]} args={[0.75, 0.15, 16, 64]} color="grey" />
+            <RubberRing position={[3.5, 0.95, 5.35]} args={[0.75, 0.2, 16, 64]} color="darkgrey" />
 
             {/** Ringe im hinteren Bereich */}
             <RubberRing position={[-3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
 
             {/** Ring im Spielfeldbereich hinten rechts */}
-            <RubberRing position={[4.75, 0.95, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
-            <RubberRing position={[6.75, 0.95, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
+            <RubberRing position={[3.95, 0.85, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
+            <RubberRing position={[7.25, 0.85, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
 
             {/** Texte oberhalb der Spielfläche */}
             {
@@ -472,7 +478,7 @@ function Playfield({ texture = '' }) {
          rotation={[-0.025, 0, 0]} // slope
          colliders={false}
       >
-         {/** Decoration on the lower edge of the playfield */}
+         {/** Decoration on the upper edge of the playfield */}
          <group name='grpDecoTop'>
             <mesh position={[-3, 3.5, -7]} receiveShadow>
                <dodecahedronGeometry args={[0.95]} />
@@ -513,20 +519,20 @@ function Playfield({ texture = '' }) {
          </mesh>
 
          {/** zone upper right */}
-            <CuboidCollider
-               args={[2.5, 0.2, 3.75]}   // half sizes of the geometry used
-               position={[5.5, 0.05, -7.25]}  // must match with position of the mesh 
-               restitution={0.15}
+         <CuboidCollider
+            args={[2.5, 0.2, 3.75]}   // half sizes of the geometry used
+            position={[5.5, 0.05, -7.25]}  // must match with position of the mesh 
+            restitution={0.15}
+         />
+         <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
+            <boxGeometry args={[5, 0.4, 7.5]} />
+            <meshStandardMaterial
+               color={meshTexture ? red[100] : red[500]}
+               map={meshTexture ? meshTexture : null}
+               metalness={meshTexture ? 0.15 : 0.5}
+               roughness={meshTexture ? 0.25 : 0.15}
             />
-            <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
-               <boxGeometry args={[5, 0.4, 7.5]} />
-               <meshStandardMaterial
-                  color={meshTexture ? red[100] : red[500]}
-                  map={meshTexture ? meshTexture : null}
-                  metalness={meshTexture ? 0.15 : 0.5}
-                  roughness={meshTexture ? 0.25 : 0.15}
-               />
-            </mesh>
+         </mesh>
 
          {/** Ceiling / Lid on main playfield */}
          <CuboidCollider
@@ -557,9 +563,10 @@ function Playfield({ texture = '' }) {
 function Walls() {
 
    const wall = (pos, size) => (
-      <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders="cuboid" restitution={0.65} friction={0.05}>
+      // <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders="cuboid" restitution={0.65} friction={0.05}>
+      <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders={false}>
 
-         {/* <CuboidCollider args={[0.5, 0.35, 0.5]} restitution={1.5} friction={0.05} /> */}
+         <CuboidCollider args={[size[0] / 2, size[1] / 2, size[2] / 2]} restitution={0.5} friction={0.05} />
 
          <mesh>
             <boxGeometry args={size} />
@@ -637,7 +644,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
-               ball.applyTorqueImpulse({ x: -dz * 5, y: 0, z: dx * 5 }, true)
+               ball.applyTorqueImpulse({ x: -dz * 10, y: 0, z: -dx * 10 }, true)
 
                // ---- VISUAL FLASH ----
                flash.current = 1
@@ -1605,6 +1612,20 @@ function PointsDisplay({ noPoints, gameOver }) {
                {noPoints}
                <meshStandardMaterial color={green[900]} metalness={0.75} roughness={0.45} />
             </Text>
+
+            {/* <Text3D position={[-4, 5, -5]} rotation={[0, 0, 0]}
+               font="/fonts/helvetiker_regular.typeface.json"
+               fontSize={1.95}
+               anchorX="center"
+               anchorY="middle"
+               outlineWidth={0.15}
+               outlineColor={orange[200]}>
+               {noPoints}
+               <meshStandardMaterial color={red[500]} metalness={0.75} roughness={0.45} />
+            </Text3D> */}
+
+            {/* <PulsingNeon position={[-4, 5, -5]} rotation={[0, 0, 0]} />  */}
+
          </mesh >
          <mesh position={[0, 6, -5.75]}>
             {/** args={[width, height, depth]} */}
@@ -1636,5 +1657,30 @@ function Electron({ radius = 2.75, speed = 6, position, rotation }) {
             </mesh>
          </Trail>
       </group>
+   )
+}
+
+//*
+function PulsingNeon({ position, rotation }) {
+
+   const mat = useRef()
+
+   useFrame((state) => {
+      if (!mat.current) return
+
+      mat.current.emissiveIntensity =
+         1.5 + Math.sin(state.clock.elapsedTime * 3) * 0.5  //?
+   })
+
+   return (
+      <Text3D font="/fonts/helvetiker_regular.typeface.json" position={position} rotation={rotation}>
+         GLOW Text3D
+         <meshStandardMaterial
+            ref={mat}
+            color="#ff00ff"
+            emissive="#ff00ff"
+            toneMapped={false}
+         />
+      </Text3D>
    )
 }
