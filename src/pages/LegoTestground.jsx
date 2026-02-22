@@ -1,6 +1,6 @@
 /**
  * 
- *  Stand: 20.01.2026
+ *  Stand: 22.02.2026
  * 
  */
 
@@ -10,12 +10,10 @@ import { useNavigate } from 'react-router-dom'
 import { AppBar, Box, Button, Card, IconButton, Toolbar, Tooltip } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 
-import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { useFrame } from '@react-three/fiber'
 import { OrbitControls, Environment, Text } from "@react-three/drei"
 import logo from '../logo.svg'
-
 
 //* customer components for this page
 import Footer from '../components/Footer'
@@ -23,33 +21,18 @@ import { InstancedLegoBricks } from "../components/InstancedLegoBricks"
 
 import importedBricks from '../components/lego/bricksData.json'
 import { Physics, RigidBody } from '@react-three/rapier'
+import { velocity } from 'three/src/nodes/accessors/VelocityNode.js'
 
 //*
 export default function LegoScene() {
 
   // navigation 
-  const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
-
-  const [hovered, setHovered] = useState(null)
-  const [selected, setSelected] = useState(null)
+  const fnNavigate = useNavigate()  // creates a function of type NavigateFunction
 
   // imported bricks from JSON-object
   const [bricks, setBricks] = useState(importedBricks)
-  const [bricksLoaded, setBricksLoaded] = useState(false)
-  useEffect(() => {
-    // setBricks()
-  }, [bricks])
 
-
-  const checkData = () => {
-    if (bricks) {
-      // setBricks(importedBricks)
-      setBricksLoaded(true)
-    } else {
-      setBricksLoaded(false)
-    }
-  }  // checkData()
-
+  // testdata for bricks, if no data is imported from JSON-object 
   const bricks01 = [
     {
       id: 1,
@@ -77,118 +60,6 @@ export default function LegoScene() {
   // states for the bricks
   const [wireframe, setWireframe] = useState(false);
   const [explodedBrick, setExplodedBrick] = useState(false);
-
-
-  function Fragment({ position, color, velocity, noFragments }) {
-
-    let modNoFragments = noFragments % 2
-
-    const angular = useMemo(() => [
-      (Math.random() - 0.5) * 10,
-      (Math.random() - 0.5) * 10,
-      (Math.random() - 0.5) * 10,
-    ], [])
-
-    return (
-      // <RigidBody
-      //   position={position}
-      //   linearVelocity={velocity}
-      //   angularVelocity={[
-      //     (Math.random() - 0.5) * 10,
-      //     (Math.random() - 0.5) * 10,
-      //     (Math.random() - 0.5) * 10,
-      //   ]}
-      //   gravityScale={0.5}
-      //   restitution={0.4}
-      //   friction={0.6}
-      //   colliders="ball"
-      // >
-      //   <mesh ref={ref} >
-      //     {(modNoFragments === 0) &&
-      //       <sphereGeometry args={[0.08, 8, 8]}>
-      //         {/* <meshStandardMaterial ref={matRef} color={color} /> */}
-      //       </sphereGeometry>
-      //     }
-      //     {(modNoFragments > 0) &&
-      //       <coneGeometry args={[0.05, 0.2, 3]}>
-      //         {/* <meshStandardMaterial ref={matRef} color={color} /> */}
-      //       </coneGeometry>
-      //     }
-      //     <meshStandardMaterial color={color} />
-      //   </mesh>
-      // </RigidBody>
-
-      <RigidBody
-        position={position}
-        linearVelocity={velocity}
-        angularVelocity={angular}
-        gravityScale={0.5}
-        restitution={0.4}
-        friction={0.6}
-      // colliders="ball"
-      >
-        {modNoFragments === 0 ? (
-          <mesh>
-            <sphereGeometry args={[0.08, 8, 8]} />
-            <meshStandardMaterial color={color} />
-          </mesh>
-        ) : (
-          <mesh>
-            <coneGeometry args={[0.05, 0.2, 3]} />
-            <meshStandardMaterial color={color} />
-          </mesh>
-        )}
-      </RigidBody>
-    )
-  }  // Fragment()
-
-  function ExplodingBrick({ position, color, noFragments }) {
-
-    const velocity = useMemo(() => [
-      (Math.random() - 0.5) * 6,
-      Math.random() * 6,
-      (Math.random() - 0.5) * 6,
-    ], [])
-
-    return (
-      Array.from({ length: noFragments }).map((_, i) => (
-        <Fragment
-          key={i}  // ✅ REQUIRED: Unique key for each fragment
-          // velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
-          velocity={velocity}
-          position={position}
-          color={color}
-          noFragments={noFragments}
-        />
-      ))  // Array.from()
-    )  // return()
-  }  // ExplodingBrick()
-
-  //
-  function Fade3DText({ text, delay = 5 }) {
-    const ref = useRef()
-
-    useFrame((_, delta) => {
-      if (!ref.current) return
-      ref.current.material.opacity = Math.max(0, ref.current.material.opacity - delta * 0.5)
-    })
-
-    useEffect(() => {
-      setTimeout(() => {
-        ref.current.material.transparent = true
-      }, delay * 1000)
-    }, [delay])
-
-    return (
-      <Text
-        ref={ref}
-        color="white"
-        position={[0, 4, 0]}
-        rotation={[0, 0.75, 0]}>
-        {text}
-      </Text>
-    )
-  }  // Fade3DText()
 
   // Main component 
   return (
@@ -242,16 +113,9 @@ export default function LegoScene() {
               </Button>
               <Button variant="outlined" color="warning" className='m-1'
                 onClick={() => {
-                  // color col with canvas
-                  // let colCanvas = document.getElementById('idColCanvas')
-                  // let className = colCanvas.className
-                  // let newClassName = ''
-                  // newClassName = newClassName.concat(className, ' bg-dark')
-                  // colCanvas.setAttribute('className', newClassName)
-
-                  // effect
+                  // trigger effect
                   setExplodedBrick(true)
-                  // setBricks([])
+                  setWireframe(false)  //? reset wireframe to false, if it was active, to show the explosion better
                 }}>
                 explode scene
               </Button>
@@ -296,15 +160,17 @@ export default function LegoScene() {
                 height: "90vh",
                 display: "block"
               }}
-              onPointerMissed={() => {
-                setSelected(null);
-                setHovered(null);
-              }}
+            // onPointerMissed={() => {
+            //   setSelected(null);
+            //   setHovered(null);
+            // }}
             >
               <ambientLight intensity={2} />
               <directionalLight position={[5, 5, 5]} castShadow />
-              <Physics gravity={explodedBrick ? [1, -5, 1] : [0, -9.81, 0]} interpolate={false}>
-
+              <Physics gravity={explodedBrick ? [1, -5, 1] : [0, -9.81, 0]}
+                interpolate={false}
+                key={explodedBrick ? 'exploded' : 'normal'}  //? forces re-rendering of physics when explodedBrick changes
+              >
                 <Environment preset="sunset" />
 
                 {!bricks &&
@@ -320,21 +186,23 @@ export default function LegoScene() {
                   </Text>
                 }
 
-                <group visible={!explodedBrick}>
-                  <Fade3DText text={'bricks data loaded'} />
-                  <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
-                  <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
-                </group>
+                {!explodedBrick &&
+                  <>
+                    <Fade3DText text={'bricks data loaded'} />
+                    <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
+                    <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
+                  </>}
 
-                <group visible={explodedBrick}>
-                  <ExplodingBrick position={[-5, -1, 2]} color="red" noFragments={64} />
-                  <ExplodingBrick position={[-3, 1, 3]} color="blue" noFragments={8} />
-                  <ExplodingBrick position={[-1, 2, 2]} color="orange" noFragments={32} />
-                  <ExplodingBrick position={[1, 2, 3]} color="black" noFragments={64} />
-                  <ExplodingBrick position={[1, 2, 2]} color="grey" noFragments={8} />
+                {explodedBrick &&
+                  <>
+                    <ExplodingBrick position={[-5, -1, 2]} color="red" noFragments={64} />
+                    <ExplodingBrick position={[-3, 1, 3]} color="blue" noFragments={8} />
+                    <ExplodingBrick position={[-1, 2, 2]} color="orange" noFragments={32} />
+                    <ExplodingBrick position={[1, 2, 3]} color="black" noFragments={64} />
+                    <ExplodingBrick position={[1, 2, 2]} color="grey" noFragments={8} />
 
-                  {/* <Fade3DText text={'...bricks destroyed as ordered.'} /> */}
-                </group>
+                    {/* <Fade3DText text={'...bricks destroyed as ordered.'} /> */}
+                  </>}
               </Physics>
 
               <OrbitControls />
@@ -349,3 +217,91 @@ export default function LegoScene() {
     </div >
   )
 }  // LegoScene()
+
+//* functions used in main component 
+
+function Fade3DText({ text, delay = 5 }) {
+
+  const refText = useRef()
+
+  useFrame((_, delta) => {
+    if (refText.current) {
+      // refText.current._defaultMaterial.opacity = Math.max(0, refText.current_defaultMaterial.opacity - delta * 0.5)
+      refText.current.material.opacity = Math.max(0, refText.current.material.opacity - delta * 0.5)
+    }
+  })
+
+  useEffect(() => {
+    if (refText.current) {
+      setTimeout(() => {
+        refText.current.material.transparent = true
+      }, delay * 1000)
+    }
+  }, [delay])
+
+  return (
+    <Text
+      ref={refText}
+      color="white"
+      position={[0, 4, 0]}
+      rotation={[0, 0.75, 0]}>
+      {text}
+    </Text>
+  )
+}  // Fade3DText()
+
+function ExplodingBrick({ position = [0, 0, 0], color = "red", noFragments = 64 }) {
+
+  const velocity = useMemo(() => [
+    (Math.random() - 0.5) * 6,
+    Math.random() * 6,
+    (Math.random() - 0.5) * 6,
+  ], [])
+
+  return (
+    Array.from({ length: noFragments }).map((_, i) => (
+      <Fragment
+        key={i}  // ✅ REQUIRED: Unique key for each fragment
+        // velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+        velocity={velocity}
+        position={position}
+        color={color}
+        noFragments={noFragments}
+      />
+    ))  // Array.from()
+  )  // return()
+}  // ExplodingBrick() uses Fragment()
+
+function Fragment({ position = [0, 0, 0], color, velocity, noFragments = 32 }) {
+
+  let modNoFragments = noFragments % 2
+
+  const angular = useMemo(() => [
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10,
+  ], [])
+
+  return (
+    <RigidBody
+      position={position}
+      linearVelocity={velocity}
+      angularVelocity={angular}
+      gravityScale={0.5}
+      restitution={0.4}
+      friction={0.6}
+    >
+      {modNoFragments === 0 ? (
+        <mesh>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      ) : (
+        <mesh>
+          <coneGeometry args={[0.05, 0.2, 3]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      )}
+    </RigidBody>
+  )
+}  // Fragment()
