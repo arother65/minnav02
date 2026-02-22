@@ -13,10 +13,9 @@ import { useState, useRef, useEffect, useMemo, forwardRef } from "react"
 import * as THREE from "three"
 import { Canvas, useFrame } from "@react-three/fiber"
 
-import { OrbitControls, Text, useTexture, useGLTF, Html } from "@react-three/drei"
+import { Center, OrbitControls, Text, Text3D, useTexture, useGLTF, Html } from "@react-three/drei"
 import { RoundedBox } from "@react-three/drei"
 import { Trail, Float, Line, Sphere, Stars } from '@react-three/drei'
-import { Text3D } from "@react-three/drei"
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 
 import { RigidBody, BallCollider, CuboidCollider, Physics, useRevoluteJoint } from '@react-three/rapier'
@@ -520,12 +519,12 @@ function Playfield({ texture = '' }) {
 
          {/** zone upper right */}
          <CuboidCollider
-            args={[2.5, 0.2, 3.75]}   // half sizes of the geometry used
+            args={[2.5, 0.2, 3.85]}   // half sizes of the geometry used
             position={[5.5, 0.05, -7.25]}  // must match with position of the mesh 
             restitution={0.15}
          />
          <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
-            <boxGeometry args={[5, 0.4, 7.5]} />
+            <boxGeometry args={[5, 0.4, 7.70]} />
             <meshStandardMaterial
                color={meshTexture ? red[100] : red[500]}
                map={meshTexture ? meshTexture : null}
@@ -547,12 +546,12 @@ function Playfield({ texture = '' }) {
 
          {/** Ceiling / Lid on playfield upper right*/}
          <CuboidCollider
-            args={[2.5, 0.25, 3.65]}   // half sizes!
+            args={[2.5, 0.25, 3.85]}   // half sizes!
             position={[6, 2.5, -5]}
             restitution={0.1}
          />
          <mesh position={[5.5, 2.65, -7.25]} rotation={[0.025, 0, 0]}>
-            <boxGeometry args={[5, 0.5, 7.5]} />
+            <boxGeometry args={[5, 0.5, 7.75]} />
             <meshStandardMaterial color="red" metalness={0} roughness={0.15} opacity={0.15} transparent />
          </mesh>
 
@@ -700,22 +699,6 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
       </>
    )
 }  // BumperWithLight
-
-//*
-function flipperShape(length) {
-   const shape = new THREE.Shape()
-
-   const baseWidth = 0.5
-   const tipWidth = 0.35
-
-   shape.moveTo(0, -baseWidth / 2)
-   shape.lineTo(length * 0.8, -tipWidth / 2)
-   shape.quadraticCurveTo(length, 0, length * 0.8, tipWidth / 2)
-   shape.lineTo(0, baseWidth / 2)
-   shape.quadraticCurveTo(-0.3, 0, 0, -baseWidth / 2)
-
-   return shape
-}
 
 //*
 function Flipper({ position, side = "left", length = 2 }) {
@@ -1552,8 +1535,9 @@ function HalfBentTube({ position = [0, 0, 0], rotation = [0, 0, 0], gameOver = f
    // Create a half-circle curve
    const curve = new THREE.CatmullRomCurve3(
       Array.from({ length: 50 }, (_, i) => {
+         
          const t = (i / 49) * Math.PI // 0 → 180°
-         const radius = 5  // inner radius of the curve
+         const radius = 6  // inner radius of the curve
 
          return new THREE.Vector3(
             Math.cos(t) * radius,
@@ -1592,9 +1576,10 @@ function PointsDisplay({ noPoints, gameOver }) {
    return (
       <group position={[0, 1, -0.25]}>
          <HalfBentTube ref={tubeRef}
-            position={[0, 1.5, -6.95]}
+            position={[1.7, 1.5, -6.95]}
             rotation={[0, 0, 0]}
             gameOver={gameOver} />
+
          <mesh>
             {/* <Html>
                   <Card position={[0, 6, -5]}>
@@ -1602,7 +1587,7 @@ function PointsDisplay({ noPoints, gameOver }) {
                   </Card>
                </Html> */}
             <Text
-               position={[0, 6, -5.2]}
+               position={[1.75, 6, -5.4]}
                fontSize={1.95}
                anchorX="center"
                anchorY="middle"
@@ -1625,9 +1610,10 @@ function PointsDisplay({ noPoints, gameOver }) {
             </Text3D> */}
 
             {/* <PulsingNeon position={[-4, 5, -5]} rotation={[0, 0, 0]} />  */}
+            {/* <GlassNeonText position={[0, 5, -5]} rotation={[0, 0, 0]}/> */}
 
          </mesh >
-         <mesh position={[0, 6, -5.75]}>
+         <mesh position={[1.75, 6, -5.95]}>
             {/** args={[width, height, depth]} */}
             <RoundedBox args={[6, 2.25, 1]} radius={0.25} smoothness={4} >
                <meshStandardMaterial color={green[500]} metalness={0.95} roughness={0.35} opacity={0.85} transparent />
@@ -1684,3 +1670,66 @@ function PulsingNeon({ position, rotation }) {
       </Text3D>
    )
 }
+
+//*
+function GlassNeonText({ position = [0, 5, -5], rotation = [0, 0, 0] }) {
+
+   return (
+      <mesh position={position} rotation={rotation}>
+         <color attach="background" args={["#050505"]} />
+
+         <Center>
+            {/* 🔥 Inner glowing gas core */}
+            <Text3D
+               font="/fonts/helvetiker_regular.typeface.json"
+               size={1}
+               height={0.2}
+               bevelEnabled
+               bevelSize={0.03}
+               bevelThickness={0.08}
+            >
+               OPEN
+               <meshStandardMaterial
+                  color="#ff4dff"
+                  emissive="#ff00ff"
+                  emissiveIntensity={3}
+                  toneMapped={false}
+                  roughness={0}
+               />
+            </Text3D>
+
+            {/* 🧊 Outer glass tube */}
+            <Text3D
+               font="/fonts/helvetiker_regular.typeface.json"
+               size={1}
+               height={0.25}
+               bevelEnabled
+               bevelSize={0.04}
+               bevelThickness={0.1}
+               scale={1.02}
+            >
+               OPEN
+               <meshPhysicalMaterial
+                  transmission={1}
+                  thickness={0.6}
+                  roughness={0}
+                  metalness={0}
+                  transparent
+                  opacity={0.25}
+                  clearcoat={1}
+                  clearcoatRoughness={0}
+               />
+            </Text3D>
+         </Center>
+
+         {/* ✨ Bloom glow */}
+         {/* <EffectComposer>
+            <Bloom
+               intensity={2}
+               luminanceThreshold={0}
+               luminanceSmoothing={0.8}
+            />
+         </EffectComposer> */}
+      </mesh>
+   )
+}  // 

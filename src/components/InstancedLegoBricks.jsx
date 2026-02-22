@@ -26,9 +26,12 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
 
    const bodyMatrix = new THREE.Matrix4()
    const studMatrix = new THREE.Matrix4()
-   const color = new THREE.Color()
 
+   // 
    useEffect(() => {
+
+      if (!bodyRef.current || !studRef.current) return
+
       // BODY INSTANCES
       bricks.forEach((brick, i) => {
          const { position, width, depth } = brick
@@ -44,7 +47,7 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
          )
 
          bodyRef.current.setMatrixAt(i, bodyMatrix)
-         bodyRef.current.setColorAt(i, color.set(brick.color))
+         bodyRef.current.setColorAt(i, new THREE.Color(brick.color))
       })
 
       bodyRef.current.instanceMatrix.needsUpdate = true
@@ -60,9 +63,8 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
                   brick.position[1] + LEGO.BRICK_HEIGHT + LEGO.STUD_HEIGHT / 2,
                   brick.position[2] + z
                )
-
                studRef.current.setMatrixAt(studIndex, studMatrix)
-               studRef.current.setColorAt(studIndex, color.set(brick.color))
+               studRef.current.setColorAt(studIndex, new THREE.Color(brick.color)) 
                studIndex++
             }
          }
@@ -85,11 +87,12 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
                receiveShadow
                onClick={(e) => {
                   // setExploded(true)
-                  console.log('bricks:', bricks, 'coords: ',  e.barycoord)
+                  console.log('bricks:', bricks, 'coords: ', e.barycoord)
                }}
             >
                <boxGeometry />
                <meshStandardMaterial
+                  // color={color}
                   roughness={0.05}
                   metalness={0.5}
                   // vertexColors
@@ -113,6 +116,8 @@ export function InstancedLegoBricks({ bricks = [], wireframe = false
                <meshStandardMaterial
                   // transparent
                   // opacity={0.5}
+                  // vertexColors
+                  // color={color}
                   wireframe={wireframe}
                   roughness={0.05}
                   metalness={0.5} />

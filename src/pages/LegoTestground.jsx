@@ -81,66 +81,85 @@ export default function LegoScene() {
 
   function Fragment({ position, color, velocity, noFragments }) {
 
-    const ref = useRef()
-    const matRef = useRef()
     let modNoFragments = noFragments % 2
 
-    useFrame(() => {
-      if (!ref.current) { return }
-      if (!matRef.current) { return }
-    })  // useFrame() 
-
-    const [actColor] = useState(color)
-    useEffect(() => {
-      if (matRef.current) {
-        matRef.current.color.set(actColor)
-      }
-      else { return }
-    }, [actColor])
+    const angular = useMemo(() => [
+      (Math.random() - 0.5) * 10,
+      (Math.random() - 0.5) * 10,
+      (Math.random() - 0.5) * 10,
+    ], [])
 
     return (
+      // <RigidBody
+      //   position={position}
+      //   linearVelocity={velocity}
+      //   angularVelocity={[
+      //     (Math.random() - 0.5) * 10,
+      //     (Math.random() - 0.5) * 10,
+      //     (Math.random() - 0.5) * 10,
+      //   ]}
+      //   gravityScale={0.5}
+      //   restitution={0.4}
+      //   friction={0.6}
+      //   colliders="ball"
+      // >
+      //   <mesh ref={ref} >
+      //     {(modNoFragments === 0) &&
+      //       <sphereGeometry args={[0.08, 8, 8]}>
+      //         {/* <meshStandardMaterial ref={matRef} color={color} /> */}
+      //       </sphereGeometry>
+      //     }
+      //     {(modNoFragments > 0) &&
+      //       <coneGeometry args={[0.05, 0.2, 3]}>
+      //         {/* <meshStandardMaterial ref={matRef} color={color} /> */}
+      //       </coneGeometry>
+      //     }
+      //     <meshStandardMaterial color={color} />
+      //   </mesh>
+      // </RigidBody>
+
       <RigidBody
         position={position}
         linearVelocity={velocity}
-        angularVelocity={[
-          (Math.random() - 0.5) * 10,
-          (Math.random() - 0.5) * 10,
-          (Math.random() - 0.5) * 10,
-        ]}
+        angularVelocity={angular}
         gravityScale={0.5}
         restitution={0.4}
         friction={0.6}
-        colliders="ball"
+      // colliders="ball"
       >
-        <mesh ref={ref} position={position} linearVelocity={velocity}>
-          {(modNoFragments === 0) &&
-            <sphereGeometry args={[0.08, 8, 8]}>
-              {/* <meshStandardMaterial ref={matRef} color={color} /> */}
-            </sphereGeometry>
-          }
-          {(modNoFragments > 0) &&
-            <coneGeometry args={[0.05, 0.2, 3]}>
-              {/* <meshStandardMaterial ref={matRef} color={color} /> */}
-            </coneGeometry>
-          }
-          <meshStandardMaterial ref={matRef} />
-        </mesh>
+        {modNoFragments === 0 ? (
+          <mesh>
+            <sphereGeometry args={[0.08, 8, 8]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        ) : (
+          <mesh>
+            <coneGeometry args={[0.05, 0.2, 3]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        )}
       </RigidBody>
     )
   }  // Fragment()
 
   function ExplodingBrick({ position, color, noFragments }) {
 
+    const velocity = useMemo(() => [
+      (Math.random() - 0.5) * 6,
+      Math.random() * 6,
+      (Math.random() - 0.5) * 6,
+    ], [])
+
     return (
       Array.from({ length: noFragments }).map((_, i) => (
-
         <Fragment
-          velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+          key={i}  // ✅ REQUIRED: Unique key for each fragment
+          // velocity={new THREE.Vector3((Math.random() - 0.5) * 6, Math.random() * 6, (Math.random() - 0.5) * 6)}
+          velocity={velocity}
           position={position}
           color={color}
           noFragments={noFragments}
         />
-
       ))  // Array.from()
     )  // return()
   }  // ExplodingBrick()
@@ -284,53 +303,39 @@ export default function LegoScene() {
             >
               <ambientLight intensity={2} />
               <directionalLight position={[5, 5, 5]} castShadow />
+              <Physics gravity={explodedBrick ? [1, -5, 1] : [0, -9.81, 0]} interpolate={false}>
 
-              <Environment preset="sunset" />
+                <Environment preset="sunset" />
 
-              {!bricks &&
-                <Text
-                  position={[-3.5, 0, -4]}
-                  rotation={[0, 0, 0]}
-                  fontSize={1}
-                  color="red"
-                  anchorX="center"
-                  anchorY="middle"
-                >
-                  No bricks data available
-                </Text>
-              }
+                {!bricks &&
+                  <Text
+                    position={[-3.5, 0, -4]}
+                    rotation={[0, 0, 0]}
+                    fontSize={1}
+                    color="red"
+                    anchorX="center"
+                    anchorY="middle"
+                  >
+                    No bricks data available
+                  </Text>
+                }
 
-              {!explodedBrick &&
-                <>
+                <group visible={!explodedBrick}>
                   <Fade3DText text={'bricks data loaded'} />
                   <InstancedLegoBricks bricks={bricks} wireframe={wireframe} />
                   <InstancedLegoBricks bricks={bricks01} wireframe={wireframe} />
-                </>
-              }
-              {explodedBrick &&
-                <>
-                  <Physics
-                    gravity={[1, -5, 1]}
-                  // timeStep="vary"
-                  // paused={false}
-                  // debug={false}
-                  // colliders={false}
-                  // interpolate={true}
-                  // updateLoop="follow"
-                  >
-                    <RigidBody>
-                      <ExplodingBrick position={[-5, -1, 2]} color="red" noFragments={64} />
-                      <ExplodingBrick position={[-3, 1, 3]} color="blue" noFragments={8} />
-                      <ExplodingBrick position={[-1, 2, 2]} color="orange" noFragments={32} />
-                      <ExplodingBrick position={[1, 2, 3]} color="black" noFragments={64} />
-                      <ExplodingBrick position={[1, 2, 2]} color="grey" noFragments={8} />
+                </group>
 
-                      {/* <Fade3DText text={'...bricks destroyed as ordered.'} /> */}
+                <group visible={explodedBrick}>
+                  <ExplodingBrick position={[-5, -1, 2]} color="red" noFragments={64} />
+                  <ExplodingBrick position={[-3, 1, 3]} color="blue" noFragments={8} />
+                  <ExplodingBrick position={[-1, 2, 2]} color="orange" noFragments={32} />
+                  <ExplodingBrick position={[1, 2, 3]} color="black" noFragments={64} />
+                  <ExplodingBrick position={[1, 2, 2]} color="grey" noFragments={8} />
 
-                    </RigidBody>
-                  </Physics>
-                </>
-              }
+                  {/* <Fade3DText text={'...bricks destroyed as ordered.'} /> */}
+                </group>
+              </Physics>
 
               <OrbitControls />
             </Canvas>
