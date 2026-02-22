@@ -16,7 +16,7 @@ import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { useFrame } from "@react-three/fiber"  // errs 
 
-import { OrbitControls } from "@react-three/drei"
+import { OrbitControls, Text3D } from "@react-three/drei"
 import { Html } from "@react-three/drei"
 import { useGLTF, Clone, useTexture } from '@react-three/drei'
 // import { usePlane } from '@react-three/cannon'
@@ -37,7 +37,7 @@ import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 
 // import Connectors from '../components/Connectors'
 
-import DodecahedronGroup from '../components/DodecahedronGroup'
+// import DodecahedronGroup from '../components/DodecahedronGroup'
 // import OpenableBox from '../components/boxes/OpenableBox'
 
 import "../components/styles.css"
@@ -118,12 +118,6 @@ function explode(world, origin, force = 15, radius = 4) {
 function Fragment({ velocity, color = orange[900], position = [0, 0, 0] }) {
    const ref = useRef()
 
-   // const geometry = useMemo(
-   //    () =>
-   //       new THREE.TetrahedronGeometry(0.08, 64),
-   //    []
-   // )
-
    useFrame((_, delta) => {
       ref.current.position.addScaledVector(velocity, delta)
       velocity.y -= 3 * delta // gravity
@@ -149,12 +143,12 @@ export function ExplodingBox({ position = [0, 0, 0], color = orange[500], explod
    const [explodedState, setExploded] = useState(exploded)
    const [hitCount, setHitCount] = useState(0)
 
-   useEffect(() => { 
+   useEffect(() => {
       if (explodedState) {
          // Reset hitCount when exploded
          setHitCount(0)
       }
-   }, [hitCount, explodedState])  
+   }, [hitCount, explodedState])
 
    // 
    if (!explodedState) {
@@ -892,6 +886,35 @@ function preloadModelsTextures() {
 
 }  //
 
+//*
+function CreateText3D({ position = [0, 0, 0], rotation = [0, 0, 0], size = 1, color = 'green' }) {
+
+   const ref = useRef()
+
+   useFrame((state, delta) => {
+      if (!ref.current) return
+      // ref.current.rotation.x += delta
+      ref.current.rotation.y += delta  // vertikale Achse, Drehung in der Horizontalen 
+      // ref.current.rotation.z += delta  // Drehung nur in der Horizontalen, vertikale Achse bleibt stabil, da Rotation um z-Achse
+   })
+
+   return (
+      <Text3D
+         ref={ref}
+         font="/fonts/helvetiker_regular.typeface.json"
+         position={position}
+         rotation={rotation}
+         size={size}
+         color={color}
+         anchorX="center"
+         anchorY="middle"
+      >
+         Text3D AbcDefG 012345
+         <meshStandardMaterial color={color} metalness={0.95} roughness={0.35} receiveShadow />
+      </Text3D>
+   )
+}  // CreateText3D()
+
 //* Colliders page component
 export default function Colliders() {
 
@@ -1237,6 +1260,9 @@ export default function Colliders() {
                         {/* <Ball position={[-1, 5, 2]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[-2, 5, 4]} restitution={0.95} radius={0.65} /> */}
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
+
+                        {/** Text3D Test */}
+                        <CreateText3D position={[0, 7, 0]} rotation={[0, 0, 0]} size={2} color={red[400]} />
 
                         <CreateCableBox position={[4.1, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
                         <CreateCable2cm position={[4.1, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />
