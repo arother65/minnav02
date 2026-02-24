@@ -1,6 +1,6 @@
 /**
  * 
- *  Stand: 01.02.2026
+ *  Stand: 22.02.2026
  * 
  */
 
@@ -296,7 +296,7 @@ function Floor() {
       // mit collider={false} wird kein Auto-collider gesetzt
       <RigidBody type="fixed" colliders={false} userData={{ isFloor: true }}>
          <CuboidCollider
-            args={[20, 0.1, 20]}
+            args={[15, 0.25, 15]}
             position={[0, 0, 0]}
             restitution={0.75}
             friction={0.15}
@@ -471,13 +471,21 @@ function CreateManyBalls({ position = [0, 5, 0], noBalls = 10, size = 0.35, with
       return () => clearTimeout(id)
    }, [lengthTimeout, onDone])
 
+   // const bodyRefs = useRef([])
+
    // 
    return spawnPositions.map((position, index) => (
       <RigidBody
+         // ref={(el) => {
+         //    bodyRefs.current[index] = el
+
+         //    //? hochreichen zum parent?
+         // }}
          key={index}
          colliders={false}
          position={position}
-         mass={2}
+         mass={3}
+         ccd
       >
          <BallCollider args={[
             geometry.parameters.radius * 0.75,
@@ -887,7 +895,7 @@ function preloadModelsTextures() {
 }  //
 
 //*
-function CreateText3D({ position = [0, 0, 0], rotation = [0, 0, 0], size = 1, color = 'green' }) {
+function CreateText3D({ position = [0, 0, 0], rotation = [0, 0, 0], size = 1, color = 'green', noBalls }) {
 
    const ref = useRef()
 
@@ -909,7 +917,7 @@ function CreateText3D({ position = [0, 0, 0], rotation = [0, 0, 0], size = 1, co
          anchorX="center"
          anchorY="middle"
       >
-         Text3D AbcDefG 012345
+         {`Balls: ${noBalls}`}
          <meshStandardMaterial color={color} metalness={0.95} roughness={0.35} receiveShadow />
       </Text3D>
    )
@@ -1262,7 +1270,7 @@ export default function Colliders() {
                         {/* <Ball position={[2, 5, 1]} restitution={0.95} radius={0.95} /> */}
 
                         {/** Text3D Test */}
-                        <CreateText3D position={[0, 7, 0]} rotation={[0, 0, 0]} size={2} color={red[400]} />
+                        <CreateText3D position={[0, 7, 0]} rotation={[0, 0, 0]} size={2} color={red[400]} noBalls={noBalls} />
 
                         <CreateCableBox position={[4.1, 1, -1]} rotation={[0, 1.55, 0]} scale={3} />
                         <CreateCable2cm position={[4.1, 0, 0.5]} rotation={[0, 1.55, 0]} scale={3} />

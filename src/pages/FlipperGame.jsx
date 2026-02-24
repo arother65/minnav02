@@ -394,8 +394,6 @@ function FlipperScene({ stateData }) {
             <Flipper position={[-2.25, 0.95, 5.8]} side="left" />
             <Flipper position={[2.25, 0.95, 5.8]} side="right" />
 
-            {(!stateData.gameOver) && <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} stateData={stateData} />}
-
             {/** Bumper oben im Spielfeld */}
             <BumperWithLight position={[0.25, 0.75, -5]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
             <BumperWithLight position={[-2, 0.75, -4]} noPoints={stateData.noPoints} setNoPoints={stateData.setNoPoints} bumperForce={stateData.bumperForce} />
@@ -418,9 +416,9 @@ function FlipperScene({ stateData }) {
             <Plunger ballRef={stateData.ballRef} x={3.5} />
 
             {/* Ringe vor der Feder des Plunger*/}
-            <RubberRing position={[3.5, 0.95, 4.95]} args={[0.75, 0.05, 16, 64]} color="#666" />
-            <RubberRing position={[3.5, 0.95, 5.10]} args={[0.75, 0.15, 16, 64]} color="grey" />
-            <RubberRing position={[3.5, 0.95, 5.35]} args={[0.75, 0.2, 16, 64]} color="darkgrey" />
+            <RubberRing position={[3.5, 0.95, 4.95]} args={[0.75, 0.05, 16, 64]} color="#666" withCollider={true}/>
+            <RubberRing position={[3.5, 0.95, 5.10]} args={[0.75, 0.15, 16, 64]} color="grey" withCollider={true}/>
+            <RubberRing position={[3.5, 0.95, 5.35]} args={[0.75, 0.2, 16, 64]} color="darkgrey" withCollider={true}/>
 
             {/** Ringe im hinteren Bereich */}
             <RubberRing position={[-3.25, 0.95, -6.5]} args={[0.5, 0.45, 16, 64]} color="darkgreen" withCollider={true} />
@@ -430,9 +428,14 @@ function FlipperScene({ stateData }) {
             <RubberRing position={[7.25, 0.85, -10.5]} args={[0.5, 0.45, 16, 64]} color="darkred" withCollider={true} />
 
             {/** Texte oberhalb der Spielfläche */}
+            {/* {(!stateData.gameOver) && <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} stateData={stateData} />} */}
+
             {
                (!stateData.gameOver) &&
-               <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
+               <>
+                  <ScorePopup position={[0, 4.5, -1]} color={green[900]} value='NEW Game!' />
+                  <Ball ref={stateData.ballRef} position={[3.5, 0.3, 5]} stateData={stateData} />
+               </>
             }
             {
                (stateData.gameOver) &&
@@ -519,12 +522,12 @@ function Playfield({ texture = '' }) {
 
          {/** zone upper right */}
          <CuboidCollider
-            args={[2.5, 0.2, 3.85]}   // half sizes of the geometry used
+            args={[3, 0.4, 4.5]}   // half sizes of the geometry used
             position={[5.5, 0.05, -7.25]}  // must match with position of the mesh 
             restitution={0.15}
          />
          <mesh position={[5.5, 0.05, -7.25]} receiveShadow>
-            <boxGeometry args={[5, 0.4, 7.70]} />
+            <boxGeometry args={[5.5, 0.4, 7.70]} />
             <meshStandardMaterial
                color={meshTexture ? red[100] : red[500]}
                map={meshTexture ? meshTexture : null}
@@ -547,10 +550,10 @@ function Playfield({ texture = '' }) {
          {/** Ceiling / Lid on playfield upper right*/}
          <CuboidCollider
             args={[2.5, 0.25, 3.85]}   // half sizes!
-            position={[6, 2.5, -5]}
+            position={[5.5, 2.75, -7.25]}
             restitution={0.1}
          />
-         <mesh position={[5.5, 2.65, -7.25]} rotation={[0.025, 0, 0]}>
+         <mesh position={[5.5, 2.75, -7.25]} rotation={[0.025, 0, 0]}>
             <boxGeometry args={[5, 0.5, 7.75]} />
             <meshStandardMaterial color="red" metalness={0} roughness={0.15} opacity={0.15} transparent />
          </mesh>
@@ -565,7 +568,7 @@ function Walls() {
       // <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders="cuboid" restitution={0.65} friction={0.05}>
       <RigidBody type="fixed" position={pos} rotation={[0, 0, 0]} colliders={false}>
 
-         <CuboidCollider args={[size[0] / 2, size[1] / 2, size[2] / 2]} restitution={0.5} friction={0.05} />
+         <CuboidCollider args={[size[0] / 2, size[1] / 2, size[2] / 2]} restitution={0.75} friction={0.05} />
 
          <mesh>
             <boxGeometry args={size} />
@@ -643,7 +646,7 @@ function BumperWithLight({ position = [0, 0, 0], noPoints, setNoPoints, bumpPoin
                const force = bumperForce  // best between 0.9 and 1.25
 
                ball.applyImpulse({ x: (dx / len) * force, y: 0, z: (dz / len) * force }, true)
-               ball.applyTorqueImpulse({ x: -dz * 10, y: 0, z: -dx * 10 }, true)
+               ball.applyTorqueImpulse({ x: -dz * 10, y: -0.25, z: -dx * 10 }, true)
 
                // ---- VISUAL FLASH ----
                flash.current = 1
@@ -1492,9 +1495,9 @@ function RubberRing({ position = [0, 0, 0], rotation = [0, 0, 0], args = [0.75, 
             position={position}
             rotation={rotation}
             type="fixed"
-            colliders="cuboid" >
-
-            {/* <mesh position={position} rotation={rotation}> */}
+            colliders="cuboid" 
+            ccd
+            >
             <mesh>
                <torusGeometry
                   // args={[tubeRadius, 0.05, 8, radialSegments]}
@@ -1535,7 +1538,7 @@ function HalfBentTube({ position = [0, 0, 0], rotation = [0, 0, 0], gameOver = f
    // Create a half-circle curve
    const curve = new THREE.CatmullRomCurve3(
       Array.from({ length: 50 }, (_, i) => {
-         
+
          const t = (i / 49) * Math.PI // 0 → 180°
          const radius = 6  // inner radius of the curve
 
