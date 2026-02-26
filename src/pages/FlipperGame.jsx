@@ -259,7 +259,7 @@ export default function FlipperGame() {
                      }}
                      shadows
                   >
-                     <ambientLight intensity={0.35} />
+                     <ambientLight intensity={0.5} castShadow/>
                      <directionalLight position={[0, 5, 5]} castShadow />
                      {/* <pointLight position={[1, 5, 1]} color="orange" /> */}
 
