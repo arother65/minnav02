@@ -51,7 +51,7 @@ import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 // import Triangle from '../components/Triangle'
 
 import OshkoshTruck from '../components/Oskosh-truck'
-import { TruckWheel } from '../components/Oskosh-truck'
+import { TruckParts } from '../components/Oskosh-truck'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -239,7 +239,7 @@ export default function PartsTestground() {
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
                   sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
                >
-                  <Canvas shadows camera={{ position: [3, 3, 3], fov: 55 }}
+                  <Canvas shadows camera={{ position: [3, 5, 3], fov: 75 }}
                      style={{
                         width: "85vw",
                         height: "88vh",
@@ -268,7 +268,7 @@ export default function PartsTestground() {
                         {/* <OshkoshTruck scale={0.25}/> */}
 
                         {/** Wheel driver's side */}
-                        <TruckWheel position={[-2, -2, 5]} rotation={[0, 0, 0]} scale={0.25}/>
+                        <TruckParts position={[2, 0, 0]} rotation={[-1.55, 0, 3]} scale={0.25}/>
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />

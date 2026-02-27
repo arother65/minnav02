@@ -78,16 +78,34 @@ export default function OshkoshTruck(props) {
 }  // OshkoshTruck
 
 //*
-export function TruckWheel(props) {
+export function TruckParts(props) {
 
   // const { nodes, materials } = useGLTF('/models/truck/oskosh-truck.gltf')
   const { scene } = useGLTF('/models/truck/Untitled.glb')
-  // uses SCENE when defining the view 
+  // uses SCENE when defining the view
+
+  // console.log(scene.children)
+
+  console.log(scene.children[0].children[0].children)
+
+  const geometry = scene.children[0].children[0].children[0].geometry
+  const material = scene.children[0].children[0].children[0].material
+
+  {/** chassis without wheels */ }
+  console.log('TruckWheel geometry:', geometry)
+  console.log('TruckWheel material:', material)
+
+  material.color.set({isColor: true, r: 64, g: 32, b: 16} )
+  material.metalness = 0.85
+  material.roughness = 0.35
 
   return (
 
     // <primitive object={scene} {...props} />
-    <primitive object={scene} position={[5, -0.25, 5]} scale={0.20}/>
-
+    // <primitive object={scene} position={[5, -0.25, 5]} scale={0.20}/>
+    <>
+      <mesh geometry={geometry} material={material} {...props} scale={0.50} castShadow receiveShadow />
+      {/* <pointLight color="red" intensity={0.5} distance={2} decay={0} /> */}
+    </>
   )
-}
+}  // TruckParts()
