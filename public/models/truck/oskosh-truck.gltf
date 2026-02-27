@@ -3334,91 +3334,91 @@
   ],
   "images": [
     {
-      "uri": "/models/truck/Bars1Mtl.001_diffuse.png"
+      "uri": "textures/Bars1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Bars1Mtl.001_specularGlossiness.png"
+      "uri": "textures/Bars1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/Bars1Mtl.001_normal.png"
+      "uri": "textures/Bars1Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/Cab14Mtl.001_diffuse.png"
+      "uri": "textures/Cab14Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Cab14Mtl.001_specularGlossiness.png"
+      "uri": "textures/Cab14Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/Cab14Mtl.001_normal.png"
+      "uri": "textures/Cab14Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/Cab21Mtl.001_diffuse.png"
+      "uri": "textures/Cab21Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Chasis21Mtl.001_diffuse.png"
+      "uri": "textures/Chasis21Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Chasis21Mtl.001_specularGlossiness.png"
+      "uri": "textures/Chasis21Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/Chasis21Mtl.001_normal.png"
+      "uri": "textures/Chasis21Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/Decals21Mtl.001_diffuse.png"
+      "uri": "textures/Decals21Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Glass1Mtl.001_diffuse.png"
+      "uri": "textures/Glass1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Glass1Mtl.001_specularGlossiness.png"
+      "uri": "textures/Glass1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/Glass1Mtl.001_normal.png"
+      "uri": "textures/Glass1Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/GlassLights1Mtl.001_diffuse.png"
+      "uri": "textures/GlassLights1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/GlassLights1Mtl.001_specularGlossiness.png"
+      "uri": "textures/GlassLights1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/HazardLights2Mtl.001_diffuse.png"
+      "uri": "textures/HazardLights2Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/HazardLights2Mtl.001_specularGlossiness.png"
+      "uri": "textures/HazardLights2Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/HazardLights2Mtl.001_normal.png"
+      "uri": "textures/HazardLights2Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/InteriorFrame1Mtl.001_diffuse.png"
+      "uri": "textures/InteriorFrame1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/InteriorFrame1Mtl.001_specularGlossiness.png"
+      "uri": "textures/InteriorFrame1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/InteriorFrame1Mtl.001_normal.png"
+      "uri": "textures/InteriorFrame1Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/SteeringWheel1Mtl.001_diffuse.png"
+      "uri": "textures/SteeringWheel1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/SteeringWheel1Mtl.001_specularGlossiness.png"
+      "uri": "textures/SteeringWheel1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/SteeringWheel1Mtl.001_normal.png"
+      "uri": "textures/SteeringWheel1Mtl.001_normal.png"
     },
     {
-      "uri": "/models/truck/Tailgate1Mtl.001_diffuse.png"
+      "uri": "textures/Tailgate1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Wheel1Mtl.001_diffuse.png"
+      "uri": "textures/Wheel1Mtl.001_diffuse.png"
     },
     {
-      "uri": "/models/truck/Wheel1Mtl.001_specularGlossiness.png"
+      "uri": "textures/Wheel1Mtl.001_specularGlossiness.png"
     },
     {
-      "uri": "/models/truck/Wheel1Mtl.001_normal.png"
+      "uri": "textures/Wheel1Mtl.001_normal.png"
     }
   ],
   "materials": [

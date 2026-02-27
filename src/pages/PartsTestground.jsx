@@ -51,6 +51,7 @@ import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 // import Triangle from '../components/Triangle'
 
 import OshkoshTruck from '../components/Oskosh-truck'
+import { TruckWheel } from '../components/Oskosh-truck'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -263,7 +264,11 @@ export default function PartsTestground() {
                            Cannonball with Physics, click to explode
                         </Text>
 
-                        <OshkoshTruck />
+                        {/** two trucks */}
+                        {/* <OshkoshTruck scale={0.25}/> */}
+
+                        {/** Wheel driver's side */}
+                        <TruckWheel position={[-2, -2, 5]} rotation={[0, 0, 0]} scale={0.25}/>
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
