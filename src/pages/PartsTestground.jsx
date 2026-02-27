@@ -267,8 +267,8 @@ export default function PartsTestground() {
                         {/** two trucks */}
                         {/* <OshkoshTruck scale={0.25}/> */}
 
-                        {/** Wheel driver's side */}
-                        <TruckParts position={[2, 0, 0]} rotation={[-1.55, 0, 3]} scale={0.25}/>
+                        {/** single parts from the Oshkosh Truck: */}
+                        <TruckParts position={[4, -0.25, 4]} rotation={[0, 0, 0]} scale={0.25}/>
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />

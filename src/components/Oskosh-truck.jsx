@@ -82,30 +82,93 @@ export function TruckParts(props) {
 
   // const { nodes, materials } = useGLTF('/models/truck/oskosh-truck.gltf')
   const { scene } = useGLTF('/models/truck/Untitled.glb')
-  // uses SCENE when defining the view
 
   // console.log(scene.children)
+  // console.log(scene.children[0].children[0].children)
 
-  console.log(scene.children[0].children[0].children)
-
+  {/** chassis without wheels */ }
   const geometry = scene.children[0].children[0].children[0].geometry
   const material = scene.children[0].children[0].children[0].material
 
-  {/** chassis without wheels */ }
-  console.log('TruckWheel geometry:', geometry)
-  console.log('TruckWheel material:', material)
-
-  material.color.set({isColor: true, r: 64, g: 32, b: 16} )
+  // material.color.set({isColor: true, r: 64, g: 32, b: 16} )
+  material.color.set({ isColor: true, r: 230, g: 220, b: 220 })
   material.metalness = 0.85
   material.roughness = 0.35
 
-  return (
+  // other parts from the imported scene 
+  //1 wheel's rotors:
+  const geometry01 = scene.children[0].children[0].children[1].geometry
+  const material01 = scene.children[0].children[0].children[1].material
 
-    // <primitive object={scene} {...props} />
-    // <primitive object={scene} position={[5, -0.25, 5]} scale={0.20}/>
+  //2 chassis without wheels
+  const geometry02 = scene.children[0].children[0].children[2].geometry
+  const material02 = scene.children[0].children[0].children[2].material
+
+  //3  Aufbauten oberes chassis 
+  const geometry03 = scene.children[0].children[0].children[3].geometry
+  const material03 = scene.children[0].children[0].children[3].material
+
+  //4 Leiterrahmen mit Tanks
+  const geometry04 = scene.children[0].children[0].children[4].geometry
+  const material04 = scene.children[0].children[0].children[4].material
+
+  //5 Leiterrahmen mit Tanks
+  const geometry05 = scene.children[0].children[0].children[5].geometry
+  const material05 = scene.children[0].children[0].children[5].material
+
+  //6 Decals, Aufkleber, Beschriftungen
+  const geometry06 = scene.children[0].children[0].children[6].geometry
+  const material06 = scene.children[0].children[0].children[6].material
+
+  //7 Decals, Aufkleber, Beschriftungen
+  const geometry07 = scene.children[0].children[0].children[7].geometry
+  const material07 = scene.children[0].children[0].children[7].material
+
+  //8 tinted glass objects (dark), windows, lights
+  const geometry08 = scene.children[0].children[0].children[8].geometry
+  const material08 = scene.children[0].children[0].children[8].material
+
+  //9 tinted glass objects (light), windows, lights
+  const geometry09 = scene.children[0].children[0].children[9].geometry
+  const material09 = scene.children[0].children[0].children[9].material
+
+  //10 frame for the canvas / Abdeckung
+  const geometry10 = scene.children[0].children[0].children[10].geometry
+  const material10 = scene.children[0].children[0].children[10].material
+
+  //11 Blinker und Leuchten
+  const geometry11 = scene.children[0].children[0].children[11].geometry
+  const material11 = scene.children[0].children[0].children[11].material
+
+  //12 Blinker und Leuchten, rund
+  const geometry12 = scene.children[0].children[0].children[12].geometry
+  const material12 = scene.children[0].children[0].children[12].material
+
+  //13 Rahmen der Kabine
+  const geometry13 = scene.children[0].children[0].children[13].geometry
+  const material13 = scene.children[0].children[0].children[13].material
+
+  //14 Türen der Kabine
+  const geometry14 = scene.children[0].children[0].children[14].geometry
+  const material14 = scene.children[0].children[0].children[14].material
+
+  //15 zweite Kabine
+  const geometry15 = scene.children[0].children[0].children[15].geometry
+  const material15 = scene.children[0].children[0].children[15].material
+
+  // 
+  return (
     <>
-      <mesh geometry={geometry} material={material} {...props} scale={0.50} castShadow receiveShadow />
-      {/* <pointLight color="red" intensity={0.5} distance={2} decay={0} /> */}
+      <primitive object={scene} {...props} />
+      {/* <primitive object={scene} position={[5, -0.25, 5]} scale={0.20} /> */}
+
+      {/* <mesh geometry={geometry} material={material} {...props} scale={0.50} castShadow receiveShadow /> */}
+      {/* <mesh geometry={geometry01} material={material01} {...props} scale={0.50} castShadow receiveShadow /> */}
+      {/* <mesh geometry={geometry02} material={material02} {...props} scale={0.50} castShadow receiveShadow /> */}
+      {/* <mesh geometry={geometry03} material={material03} {...props} scale={0.50} castShadow receiveShadow /> */}
+
+      {/* <mesh geometry={geometry15} material={material15} {...props} scale={0.50} castShadow receiveShadow /> */}
+
     </>
   )
 }  // TruckParts()
