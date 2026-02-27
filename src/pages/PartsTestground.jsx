@@ -30,7 +30,6 @@ import { blue, orange, red, yellow } from "@mui/material/colors"
 // import { createNatoCamoTexture } from '../components/NatoCamoPattern'
 // import TBeam, { TBeamRusted, TBeamRusted2, TBeam3 } from '../components/truckparts/TBeam'
 
-
 // import MetalRack from '../components/MetalRack'
 // import Fence from '../components/Fence'
 // import GridFence3D from '../components/Fence'
@@ -51,6 +50,7 @@ import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 // import { Suspension } from '../components/truckparts/TriangleControlArm'
 // import Triangle from '../components/Triangle'
 
+import OshkoshTruck from '../components/Oskosh-truck'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -262,6 +262,8 @@ export default function PartsTestground() {
                         <Text position={[0, 1.65, 1]} color={blue[500]} fontSize={0.25}>
                            Cannonball with Physics, click to explode
                         </Text>
+
+                        <OshkoshTruck />
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
