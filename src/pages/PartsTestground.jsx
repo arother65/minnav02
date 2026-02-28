@@ -51,7 +51,9 @@ import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 // import Triangle from '../components/Triangle'
 
 import OshkoshTruck from '../components/Oskosh-truck'
-import { TruckParts } from '../components/Oskosh-truck'
+import { TruckParts, TruckPartsWheel } from '../components/Oskosh-truck'
+import Foxhound from '../components/Foxhound'
+import MetalContainers from '../components/MetalContainers'
 
 /** ------------------------------------------------------------------------ */
 //    Local declarations / components
@@ -159,14 +161,11 @@ function explode(position, worldApi) {
 }
 
 function Ground() {
-   const [ref] = usePlane(() => ({
-      rotation: [-Math.PI / 2, 0, 0],
-   }))
-
    return (
-      <mesh ref={ref} receiveShadow>
-         <planeGeometry args={[20, 20]} />
-         <meshStandardMaterial color="gray" />
+      <mesh position={[0, -0.15, 0]} rotation={[0, 0, 0]} receiveShadow> 
+         {/* <planeGeometry args={[20, 20, 10]} /> */}
+         <boxGeometry args={[30, 0.5, 30]} />
+         <meshStandardMaterial color="lightsteelblue" />
       </mesh>
    )
 }  // Ground()
@@ -268,7 +267,18 @@ export default function PartsTestground() {
                         {/* <OshkoshTruck scale={0.25}/> */}
 
                         {/** single parts from the Oshkosh Truck: */}
-                        <TruckParts position={[4, -0.25, 4]} rotation={[0, 0, 0]} scale={0.25}/>
+                        {/* <TruckParts position={[4, -0.25, 6]} rotation={[0, 0, 0]} scale={0.25}/> */}
+
+                        {/* <TruckPartsWheel position={[4, -2.7, 4]} rotation={[0, 0, 0]} scale={0.25} orientation={'left'}/> */}
+                        <TruckPartsWheel position={[6, -8.25, 4]} rotation={[0, 0, 0]} scale={0.75} orientation={'right'}/>
+                        <TruckPartsWheel position={[4, -5.5, 4]} rotation={[0, 0, 0]} scale={0.5} orientation={'right'}/>
+                        <TruckPartsWheel position={[3, -2.75, 4]} rotation={[0, 0, 0]} scale={0.25} orientation={'right'}/>
+
+                        {/** Foxhound armoured vehicle */}
+                        {/* <Foxhound position={[-5.5, 0, -6]} rotation={[0, -1.45, 0]} scale={1}/> */}
+
+                        {/** four metal containers */}
+                        {/* <MetalContainers /> */}
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />

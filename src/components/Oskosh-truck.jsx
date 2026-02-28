@@ -7,10 +7,11 @@ Source: https://sketchfab.com/3d-models/battlefield-6-oshkosh-fmtv-m1083-a8a91f9
 Title: Battlefield 6 - Oshkosh FMTV M1083
 */
 
-import React from 'react'
+// import React from 'react'
 import { useGLTF } from '@react-three/drei'
 
 useGLTF.preload('/models/truck/oskosh-truck.gltf')
+useGLTF.preload('/models/truck/Untitled.glb')
 
 //
 export default function OshkoshTruck(props) {
@@ -82,9 +83,7 @@ export function TruckParts(props) {
 
   // const { nodes, materials } = useGLTF('/models/truck/oskosh-truck.gltf')
   const { scene } = useGLTF('/models/truck/Untitled.glb')
-
-  // console.log(scene.children)
-  // console.log(scene.children[0].children[0].children)
+  // enthält 44 mesh-objekte 
 
   {/** chassis without wheels */ }
   const geometry = scene.children[0].children[0].children[0].geometry
@@ -95,7 +94,7 @@ export function TruckParts(props) {
   material.metalness = 0.85
   material.roughness = 0.35
 
-  // other parts from the imported scene 
+  //* Other parts from the imported scene 
   //1 wheel's rotors:
   const geometry01 = scene.children[0].children[0].children[1].geometry
   const material01 = scene.children[0].children[0].children[1].material
@@ -156,10 +155,129 @@ export function TruckParts(props) {
   const geometry15 = scene.children[0].children[0].children[15].geometry
   const material15 = scene.children[0].children[0].children[15].material
 
+  //16 Türen links und rechts
+  const geometry16 = scene.children[0].children[0].children[16].geometry
+  const material16 = scene.children[0].children[0].children[16].material
+
+  //17 Runde objekte als Deckel für die Kabine 
+  const geometry17 = scene.children[0].children[0].children[17].geometry
+  const material17 = scene.children[0].children[0].children[17].material
+
+  //18 zwei Kappen als Leuchten für die Kabine
+  const geometry18 = scene.children[0].children[0].children[18].geometry
+  const material18 = scene.children[0].children[0].children[18].material
+
+  //19 Innenteile der Kabine, Steuerungen
+  const geometry19 = scene.children[0].children[0].children[19].geometry
+  const material19 = scene.children[0].children[0].children[19].material
+
+  //20 wie 19, Steuerelemente, Innenteile der Kabine
+  const geometry20 = scene.children[0].children[0].children[20].geometry
+  const material20 = scene.children[0].children[0].children[20].material
+
+  //21 Plane / Abdeckung des hinteren Aufbaus
+  const geometry21 = scene.children[0].children[0].children[21].geometry
+  const material21 = scene.children[0].children[0].children[21].material
+
+  //22 zwei Lenkräder
+  const geometry22 = scene.children[0].children[0].children[22].geometry
+  const material22 = scene.children[0].children[0].children[22].material
+
+  //23 Aufbau hinten, Ladefläche
+  const geometry23 = scene.children[0].children[0].children[23].geometry
+  const material23 = scene.children[0].children[0].children[23].material
+
+  //24 zwei Seitenteile, hinten 
+  const geometry24 = scene.children[0].children[0].children[24].geometry
+  const material24 = scene.children[0].children[0].children[24].material
+
+  //25 Leiter mit Deckelteil, rechteckig
+  const geometry25 = scene.children[0].children[0].children[25].geometry
+  const material25 = scene.children[0].children[0].children[25].material
+
+  //26 Reifen auf Felge, Fahrerseite
+  // const geometry26 = scene.children[0].children[0].children[26].geometry
+  // const material26 = scene.children[0].children[0].children[26].material
+  // material26.color.set({ isColor: true, r: 230, g: 220, b: 220 })
+  // material26.metalness = 0.85
+  // material26.roughness = 0.35
+
+  //27 Reifen auf Felge, Beifahrerseite
+  const geometry27 = scene.children[0].children[0].children[27].geometry
+  const material27 = scene.children[0].children[0].children[27].material
+
+  //28 Reifen auf Felge, Fahrerseite
+  const geometry28 = scene.children[0].children[0].children[28].geometry
+  const material28 = scene.children[0].children[0].children[28].material
+
+  //29 Reifen auf Felge, Fahrerseite 
+  const geometry29 = scene.children[0].children[0].children[29].geometry
+  const material29 = scene.children[0].children[0].children[29].material
+
+  //30 Reifen auf Felge, Beifahrerseite
+  const geometry30 = scene.children[0].children[0].children[30].geometry
+  const material30 = scene.children[0].children[0].children[30].material
+
+  //31 Reifen auf Felge, Beifahrerseite
+  const geometry31 = scene.children[0].children[0].children[31].geometry
+  const material31 = scene.children[0].children[0].children[31].material
+
+  //32 zwei halbdurchsichtige runde Deckel 
+  const geometry32 = scene.children[0].children[0].children[32].geometry
+  const material32 = scene.children[0].children[0].children[32].material
+
+  //33 Reifen auf Felge, Fahrerseite
+  const geometry33 = scene.children[0].children[0].children[33].geometry
+  const material33 = scene.children[0].children[0].children[33].material
+
+  //34 Reifen auf Felge, Beifahrerseite
+  const geometry34 = scene.children[0].children[0].children[34].geometry
+  const material34 = scene.children[0].children[0].children[34].material
+  // material34.color.set({ isColor: true, r: 10, g: 20, b: 20 })
+  // material34.metalness = 0.85
+  // material34.roughness = 0.25
+
+  //35 Reifen auf Felge, Fahrerseite
+  const geometry35 = scene.children[0].children[0].children[35].geometry
+  const material35 = scene.children[0].children[0].children[35].material
+
+  //36 Reifen auf Felge, Beifahrerseite
+  const geometry36 = scene.children[0].children[0].children[36].geometry
+  const material36 = scene.children[0].children[0].children[36].material
+
+  //37 Reifen auf Felge, Beifahrerseite
+  const geometry37 = scene.children[0].children[0].children[37].geometry
+  const material37 = scene.children[0].children[0].children[37].material
+
+  //38 Reifen auf Felge, Fahrerseite
+  const geometry38 = scene.children[0].children[0].children[38].geometry
+  const material38 = scene.children[0].children[0].children[38].material
+
+  //39 Kabine ohne Innenausstattung 
+  const geometry39 = scene.children[0].children[0].children[39].geometry
+  const material39 = scene.children[0].children[0].children[39].material
+
+  //40 Türen, zwei, Metallteile 
+  const geometry40 = scene.children[0].children[0].children[40].geometry
+  const material40 = scene.children[0].children[0].children[40].material
+
+  //41 Kabine ohne Innenausstattung
+  const geometry41 = scene.children[0].children[0].children[41].geometry
+  const material41 = scene.children[0].children[0].children[41].material
+
+  //42 Türen, zwei, Metallteile 
+  const geometry42 = scene.children[0].children[0].children[42].geometry
+  const material42 = scene.children[0].children[0].children[42].material
+
+  //43 Auspuff, zwei 
+  const geometry43 = scene.children[0].children[0].children[43].geometry
+  const material43 = scene.children[0].children[0].children[43].material
+
   // 
   return (
     <>
-      <primitive object={scene} {...props} />
+      {/** rendert zwei Trucks, einen ohne und einen mit Plane */}
+      {/* <primitive object={scene} {...props} /> */}
       {/* <primitive object={scene} position={[5, -0.25, 5]} scale={0.20} /> */}
 
       {/* <mesh geometry={geometry} material={material} {...props} scale={0.50} castShadow receiveShadow /> */}
@@ -167,8 +285,43 @@ export function TruckParts(props) {
       {/* <mesh geometry={geometry02} material={material02} {...props} scale={0.50} castShadow receiveShadow /> */}
       {/* <mesh geometry={geometry03} material={material03} {...props} scale={0.50} castShadow receiveShadow /> */}
 
-      {/* <mesh geometry={geometry15} material={material15} {...props} scale={0.50} castShadow receiveShadow /> */}
+      <mesh geometry={geometry43} material={material43} {...props} scale={0.50} castShadow receiveShadow />
 
     </>
   )
 }  // TruckParts()
+
+
+export function TruckPartsWheel(props, orientation = 'left') {
+
+  const { scene } = useGLTF('/models/truck/Untitled.glb')
+
+  //26 Reifen auf Felge, Fahrerseite
+  const geometry26 = scene.children[0].children[0].children[26].geometry
+  const material26 = scene.children[0].children[0].children[26].material
+  material26.color.set({ isColor: true, r: 230, g: 220, b: 220 })
+  material26.metalness = 0.95
+  material26.roughness = 0.25
+
+  //27 Reifen auf Felge, Beifahrerseite
+  const geometry27 = scene.children[0].children[0].children[27].geometry
+  const material27 = scene.children[0].children[0].children[27].material
+
+  // 
+  return (
+    <>
+      {orientation === 'left' &&
+        <group {...props}>
+          <mesh geometry={geometry26} material={material26} castShadow receiveShadow />
+          {/* <mesh geometry={geometry27} material={material27} {...props} castShadow receiveShadow /> */}
+        </group>
+      }
+      {orientation === 'right' &&
+        <group {...props}>
+          <mesh geometry={geometry27} material={material27} castShadow receiveShadow />
+        </group>
+
+      }
+    </>
+  )
+}  // TruckPartsWheel()
