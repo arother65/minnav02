@@ -272,13 +272,13 @@ export default function PartsTestground() {
                         {/* <TruckPartsWheel position={[4, -2.7, 4]} rotation={[0, 0, 0]} scale={0.25} orientation={'left'}/> */}
                         <TruckPartsWheel position={[6, -8.25, 4]} rotation={[0, 0, 0]} scale={0.75} orientation={'right'}/>
                         <TruckPartsWheel position={[4, -5.5, 4]} rotation={[0, 0, 0]} scale={0.5} orientation={'right'}/>
-                        <TruckPartsWheel position={[3, -2.75, 4]} rotation={[0, 0, 0]} scale={0.25} orientation={'right'}/>
+                        <TruckPartsWheel position={[3, -2.65, 6]} rotation={[0, -3, 0]} scale={0.25} orientation={'right'}/>
 
                         {/** Foxhound armoured vehicle */}
                         {/* <Foxhound position={[-5.5, 0, -6]} rotation={[0, -1.45, 0]} scale={1}/> */}
 
                         {/** four metal containers */}
-                        {/* <MetalContainers /> */}
+                        <MetalContainers position={[-1, 0.15, 7]} rotation={[0, 0, 0]} scale={1}/>
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
