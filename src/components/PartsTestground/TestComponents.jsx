@@ -62,6 +62,8 @@ export function Trees(props) {
 
   // const children = scene.children[0].children[0].children[0].children[0].children
 
+// scene.children[0].children[0].children[0].children  // enhält drei 3D-Objekte
+
   // const object01 = children[0]  // display without frame 
   // const geometry01 = object01.geometry
   // const material01 = object01.material

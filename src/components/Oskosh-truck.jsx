@@ -17,16 +17,24 @@ useGLTF.preload('/models/truck/Untitled.glb')
 export default function OshkoshTruck(props) {
 
   const { nodes, materials } = useGLTF('/models/truck/oskosh-truck.gltf')
-  // const { nodes, materials } = useGLTF('/models/truck/TruckOshkosh.glb')
 
-  // console.log('OshkoshTruck materials:', materials)
+  console.log('OshkoshTruck materials:', materials)
+  console.log(materials['Bars1Mtl.001'].color)
+
+  materials['Bars1Mtl.001'].color = { isColor: true, r: 1, g: 1, b: 1 }
+  materials['Bars1Mtl.001'].metalness = 0.15
+  materials['Bars1Mtl.001'].roughness = 0.55
+
+  // const { nodes, materials } = useGLTF('/models/truck/TruckOshkosh.glb')  // errs
 
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
+        {/** Plane Truck linke Seite */}
         <mesh geometry={nodes.Object_2.geometry} material={materials['Bars1Mtl.001']} />
         <mesh geometry={nodes.Object_3.geometry} material={materials['Bars1Mtl.001']} />
 
+        {/** linker und rechter truck */}
         <mesh geometry={nodes.Object_4.geometry} material={materials['Cab14Mtl.001']} />
         <mesh geometry={nodes.Object_5.geometry} material={materials['Cab21Mtl.001']} />
         <mesh geometry={nodes.Object_6.geometry} material={materials['Cab21Mtl.001']} />
@@ -54,22 +62,27 @@ export default function OshkoshTruck(props) {
         <mesh geometry={nodes.Object_25.geometry} material={materials['InteriorFrame1Mtl.001']} />
         <mesh geometry={nodes.Object_26.geometry} material={materials['InteriorFrame4Mtl.001']} />
         <mesh geometry={nodes.Object_27.geometry} material={materials['RlTurningLight1Mtl.001']} />
+
         <mesh geometry={nodes.Object_28.geometry} material={materials['SteeringWheel1Mtl.001']} />
         <mesh geometry={nodes.Object_29.geometry} material={materials['SteeringWheel1Mtl.001']} />
         <mesh geometry={nodes.Object_30.geometry} material={materials['SteeringWheel1Mtl.001']} />
+
         <mesh geometry={nodes.Object_31.geometry} material={materials['Tailgate1Mtl.001']} />
         <mesh geometry={nodes.Object_32.geometry} material={materials['Tailgate1Mtl.001']} />
         <mesh geometry={nodes.Object_33.geometry} material={materials['Tailgate1Mtl.001']} />
 
-        <mesh geometry={nodes.Object_34.geometry} material={materials['Wheel1Mtl.001']} />
+        {/** truck links */}
+        {/* <mesh geometry={nodes.Object_34.geometry} material={materials['Wheel1Mtl.001']} /> */}
+        {/* <mesh geometry={nodes.Object_38.geometry} material={materials['Wheel1Mtl.001']} /> */}
+        {/* <mesh geometry={nodes.Object_39.geometry} material={materials['Wheel1Mtl.001']} /> */}        
+        {/* <mesh geometry={nodes.Object_40.geometry} material={materials['Wheel1Mtl.001']} /> */}
+        {/* <mesh geometry={nodes.Object_41.geometry} material={materials['Wheel1Mtl.001']} /> */}
+        {/* <mesh geometry={nodes.Object_42.geometry} material={materials['Wheel1Mtl.001']} /> */}
+
+        {/** truck rechts */}
         <mesh geometry={nodes.Object_35.geometry} material={materials['Wheel1Mtl.001']} />
         <mesh geometry={nodes.Object_36.geometry} material={materials['Wheel1Mtl.001']} />
         <mesh geometry={nodes.Object_37.geometry} material={materials['Wheel1Mtl.001']} />
-        <mesh geometry={nodes.Object_38.geometry} material={materials['Wheel1Mtl.001']} />
-        <mesh geometry={nodes.Object_39.geometry} material={materials['Wheel1Mtl.001']} />
-        <mesh geometry={nodes.Object_40.geometry} material={materials['Wheel1Mtl.001']} />
-        <mesh geometry={nodes.Object_41.geometry} material={materials['Wheel1Mtl.001']} />
-        <mesh geometry={nodes.Object_42.geometry} material={materials['Wheel1Mtl.001']} />
         <mesh geometry={nodes.Object_43.geometry} material={materials['Wheel1Mtl.001']} />
         <mesh geometry={nodes.Object_44.geometry} material={materials['Wheel1Mtl.001']} />
         <mesh geometry={nodes.Object_45.geometry} material={materials['Wheel1Mtl.001']} />
@@ -299,9 +312,9 @@ export function TruckPartsWheel(props, orientation = 'left') {
   //26 Reifen auf Felge, Fahrerseite
   const geometry26 = scene.children[0].children[0].children[26].geometry
   const material26 = scene.children[0].children[0].children[26].material
-  material26.color.set({ isColor: true, r: 230, g: 220, b: 220 })
-  material26.metalness = 0.95
-  material26.roughness = 0.25
+  material26.color.set({ isColor: true, r: 8, g: 5, b: 3 })
+  material26.metalness = 0.15
+  material26.roughness = 0.65
 
   //27 Reifen auf Felge, Beifahrerseite
   const geometry27 = scene.children[0].children[0].children[27].geometry
@@ -320,7 +333,6 @@ export function TruckPartsWheel(props, orientation = 'left') {
         <group {...props}>
           <mesh geometry={geometry27} material={material27} castShadow receiveShadow />
         </group>
-
       }
     </>
   )

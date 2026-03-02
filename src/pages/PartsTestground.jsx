@@ -268,12 +268,12 @@ export default function PartsTestground() {
                      <Physics gravity={[0, 0, 0]} allowSleep>
 
                         <Cannonball position={[0, 1, 1]} velocity={[0, 0, 0]} />
-                        <Text position={[0, 1.65, 1]} color={blue[500]} fontSize={0.25}>
+                        <Text position={[0, 1.65, 1]} color={blue[900]} fontSize={0.25}>
                            Cannonball with Physics, click to explode
                         </Text>
 
                         {/** two trucks */}
-                        {/* <OshkoshTruck scale={0.25}/> */}
+                        {/* <OshkoshTruck position={[8, 0, 0]} scale={0.25}/> */}
 
                         {/** single parts from the Oshkosh Truck: */}
                         {/* <TruckParts position={[4, -0.25, 6]} rotation={[0, 0, 0]} scale={0.25}/> */}
@@ -284,7 +284,7 @@ export default function PartsTestground() {
                         <TruckPartsWheel position={[3, -2.65, 6]} rotation={[0, -3, 0]} scale={0.25} orientation={'right'} />
 
                         {/** Foxhound armoured vehicle */}
-                        {/* <Foxhound position={[-5.5, 0, -6]} rotation={[0, -1.45, 0]} scale={1}/> */}
+                        <Foxhound position={[6, 0.15, -6]} rotation={[0, -1.45, 0]} scale={1}/>
 
                         {/** four metal containers */}
                         <MetalContainers position={[-1, 0.15, 8]} rotation={[0, 0, 0]} scale={1} />
@@ -292,7 +292,7 @@ export default function PartsTestground() {
                         <TestComponents position={[-5, 0.25, -8]} rotation={[0, 0, 0]} scale={1} /> 
                         <ControlRoomMonitor position={[-6, 1.25, 10]} rotation={[0, -1.55, 0]} scale={1} />
 
-                        <Trees position={[0, 0.15, 8]} rotation={[0, 0, 0]} scale={1} />
+                        <Trees position={[0, 0.15, 8]} rotation={[0, 0, 0]} scale={2} />
 
                         {/*                         <Model position={[5, 0, 4]} rotation={[0, 0, 0]} />
                         <Model position={[6, 0, 5]} rotation={[0, 0, 0]} scale={1.25} />
