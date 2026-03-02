@@ -55,8 +55,8 @@ import { TruckParts, TruckPartsWheel } from '../components/Oskosh-truck'
 import Foxhound from '../components/Foxhound'
 import MetalContainers from '../components/MetalContainers'
 
-import TestComponents from '../components/PartsTestground/TestComponents' 
-import { ControlRoomMonitor, Trees } from '../components/PartsTestground/TestComponents' 
+import TestComponents from '../components/PartsTestground/TestComponents'
+import { ControlRoomMonitor, Trees, M977, Ural4320 } from '../components/PartsTestground/TestComponents'
 
 
 /** ------------------------------------------------------------------------ */
@@ -137,6 +137,7 @@ function preloadModels() {
    useGLTF.preload('/models/particle_rotor_base.glb')
    useGLTF.preload('/models/control_room_monitor.glb')
    useGLTF.preload('/models/lp_objects_trees.glb')
+   useGLTF.preload('/models/truck_m977_hemtt.glb')
 
 }  // preloadModels()
 
@@ -276,20 +277,19 @@ export default function PartsTestground() {
                         {/* <OshkoshTruck position={[8, 0, 0]} scale={0.25}/> */}
 
                         {/** single parts from the Oshkosh Truck: */}
-                        {/* <TruckParts position={[4, -0.25, 6]} rotation={[0, 0, 0]} scale={0.25}/> */}
-
                         {/* <TruckPartsWheel position={[4, -2.7, 4]} rotation={[0, 0, 0]} scale={0.25} orientation={'left'}/> */}
-                        <TruckPartsWheel position={[6, -8.25, 4]} rotation={[0, 0, 0]} scale={0.75} orientation={'right'} />
-                        <TruckPartsWheel position={[4, -5.5, 4]} rotation={[0, 0, 0]} scale={0.5} orientation={'right'} />
-                        <TruckPartsWheel position={[3, -2.65, 6]} rotation={[0, -3, 0]} scale={0.25} orientation={'right'} />
+                        <TruckPartsWheel position={[8, 0.25, 5]} rotation={[0, 0, 0]} scale={0.5} orientation={'right'} />
 
                         {/** Foxhound armoured vehicle */}
-                        <Foxhound position={[6, 0.15, -6]} rotation={[0, -1.45, 0]} scale={1}/>
+                        {/* <Foxhound position={[8, 0.15, -1]} rotation={[0, -Math.PI/2, 0]} scale={2}/> */}
+
+                        {/* <M977 position={[8, 0.1, -3]} rotation={[0, 0, 0]} scale={1} /> */}
+                        <Ural4320 position={[6, 0.1, 9]} rotation={[0, -1.55, 0]} scale={1}/>
 
                         {/** four metal containers */}
                         <MetalContainers position={[-1, 0.15, 8]} rotation={[0, 0, 0]} scale={1} />
 
-                        <TestComponents position={[-5, 0.25, -8]} rotation={[0, 0, 0]} scale={1} /> 
+                        <TestComponents position={[-5, 0.25, -8]} rotation={[0, 0, 0]} scale={1} />
                         <ControlRoomMonitor position={[-6, 1.25, 10]} rotation={[0, -1.55, 0]} scale={1} />
 
                         <Trees position={[0, 0.15, 8]} rotation={[0, 0, 0]} scale={2} />

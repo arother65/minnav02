@@ -21,16 +21,16 @@ export default function Foxhound(props) {
       {/** nicht jeder mesh läßt sich ohne weiteren Zugriff auf "children" zugreifen... */ }
       try {
         if (child.material.color) {
-          child.material.color = { isColor: true, r: 12, g: 1, b: 1 }  // funktioniert nur einmal
+          child.material.color = { isColor: true, r: 2, g: 1, b: 1 }  // funktioniert nur einmal
           child.material.metalness = 0.25
           child.material.roughness = 0.55
         }
 
       } catch (error) {
         // console.log('Err with: ', i, child.name, child.children[0])
-        child.children[0].material.color = { isColor: true, r: 12, g: 1, b: 1 }
-        child.children[0].material.metalness = 0.35
-        child.children[0].material.roughness = 0.55
+        child.children[0].material.color = { isColor: true, r: 13, g: 10, b: 10 }
+        child.children[0].material.metalness = 0.25
+        child.children[0].material.roughness = 0.15
       }
     })    // forEach()
   }, [scene])
