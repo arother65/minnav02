@@ -4,6 +4,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { createNatoCamoTexture } from '../../components/NatoCamoPattern'
+import { red, orange, yellow } from '@mui/material/colors'
 
 //*
 export default function TestComponents(props) {
@@ -147,8 +148,8 @@ export function Ural4320(props) {
   const children = scene.children[0].children[0].children[0].children[0].children  // 17 objects
 
   children[0].material.color = { isColor: true, r: 1, g: 1, b: 1 }  // the truck's front hull, bumper, cabin
-  children[0].material.metalness = 0.15
-  children[0].material.roughness = 0.45
+  children[0].material.metalness = 0.95
+  children[0].material.roughness = 0.5
 
   useEffect(() => {
     children.forEach((child, index) => {
@@ -156,8 +157,9 @@ export function Ural4320(props) {
     })
   })  // useEffect 
 
-  // const camoTexture = useMemo(() => createNatoCamoTexture(), [])  // standard colors 
-  const camoTexture = useMemo(() => createNatoCamoTexture(), [])
+  const camoTexture = useMemo(() => createNatoCamoTexture([red[800], orange[200], yellow[800]]), [])  // goldig...
+  // const camoTexture = useMemo(() => createNatoCamoTexture(), [])  // NATO-colors
+
   children[0].material.map = camoTexture
 
   // useEffect(() => {
