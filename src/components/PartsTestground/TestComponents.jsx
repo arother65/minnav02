@@ -1,8 +1,9 @@
 /*
  *  Stand: 28.02.2026 
 */
-import { useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
+import { createNatoCamoTexture } from '../../components/NatoCamoPattern'
 
 //*
 export default function TestComponents(props) {
@@ -141,37 +142,65 @@ export function M977(props) {
 export function Ural4320(props) {
 
   const { scene } = useGLTF('/models/truck_ural_4320.glb')
+  // const [truckFront, setTruckFront] = useState(null)
+
+  const children = scene.children[0].children[0].children[0].children[0].children  // 17 objects
+
+  children[0].material.color = { isColor: true, r: 1, g: 1, b: 1 }  // the truck's front hull, bumper, cabin
+  children[0].material.metalness = 0.15
+  children[0].material.roughness = 0.45
 
   useEffect(() => {
-    // truck to the left 
-    const children = scene.children[0].children[0].children[0].children[0].children  // 17 objects
-    console.log('Ural4320 children: ', children)
-
-    // 
     children.forEach((child, index) => {
       console.log(index, 'name: ', child.name, '; type:', child.type)
-
-      try {
-        child.material.color = { isColor: true, r: 2, g: 2, b: 2 }  // the truck's front hull, bumper, cabin
-        child.material.metalness = 0.5
-        child.material.roughness = 0.45
-
-      } catch (error) {
-        console.log(index, ' error accessing: ', child.name, child.type)
-        console.log(child.children)
-      }
     })
+  })  // useEffect 
 
-  }, [scene])
+  // const camoTexture = useMemo(() => createNatoCamoTexture(), [])  // standard colors 
+  const camoTexture = useMemo(() => createNatoCamoTexture(), [])
+  children[0].material.map = camoTexture
+
+  // useEffect(() => {
+  // truck to the left 
+  // const children = scene.children[0].children[0].children[0].children[0].children  // 17 objects
+
+  // // Teile des truck ausgeben / alle ; truck einfärben
+  // let d3obj = null;
+  // children.forEach((child, index) => {
+  //   console.log(index, 'name: ', child.name, '; type:', child.type)
+
+  //   try {
+  //     child.material.color = { isColor: true, r: 3, g: 3, b: 2 }  // the truck's front hull, bumper, cabin
+  //     child.material.metalness = 0.15
+  //     child.material.roughness = 0.45
+
+  //   } catch (error) {
+  //     d3obj = child.children[0]
+  //     console.log(index, ' error accessing: ', d3obj.name, d3obj.type)
+
+  //     d3obj.material.color = { isColor: true, r: 12, g: 3, b: 2 }  // all other truck parts
+  //     d3obj.material.metalness = 0.15
+  //     d3obj.material.roughness = 0.45
+  //   }
+  // })  // Array.forEach()
+
+  // setTruckFront(children[0])  //?
+
+  // }, [truckFront, scene])  // useEffect()
 
   // 
   return (
     <>
-      <primitive object={scene} {...props} />
+      {/* <primitive object={scene} {...props} /> */}
 
-      {/** einzelne Objekte der scene anzeigen: */}
-      {/* <mesh geometry={geometry01} material={material01} {...props} castShadow receiveShadow /> */}
-
+      {/** einzelne Objekte der scene anzeigen: Kabine */}
+      <mesh
+        geometry={children[0].geometry}
+        material={children[0].material}
+        {...props}
+        castShadow receiveShadow>
+        {/* <meshStandardMaterial map={camoTexture} side={2}/> */}
+      </mesh>
     </>
-  )
+  )  // return()
 }  // Ural4320()

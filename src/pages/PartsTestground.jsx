@@ -138,6 +138,7 @@ function preloadModels() {
    useGLTF.preload('/models/control_room_monitor.glb')
    useGLTF.preload('/models/lp_objects_trees.glb')
    useGLTF.preload('/models/truck_m977_hemtt.glb')
+   useGLTF.preload('/models/truck_ural_4320.glb')
 
 }  // preloadModels()
 
@@ -284,7 +285,7 @@ export default function PartsTestground() {
                         {/* <Foxhound position={[8, 0.15, -1]} rotation={[0, -Math.PI/2, 0]} scale={2}/> */}
 
                         {/* <M977 position={[8, 0.1, -3]} rotation={[0, 0, 0]} scale={1} /> */}
-                        <Ural4320 position={[6, 0.1, 9]} rotation={[0, -1.55, 0]} scale={1}/>
+                        <Ural4320 position={[6, 0.1, 9]} rotation={[-1.55, 0, -1.55]} scale={1}/>
 
                         {/** four metal containers */}
                         <MetalContainers position={[-1, 0.15, 8]} rotation={[0, 0, 0]} scale={1} />
