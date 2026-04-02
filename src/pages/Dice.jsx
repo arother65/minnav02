@@ -12,6 +12,9 @@ export default function Dice() {
 
    const fnNavigate = useNavigate()  // creates a fn of type NavigateFunction
 
+   // turn vertical scroll bar on 
+   document.documentElement.style.overflowY = "scroll";
+
    //
    return (
       <>

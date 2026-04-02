@@ -129,20 +129,16 @@ export default function VierGewinnt() {
       console.log("parentCoinRef: height:", el.offsetHeight);     // number
    }, [])  // useEffect() for parentCoinRef
 
-   useEffect(() => {
-      console.log('useEffect for moving coins.')
-   }, [dragParentId, dragSourceId, playGround])  //?
-
    // sets coinValue when view is first created
    const [coinValue, setCoinValue] = useState(1)
    const [noCoins, setNoCoins] = useState(4)  // used in Array.map() for #coins
    useEffect(() => {
+      console.log('useEffect on: ', 'noCoins: ', noCoins, 'coinValue: ', coinValue)
+
       const newCoinValue = getRandomCoinValue()
       setCoinValue(newCoinValue)  // overrides initial value
-
       setNoCoins(noCoins)  //?
-
-      console.log('useEffect on: ', 'noCoins: ', noCoins, 'coinValue: ', coinValue)
+      
    }, [coinValue, noCoins])
 
    // gets value from select and creates random values for the coins
@@ -221,31 +217,31 @@ export default function VierGewinnt() {
 
       // check if the actual coin () is already in ONE row playGround 
       //! Unterscheidung je nach event: drop aus dieser Zelle ODER drop in diese Zelle
-      let parentDiv, checkedCell, actCol
+      // let parentDiv, checkedCell, actCol
 
-      // check all rows 
-      for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
-         // console.log(rowIndex)
+      // // check all rows 
+      // for (let rowIndex = 0; rowIndex < 4; rowIndex++) {
+      //    // console.log(rowIndex)
 
-         // check all cols in this row 
-         for (let colIndex = 0; colIndex < 4; colIndex++) {
-            console.log('row: ', rowIndex, 'col: ', colIndex)
+      //    // check all cols in this row 
+      //    for (let colIndex = 0; colIndex < 4; colIndex++) {
+      //       console.log('row: ', rowIndex, 'col: ', colIndex)
 
-            actCol = `col${colIndex}`
-            checkedCell = playGround[`row${rowIndex}`][actCol]
+      //       actCol = `col${colIndex}`
+      //       checkedCell = playGround[`row${rowIndex}`][actCol]
 
-            // coin aus der aktuell untersuchten cell 'checkedCell' entfernen:
-            if (checkedCell.used === true) {
-               checkedCell.used = false
-               checkedCell.coinId = null
+      //       // coin aus der aktuell untersuchten cell 'checkedCell' entfernen:
+      //       if (checkedCell.used === true) {
+      //          checkedCell.used = false
+      //          checkedCell.coinId = null
 
-               // get that div with css-class col
-               parentDiv = document.getElementById(`${rowIndex}-${colIndex}`)
-               console.log(parentDiv.className)
-               parentDiv.className = parentDiv.className.replace('bg-success', '')
-            }
-         }  // checking if cell is already in use 
-      }  // run through all rows 
+      //          // get that div with css-class col
+      //          parentDiv = document.getElementById(`${rowIndex}-${colIndex}`)
+      //          console.log(parentDiv.className)
+      //          parentDiv.className = parentDiv.className.replace('bg-success', '')
+      //       }
+      //    }  // checking if cell is already in use 
+      // }  // run through all rows 
 
       // check if row is already full
       const row = playGround[`row${rowId}`]
@@ -264,8 +260,8 @@ export default function VierGewinnt() {
          actCoin.style.opacity = 1
 
          // ausgabe des parent aus dem Player-Bereich, der dragSource
-         let dragParent = document.getElementById(dragParentId)
-         console.log(dragParent.children)
+         // let dragParent = document.getElementById(dragParentId)
+         // console.log(dragParent.children)
 
          // color the cell in use
          let className = event.currentTarget.className
@@ -284,11 +280,7 @@ export default function VierGewinnt() {
             return
          }
 
-      } else {
-         // cell was already used 
-         event.stopPropagation()
-         return
-      }
+      } 
    }  // fnOnDrop(event) 
 
    function fnDragStart(event) {
@@ -303,6 +295,19 @@ export default function VierGewinnt() {
 
    function fnAllowDrop(event) {
       event.preventDefault()
+
+      console.log('got ID as dropTarget: ', event.currentTarget.id)
+      let splittedID = event.currentTarget.id.split('-')
+      let rowId = splittedID[0]
+      let colId = splittedID[1]
+
+      // check if this row-col in playGround is already in use
+      let cell = playGround[`row${rowId}`][`col${colId}`]
+      if (cell.used === true) {
+         // cell was already used
+         event.stopPropagation()
+         return
+      }
 
       // console.log('fnAllowDrop', event)
       event.dataTransfer.effectAllowed = 'none'

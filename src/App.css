@@ -140,9 +140,10 @@
   /* background-color: rgba(140, 145, 160, 0.95); */
   background-color: #3f50b5;
 
-  min-height: 500px;
-  display: flex;
-  flex-direction: row;
+  /* min-height: 500px; */
+  /* display: flexbox; */
+  /* flex-direction: row; */
+
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);

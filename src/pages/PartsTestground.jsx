@@ -1,6 +1,6 @@
 /**
  * 
- *  Stand: 26.02.2026
+ *  Stand: 17.03.2026
  * 
  */
 
@@ -15,7 +15,7 @@
 import * as THREE from 'three'
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, RoundedBox, Text } from "@react-three/drei"
-import { Physics, usePlane } from '@react-three/cannon'
+import { Physics } from '@react-three/cannon'
 import { useGLTF } from '@react-three/drei'
 import { useNavigate } from 'react-router-dom'
 import { AppBar, IconButton, Toolbar, Tooltip, Box, Card, Button } from '@mui/material'
@@ -41,22 +41,21 @@ import MetalSpring from '../components/MetalSpring'
 // import CreateExtrudeGeometry, { CreateExtrudeGeometry02 } from '../components/InstancedGeometry'
 import PlanetWithHole from '../components/PlanetWithHole'
 // import { Model, CreateSingleTree, CreateGrass, CreateStreet, CreateTruck } from '../components/PlanetWithHole'
-import Cannonball, { ShockwaveMetal } from '../components/CannonBall'
+import Cannonball from '../components/CannonBall'
 import Ball from '../components/Ball'
-
 import ShockAbsorber from '../components/truckparts/ShockAbsorber'
 
 // import { DIYControlArm } from '../components/truckparts/TriangleControlArm'
 // import { Suspension } from '../components/truckparts/TriangleControlArm'
 // import Triangle from '../components/Triangle'
 
-import OshkoshTruck from '../components/Oskosh-truck'
+// import OshkoshTruck from '../components/Oskosh-truck'
 import { TruckParts, TruckPartsWheel } from '../components/Oskosh-truck'
-import Foxhound from '../components/Foxhound'
+// import Foxhound from '../components/Foxhound'
 import MetalContainers from '../components/MetalContainers'
 
 import TestComponents from '../components/PartsTestground/TestComponents'
-import { ControlRoomMonitor, Trees, M977, Ural4320 } from '../components/PartsTestground/TestComponents'
+import { ControlRoomMonitor, Trees, Ural4320 } from '../components/PartsTestground/TestComponents'
 
 
 /** ------------------------------------------------------------------------ */
@@ -247,12 +246,12 @@ export default function PartsTestground() {
 
                {/* COl with the scene */}
                <Box orientation='col' className='m-1 mt-2 bg-dark-subtle rounded'
-                  sx={{ width: '84%', minHeight: '200px', border: '1px solid red', mt: 2 }}
+                  sx={{ width: '84%', border: '1px solid red', mt: 2 }}
                >
                   <Canvas shadows camera={{ position: [3, 5, 3], fov: 75 }}
                      style={{
-                        width: "85vw",
-                        height: "88vh",
+                        width: "84vw",
+                        height: "95vh",
                         display: "block"
                      }}>
                      <ambientLight intensity={0.95} />
@@ -264,7 +263,6 @@ export default function PartsTestground() {
 
                      {/*                      <Ball position={[-3, 0.5, 1]} velocity={[1, 0, 0]} color={orange[500]}/>
                      <Ball position={[3, 0.5, 1]}  velocity={[-1, 0, 0]} color={blue[900]}/> */}
-
 
                      {/* <Cannonball /> */}
                      <Physics gravity={[0, 0, 0]} allowSleep>
@@ -285,7 +283,7 @@ export default function PartsTestground() {
                         {/* <Foxhound position={[8, 0.15, -1]} rotation={[0, -Math.PI/2, 0]} scale={2}/> */}
 
                         {/* <M977 position={[8, 0.1, -3]} rotation={[0, 0, 0]} scale={1} /> */}
-                        <Ural4320 position={[6, 0.1, 9]} rotation={[-1.55, 0, -1.55]} scale={1}/>
+                        <Ural4320 position={[6, 0.1, 9]} rotation={[0, -1.55, 0]} scale={1} />
 
                         {/** four metal containers */}
                         <MetalContainers position={[-1, 0.15, 8]} rotation={[0, 0, 0]} scale={1} />
@@ -374,6 +372,21 @@ export default function PartsTestground() {
                      <OrbitControls />
                   </Canvas>
                </Box>
+
+               {/* box row */}
+               {/* <Box orientation='row' className='m-1 bg-dark-subtle rounded'
+                  sx={{ width: '100%', minHeight: '1500px', border: '1px solid red', mt: 1 }}
+               >
+                  <Canvas shadows camera={{ position: [3, 5, 3], fov: 75 }}
+                     style={{
+                        width: "100vw",
+                        height: "50vh",
+                        display: "block"
+                     }}>
+                     <ambientLight intensity={0.95} />
+                     <directionalLight position={[0, 5, 5]} castShadow />
+                  </Canvas>
+               </Box> */}
             </div>
          </main>
       </>
