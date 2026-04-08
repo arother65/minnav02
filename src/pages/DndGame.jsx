@@ -44,10 +44,10 @@ const TARGET_POSITIONS = [
 ];
 
 // ---------------------- Ball ----------------------
-function Ball({ data, onDrop }) {
+function Ball({ data, onDrop, dragging, setDragging }) {
 
    const ref = useRef();
-   const [dragging, setDragging] = useState(false);
+   // const [dragging, setDragging] = useState(false);
 
    useFrame(() => {
       if (!ref.current) return;
@@ -68,12 +68,14 @@ function Ball({ data, onDrop }) {
             e.stopPropagation();
             e.target.setPointerCapture(e.pointerId); // 🔥 important
             setDragging(true);
+            // dragging = true
          }
          }
 
          onPointerUp={(e) => {
             e.target.releasePointerCapture(e.pointerId);
             setDragging(false);
+            // dragging = false
             onDrop(ref.current.position, data);
          }}
 
@@ -298,15 +300,13 @@ export default function DndGame() {
 
                         {/* Balls */}
                         {balls.map((b) => (
-                           <Ball key={b.id} data={b} onDrop={handleDrop} />
+                           <Ball key={b.id} data={b} onDrop={handleDrop} dragging={dragging} setDragging={setDragging}/>
                         ))}
 
-                        {/* <OrbitControls enablePan={false} /> */}
-                        {/* <OrbitControls enablePan={true} /> */}
                         <OrbitControls enabled={!dragging} />
 
-                        {/* <axesHelper args={[5]} /> */}
-                        {/* <gridHelper args={[10, 10]} /> */}
+                        <axesHelper args={[5]} />
+                        <gridHelper args={[10, 10]} />
                      </Canvas>
                   </div>
 
