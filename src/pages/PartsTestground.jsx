@@ -373,20 +373,6 @@ export default function PartsTestground() {
                   </Canvas>
                </Box>
 
-               {/* box row */}
-               {/* <Box orientation='row' className='m-1 bg-dark-subtle rounded'
-                  sx={{ width: '100%', minHeight: '1500px', border: '1px solid red', mt: 1 }}
-               >
-                  <Canvas shadows camera={{ position: [3, 5, 3], fov: 75 }}
-                     style={{
-                        width: "100vw",
-                        height: "50vh",
-                        display: "block"
-                     }}>
-                     <ambientLight intensity={0.95} />
-                     <directionalLight position={[0, 5, 5]} castShadow />
-                  </Canvas>
-               </Box> */}
             </div>
          </main>
       </>

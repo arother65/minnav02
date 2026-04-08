@@ -35,7 +35,8 @@ import LegoTestground from './pages/LegoTestground'
 import Mario3D from './pages/Mario3D'
 import NodeBox from './pages/NodeBox'
 import Colliders from './pages/Colliders'
-import FlipperGame    from './pages/FlipperGame'
+import FlipperGame from './pages/FlipperGame' 
+import DndGame from './pages/DndGame'
 
 import About from './pages/About'
 import NotFound404 from './pages/404'
@@ -74,6 +75,7 @@ export default function AppRouter() {
         <Route path="/NodeBox" element={<NodeBox />} />
         <Route path="/Colliders" element={<Colliders />} />
         <Route path="/FlipperGame" element={<FlipperGame />} />
+        <Route path="/DndGame" element={<DndGame />} />
 
         <Route path="/about" element={<About />} />
 

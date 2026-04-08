@@ -138,21 +138,17 @@ export default function VierGewinnt() {
       const newCoinValue = getRandomCoinValue()
       setCoinValue(newCoinValue)  // overrides initial value
       setNoCoins(noCoins)  //?
-      
+
    }, [coinValue, noCoins])
 
    // gets value from select and creates random values for the coins
    const handleNoObjects = (e) => {
 
       // setting new value for coinValue
-      console.log('coinValue before: ', coinValue)
       setCoinValue(getRandomCoinValue())
-      console.log('coinValue after: ', coinValue)
 
       // setting new value for noCoins
-      console.log('No. before', noCoins)
       setNoCoins(e.target.value)
-      console.log('No. after', e.target.value)
    }  // handleNoObjects()
 
    // creates a fn of type NavigateFunction
@@ -280,7 +276,7 @@ export default function VierGewinnt() {
             return
          }
 
-      } 
+      }
    }  // fnOnDrop(event) 
 
    function fnDragStart(event) {
@@ -384,6 +380,7 @@ export default function VierGewinnt() {
                      }}>
                      <h6>Player 1</h6>
                      <Avatar id="idCompPlayer1"
+                        key='keyPlayer1'
                         className='Coin-animate'
                         draggable={true}
                         onDragStart={fnDragStart}
@@ -421,28 +418,28 @@ export default function VierGewinnt() {
                      ref={parentCoinRef}
                      sx={{ display: 'flex', justifyContent: 'center', border: '1px dashed red', borderRadius: 3, bgcolor: 'secondary.light', m: 1 }}
                   >
-                     <>
-                        {noCoins && Array.from({ length: noCoins }).map((_, i) => (
-                           <Avatar
-                              id={`coin-${i}`}
-                              key={`coin-${i}`}
-                              ref={(el) => (coinRef.current[i] = el)}
-                              component={'div'}
-                              className='Coin-animate'
-                              sx={{ bgcolor: purple[700], border: '1px solid red', margin: 1 }}
-                              aria-label="coin"
-                              draggable={true}
-                              data-coin-value={coinValue}
-                              variant='circular'
-                              onDragStart={fnDragStart}
-                              onDragEnd={(e) => {
-                                 e.currentTarget.style.opacity = "1"
-                              }}>
-                              {coinValue}
-                           </Avatar>
-                        ))
-                        }
-                     </>
+                     {noCoins && Array.from({ length: noCoins }).map((_, i) => (
+                        <Avatar
+                           id={`coin-${i}`}
+                           // key={`coin-${i}-${Date.now()}`}  //?
+                           key={`coin-${i}`}
+
+                           ref={(el) => (coinRef.current[i] = el)}
+                           component={'div'}
+                           className='Coin-animate'
+                           sx={{ bgcolor: purple[700], border: '1px solid red', margin: 1 }}
+                           aria-label="coin"
+                           draggable={true}
+                           data-coin-value={coinValue}
+                           variant='circular'
+                           onDragStart={fnDragStart}
+                           onDragEnd={(e) => {
+                              e.currentTarget.style.opacity = "1"
+                           }}>
+                           {coinValue}
+                        </Avatar>
+                     ))
+                     }
                   </Box>
                </div>
             </div>

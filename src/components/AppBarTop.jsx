@@ -311,6 +311,14 @@ export default function AppBarTop() {
             Flipper
           </MenuItem>
 
+          <MenuItem
+            sx={menuItemSx}
+            onClick={() => {
+              fnNavigate('/DndGame')
+            }}>
+            Drag Drop
+          </MenuItem>
+
           {/* <MenuItem
                   sx={menuItemSx}
                   onClick={() => {

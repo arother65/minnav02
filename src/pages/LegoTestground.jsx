@@ -119,6 +119,9 @@ export default function LegoScene() {
                 }}>
                 explode scene
               </Button>
+            </Card>
+
+            <Card className='m-1 rounded shadow'>
               <Button variant="outlined"
                 color="success"
                 className='m-1'
@@ -167,6 +170,7 @@ export default function LegoScene() {
             >
               <ambientLight intensity={2} />
               <directionalLight position={[5, 5, 5]} castShadow />
+
               <Physics gravity={explodedBrick ? [1, -5, 1] : [0, -9.81, 0]}
                 interpolate={false}
                 key={explodedBrick ? 'exploded' : 'normal'}  //? forces re-rendering of physics when explodedBrick changes
